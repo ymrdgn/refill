@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "search": "Ara"
+  },
+  "tabs": {
+    "home": "Ana Sayfa",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "signup": "Kayıt Ol",
+    "email": "E-posta",
+    "password": "Şifre",
+    "username": "Kullanıcı Adı",
+    "noAccount": "Hesabın yok mu?",
+    "haveAccount": "Zaten hesabın var mı?",
+    "forgotPassword": "Şifreni mi unuttun?"
+  },
+  "home": {
+    "title": "Refill'e Hoş Geldin",
+    "subtitle": "Temel projen hazır."
+  },
+  "profile": {
+    "title": "Profil",
+    "signOut": "Çıkış Yap"
+  }
+}

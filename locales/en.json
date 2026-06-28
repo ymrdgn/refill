@@ -1,0 +1,33 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search"
+  },
+  "tabs": {
+    "home": "Home",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?"
+  },
+  "home": {
+    "title": "Welcome to Refill",
+    "subtitle": "Your base project is ready."
+  },
+  "profile": {
+    "title": "Profile",
+    "signOut": "Sign Out"
+  }
+}
