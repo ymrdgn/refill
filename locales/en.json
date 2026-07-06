@@ -26,6 +26,45 @@
     "title": "Welcome to Refill",
     "subtitle": "Your base project is ready."
   },
+  "sheets": {
+    "tagline": "Photo score · pen",
+    "title": "My Sheets",
+    "newSheet": "Add new sheet",
+    "empty": "No sheets yet. Add your first with the button above.",
+    "meta": "{{rows}} rows · {{sessions}} games",
+    "newGame": "New game",
+    "history": "History",
+    "untitled": "Untitled sheet",
+    "deleteConfirm": "Delete this sheet and all its games?"
+  },
+  "setup": {
+    "title": "Mark rows",
+    "hint": "Tap at each score row — writing binds to that row. Tap a line again to remove it.",
+    "namePlaceholder": "Give the sheet a name",
+    "rowPlaceholder": "Row {{n}} (optional name)",
+    "save": "Save",
+    "needImage": "Pick a photo first.",
+    "pickImage": "Pick photo"
+  },
+  "play": {
+    "namePlaceholder": "Game name (e.g. Friday night)",
+    "writeHint": "Write on the sheet with your finger/pen",
+    "undo": "Undo",
+    "recognized": "Recognized values",
+    "recognizedHint": "type manually · auto in Phase 5",
+    "written": "✏ written",
+    "save": "Save game",
+    "rowFallback": "Row {{n}}"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No games yet. Add your first with New game above.",
+    "newGame": "Game",
+    "strokeCount": "{{n}} strokes"
+  },
+  "session": {
+    "savedData": "Saved data"
+  },
   "profile": {
     "title": "Profile",
     "signOut": "Sign Out"

@@ -75,7 +75,7 @@ export default function RootLayout() {
   return (
     <>
       <RootLayoutNav />
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </>
   );
 }

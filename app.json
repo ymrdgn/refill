@@ -37,6 +37,13 @@
       "expo-router",
       "expo-font",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Refill kağıt fotoğrafını eklemek için galerinize erişir.",
+          "cameraPermission": "Refill skor kağıdının fotoğrafını çekmek için kameranıza erişir."
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {
@@ -45,7 +52,8 @@
           }
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

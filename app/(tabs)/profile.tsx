@@ -4,6 +4,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { getCurrentUser, signOut } from '@/lib/supabase';
+import { clearAll } from '@/lib/db/local';
+import { colors, fonts } from '@/lib/theme';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -16,6 +18,7 @@ export default function ProfileScreen() {
 
   const handleSignOut = async () => {
     await signOut();
+    await clearAll(); // yerel veriyi temizle (başka kullanıcıya sızmasın)
     router.replace('/(auth)/login');
   };
 
@@ -34,29 +37,31 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111827' },
+  container: { flex: 1, backgroundColor: colors.bg },
   content: { flex: 1, paddingHorizontal: 24, paddingTop: 24 },
   title: {
     fontSize: 28,
-    fontFamily: 'Inter-Bold',
-    color: '#fff',
+    fontFamily: fonts.display,
+    color: colors.ink,
   },
   email: {
     fontSize: 15,
-    fontFamily: 'Inter-Regular',
-    color: '#9CA3AF',
+    fontFamily: fonts.regular,
+    color: colors.inkSoft,
     marginTop: 8,
   },
   button: {
-    backgroundColor: '#1F2937',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: 'center',
     marginTop: 32,
   },
   buttonText: {
-    color: '#F87171',
-    fontFamily: 'Inter-SemiBold',
+    color: colors.danger,
+    fontFamily: fonts.semibold,
     fontSize: 16,
   },
 });

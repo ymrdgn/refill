@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Chrome as Home, User } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
+import { colors } from '@/lib/theme';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -13,23 +14,24 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1F2937',
-          borderTopWidth: 0,
+          backgroundColor: colors.surface,
+          borderTopWidth: 1,
+          borderTopColor: colors.line,
           elevation: 0,
           shadowOpacity: 0,
           height: Platform.OS === 'ios' ? 85 : 70 + insets.bottom,
           paddingTop: 8,
           paddingBottom: Platform.OS === 'ios' ? 25 : insets.bottom,
         },
-        tabBarActiveTintColor: '#6366F1',
-        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarActiveTintColor: colors.ink,
+        tabBarInactiveTintColor: colors.inkSoft,
         tabBarLabelStyle: {
           fontSize: 12,
           fontFamily: 'Inter-Medium',
           marginTop: 4,
         },
         sceneStyle: {
-          backgroundColor: '#111827',
+          backgroundColor: colors.bg,
         },
       }}
     >

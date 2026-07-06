@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { Database } from './database.types';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
@@ -15,7 +16,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const fallbackUrl = 'https://placeholder.supabase.co';
 const fallbackKey = 'placeholder-key';
 
-export const supabase = createClient(
+export const supabase = createClient<Database>(
   supabaseUrl || fallbackUrl,
   supabaseAnonKey || fallbackKey,
   {

@@ -26,6 +26,45 @@
     "title": "Refill'e Hoş Geldin",
     "subtitle": "Temel projen hazır."
   },
+  "sheets": {
+    "tagline": "Foto skor · kalem",
+    "title": "Kağıtlarım",
+    "newSheet": "Yeni kağıt ekle",
+    "empty": "Henüz kağıt yok. Üstteki düğmeyle ilk kağıdını ekle.",
+    "meta": "{{rows}} satır · {{sessions}} oyun",
+    "newGame": "Yeni oyun",
+    "history": "Geçmiş",
+    "untitled": "İsimsiz kağıt",
+    "deleteConfirm": "Bu kağıt ve tüm oyunları silinsin mi?"
+  },
+  "setup": {
+    "title": "Satırları işaretle",
+    "hint": "Her puan satırının hizasına dokun — yazılanlar o satıra bağlanır. Bir çizgiyi kaldırmak için üzerine tekrar dokun.",
+    "namePlaceholder": "Kağıda bir isim ver",
+    "rowPlaceholder": "Satır {{n}} (opsiyonel isim)",
+    "save": "Kaydet",
+    "needImage": "Önce bir foto seç.",
+    "pickImage": "Foto seç"
+  },
+  "play": {
+    "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",
+    "writeHint": "Kağıdın üzerine parmağınla/kalemle yaz",
+    "undo": "Geri al",
+    "recognized": "Tanınan değerler",
+    "recognizedHint": "elle gir · Faz 5'te otomatik",
+    "written": "✏ yazıldı",
+    "save": "Oyunu kaydet",
+    "rowFallback": "Satır {{n}}"
+  },
+  "history": {
+    "title": "Geçmiş",
+    "empty": "Henüz oyun yok. Üstteki Oyun ile ilkini yaz.",
+    "newGame": "Oyun",
+    "strokeCount": "{{n}} kalem izi"
+  },
+  "session": {
+    "savedData": "Kaydedilen veri"
+  },
   "profile": {
     "title": "Profil",
     "signOut": "Çıkış Yap"
