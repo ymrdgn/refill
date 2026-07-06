@@ -4,9 +4,10 @@
  * Tüm ekranlar üst barı ve butonları buradan kullanır; ekran başına
  * kopyalanan stiller yerine tek bir tasarım dili.
  */
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import {
   ActivityIndicator,
+  Animated,
   Pressable,
   StyleSheet,
   Text,
@@ -96,6 +97,41 @@ export function Button({
         </>
       )}
     </Pressable>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Skeleton — veri yüklenirken nabız gibi atan yer tutucu             */
+/* ------------------------------------------------------------------ */
+export function Skeleton({ style }: { style?: StyleProp<ViewStyle> }) {
+  const opacity = useRef(new Animated.Value(0.45)).current;
+
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0.45,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    anim.start();
+    return () => anim.stop();
+  }, [opacity]);
+
+  return (
+    <Animated.View
+      style={[
+        { backgroundColor: colors.line, borderRadius: radius.sm, opacity },
+        style,
+      ]}
+    />
   );
 }
 

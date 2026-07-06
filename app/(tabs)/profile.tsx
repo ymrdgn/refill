@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { LogOut } from 'lucide-react-native';
 import { getCurrentUser, signOut } from '@/lib/supabase';
 import { clearAll } from '@/lib/db/local';
+import { sync } from '@/lib/db/sync';
 import { changeLanguage } from '@/i18n';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 
@@ -18,12 +19,20 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState<string | null>(null);
+  const [uid, setUid] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
-    getCurrentUser().then(({ user }) => setEmail(user?.email ?? null));
+    getCurrentUser().then(({ user }) => {
+      setEmail(user?.email ?? null);
+      setUid(user?.id ?? null);
+    });
   }, []);
 
   const handleSignOut = async () => {
+    setSigningOut(true);
+    // Bekleyen yerel değişiklikleri kaybetmemek için önce senkronu dene.
+    if (uid) await sync(uid).catch(() => {});
     await signOut();
     await clearAll(); // yerel veriyi temizle (başka kullanıcıya sızmasın)
     router.replace('/(auth)/login');
@@ -76,8 +85,13 @@ export default function ProfileScreen() {
 
         {/* Çıkış */}
         <Pressable
-          style={({ pressed }) => [styles.signOut, pressed && styles.pressed]}
+          style={({ pressed }) => [
+            styles.signOut,
+            signingOut && { opacity: 0.6 },
+            pressed && styles.pressed,
+          ]}
           onPress={handleSignOut}
+          disabled={signingOut}
         >
           <LogOut size={17} color={colors.danger} />
           <Text style={styles.signOutText}>{t('profile.signOut')}</Text>

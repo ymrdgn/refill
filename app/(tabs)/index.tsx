@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -30,6 +29,7 @@ import {
 } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import { setSheetDraft } from '@/lib/draft';
+import { Skeleton } from '@/components/ui';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -40,10 +40,16 @@ export default function HomeScreen() {
 
   const load = useCallback(async () => {
     if (!userId) return;
-    // Arka planda senkron dene (başarısız olsa da yerelden göster).
-    sync(userId).catch(() => {});
-    const rows = await listSheets(userId);
-    setSheets(rows);
+    // 1) Yerelde veri varsa anında göster (offline-first).
+    const localRows = await listSheets(userId);
+    if (localRows.length > 0) {
+      setSheets(localRows);
+      setLoading(false);
+    }
+    // 2) Yerel boşsa (ör. çıkış sonrası temizlendi) skeleton'ı sync bitene
+    //    kadar tut; sync sunucudan çekince gerçek liste gelir.
+    const res = await sync(userId).catch(() => null);
+    if (res?.ok) setSheets(await listSheets(userId));
     setLoading(false);
   }, [userId]);
 
@@ -114,7 +120,23 @@ export default function HomeScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator color={colors.ink} style={{ marginTop: 40 }} />
+          <>
+            {[0, 1, 2].map((i) => (
+              <View key={i} style={styles.card}>
+                <Skeleton style={{ width: 64, height: 84, borderRadius: radius.sm + 2 }} />
+                <View style={styles.skeletonBody}>
+                  <View style={{ gap: 8 }}>
+                    <Skeleton style={{ width: '58%', height: 15 }} />
+                    <Skeleton style={{ width: '36%', height: 11 }} />
+                  </View>
+                  <View style={{ flexDirection: 'row', gap: 8 }}>
+                    <Skeleton style={{ width: 96, height: 32 }} />
+                    <Skeleton style={{ width: 84, height: 32 }} />
+                  </View>
+                </View>
+              </View>
+            ))}
+          </>
         ) : (
           <>
             {sheets.length === 0 && (
@@ -327,6 +349,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardBody: { flex: 1, justifyContent: 'space-between' },
+  skeletonBody: { flex: 1, justifyContent: 'space-between', paddingVertical: 4 },
   cardName: { fontFamily: fonts.display, fontSize: fontSize.md, color: colors.ink },
   cardMeta: {
     fontFamily: fonts.regular,
