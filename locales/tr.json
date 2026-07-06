@@ -30,6 +30,8 @@
     "tagline": "Foto skor · kalem",
     "title": "Kağıtlarım",
     "newSheet": "Yeni kağıt ekle",
+    "newSheetPhoto": "Fotoğraftan",
+    "newSheetBlank": "Boş kağıt",
     "empty": "Henüz kağıt yok. Üstteki düğmeyle ilk kağıdını ekle.",
     "meta": "{{rows}} satır · {{sessions}} oyun",
     "newGame": "Yeni oyun",

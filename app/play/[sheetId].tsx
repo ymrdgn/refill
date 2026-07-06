@@ -20,6 +20,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getSheet, getSheetRows, saveSession } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
+import BlankPaper from '@/components/BlankPaper';
 import type { Sheet, SheetRow, StrokePoint } from '@/lib/database.types';
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
@@ -169,13 +170,17 @@ export default function PlayScreen() {
           <Text style={styles.writeHintText}>{t('play.writeHint')}</Text>
         </View>
 
-        {sheet?.image_path ? (
+        {sheet ? (
           <View style={styles.canvas} onLayout={onLayout}>
-            <Image
-              source={{ uri: sheet.image_path }}
-              style={{ width: '100%', aspectRatio: aspect }}
-              resizeMode="cover"
-            />
+            {sheet.image_path ? (
+              <Image
+                source={{ uri: sheet.image_path }}
+                style={{ width: '100%', aspectRatio: aspect }}
+                resizeMode="cover"
+              />
+            ) : (
+              <BlankPaper />
+            )}
             <InkLayer
               strokes={strokes}
               current={live}

@@ -30,6 +30,8 @@
     "tagline": "Photo score · pen",
     "title": "My Sheets",
     "newSheet": "Add new sheet",
+    "newSheetPhoto": "From photo",
+    "newSheetBlank": "Blank sheet",
     "empty": "No sheets yet. Add your first with the button above.",
     "meta": "{{rows}} rows · {{sessions}} games",
     "newGame": "New game",

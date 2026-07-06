@@ -14,6 +14,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
 import { TopBar } from '@/components/ui';
+import BlankPaper from '@/components/BlankPaper';
 import { useAuth } from '@/hooks/useAuth';
 import { getSheet, getSheetRows, saveSheet } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
@@ -131,29 +132,27 @@ export default function SheetSetupScreen() {
           placeholderTextColor={colors.inkSoft}
         />
 
-        {imageUri ? (
-          <Pressable
-            style={styles.imageWrap}
-            onPress={addRow}
-            onLayout={(e) => setImgHeight(e.nativeEvent.layout.height)}
-          >
+        <Pressable
+          style={styles.imageWrap}
+          onPress={addRow}
+          onLayout={(e) => setImgHeight(e.nativeEvent.layout.height)}
+        >
+          {imageUri ? (
             <Image
               source={{ uri: imageUri }}
               style={{ width: '100%', aspectRatio: aspect }}
               resizeMode="cover"
             />
-            {rows.map((r) => (
-              <View
-                key={r.id}
-                style={[styles.rowLine, { top: `${r.y * 100}%` }]}
-              />
-            ))}
-          </Pressable>
-        ) : (
-          <View style={styles.noImage}>
-            <Text style={styles.noImageText}>{t('setup.needImage')}</Text>
-          </View>
-        )}
+          ) : (
+            <BlankPaper />
+          )}
+          {rows.map((r) => (
+            <View
+              key={r.id}
+              style={[styles.rowLine, { top: `${r.y * 100}%` }]}
+            />
+          ))}
+        </Pressable>
 
         <View style={{ height: 24 }} />
       </ScrollView>
@@ -212,15 +211,4 @@ const styles = StyleSheet.create({
     borderTopColor: colors.accent,
     borderStyle: 'dashed',
   },
-  noImage: {
-    width: '100%',
-    height: 160,
-    borderRadius: radius.lg,
-    borderWidth: 2,
-    borderColor: colors.line,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  noImageText: { color: colors.inkSoft, fontFamily: fonts.regular, fontSize: fontSize.sm },
 });

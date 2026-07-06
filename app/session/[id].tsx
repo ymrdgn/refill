@@ -13,6 +13,7 @@ import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
 import { TopBar } from '@/components/ui';
 import { getSessionDetail, getSheet, type SessionDetail } from '@/lib/db/repository';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
+import BlankPaper from '@/components/BlankPaper';
 
 export default function SessionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -64,16 +65,18 @@ export default function SessionScreen() {
           <Text style={styles.date}>{fmt(detail.session.played_at)}</Text>
         )}
 
-        {imageUri ? (
-          <View style={styles.canvas} onLayout={onLayout}>
+        <View style={styles.canvas} onLayout={onLayout}>
+          {imageUri ? (
             <Image
               source={{ uri: imageUri }}
               style={{ width: '100%', aspectRatio: aspect }}
               resizeMode="cover"
             />
-            <InkLayer strokes={strokes} width={size.w} height={size.h} />
-          </View>
-        ) : null}
+          ) : (
+            <BlankPaper />
+          )}
+          <InkLayer strokes={strokes} width={size.w} height={size.h} />
+        </View>
         <View style={{ height: 24 }} />
       </ScrollView>
     </SafeAreaView>

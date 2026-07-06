@@ -12,7 +12,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera, Clock, Dices, Pencil, Sparkles, Trash2 } from 'lucide-react-native';
+import {
+  Camera,
+  Clock,
+  Dices,
+  FileText,
+  Pencil,
+  Sparkles,
+  Trash2,
+} from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -52,6 +60,12 @@ export default function HomeScreen() {
     });
     if (result.canceled || !result.assets?.[0]) return;
     setSheetDraft({ imageUri: result.assets[0].uri, name: '' });
+    router.push('/sheet/new');
+  };
+
+  /** Fotoğrafsız boş kağıt (dart, okey vb. serbest skor tutma). */
+  const createBlank = () => {
+    setSheetDraft({ imageUri: null, name: '' });
     router.push('/sheet/new');
   };
 
@@ -126,7 +140,9 @@ export default function HomeScreen() {
                       resizeMode="cover"
                     />
                   ) : (
-                    <View style={styles.thumbEmpty} />
+                    <View style={styles.thumbBlank}>
+                      <FileText size={20} color={colors.inkSoft} />
+                    </View>
                   )}
                 </View>
 
@@ -181,15 +197,27 @@ export default function HomeScreen() {
               </Pressable>
             ))}
 
-            <Pressable
-              style={({ pressed }) => [styles.addBtn, pressed && styles.pressed]}
-              onPress={pickAndCreate}
-            >
-              <View style={styles.addIcon}>
-                <Camera size={18} color={colors.ink} />
-              </View>
-              <Text style={styles.addBtnText}>{t('sheets.newSheet')}</Text>
-            </Pressable>
+            <View style={styles.addRow}>
+              <Pressable
+                style={({ pressed }) => [styles.addBtn, pressed && styles.pressed]}
+                onPress={pickAndCreate}
+              >
+                <View style={styles.addIcon}>
+                  <Camera size={18} color={colors.ink} />
+                </View>
+                <Text style={styles.addBtnText}>{t('sheets.newSheetPhoto')}</Text>
+              </Pressable>
+
+              <Pressable
+                style={({ pressed }) => [styles.addBtn, pressed && styles.pressed]}
+                onPress={createBlank}
+              >
+                <View style={styles.addIcon}>
+                  <FileText size={18} color={colors.ink} />
+                </View>
+                <Text style={styles.addBtnText}>{t('sheets.newSheetBlank')}</Text>
+              </Pressable>
+            </View>
           </>
         )}
       </ScrollView>
@@ -292,7 +320,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   thumbImg: { width: '100%', height: '100%' },
-  thumbEmpty: { flex: 1, backgroundColor: colors.line },
+  thumbBlank: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   cardBody: { flex: 1, justifyContent: 'space-between' },
   cardName: { fontFamily: fonts.display, fontSize: fontSize.md, color: colors.ink },
   cardMeta: {
@@ -332,7 +365,9 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
   },
   deleteBtn: { alignItems: 'center', justifyContent: 'center', width: 32 },
+  addRow: { flexDirection: 'row', gap: spacing.md },
   addBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
