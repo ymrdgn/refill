@@ -12,6 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { supabase } from '@/lib/supabase';
+import { colors } from '@/lib/theme';
 import '@/i18n'; // Initialize i18n
 import { initializeLanguage } from '@/i18n';
 
@@ -37,7 +38,7 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: 'transparent' },
+        contentStyle: { backgroundColor: colors.bg },
         presentation: 'card',
       }}
     >

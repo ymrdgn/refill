@@ -66,11 +66,11 @@ export const spacing = {
 } as const;
 
 export const radius = {
-  sm: 9,
-  md: 11,
-  lg: 14,
-  xl: 16,
-  '2xl': 18,
+  sm: 10,
+  md: 14,
+  lg: 18,
+  xl: 22,
+  '2xl': 28,
   pill: 999,
 } as const;
 
@@ -78,17 +78,17 @@ export const shadow = {
   /** Ana buton gölgesi */
   primary: {
     shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.28,
-    shadowRadius: 24,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.22,
+    shadowRadius: 18,
+    elevation: 5,
   },
-  /** Kart gölgesi (hafif) */
+  /** Kart gölgesi (hafif, modern) */
   card: {
     shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
     elevation: 2,
   },
 } as const;

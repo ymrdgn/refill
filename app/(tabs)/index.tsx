@@ -13,7 +13,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Clock, Dices, Pencil, Sparkles, Trash2 } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 import { useAuth } from '@/hooks/useAuth';
 import {
   deleteSheet,
@@ -70,11 +70,14 @@ export default function HomeScreen() {
         <Text style={styles.title}>{t('sheets.title')}</Text>
       </View>
 
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Araçlar: ilk oyuncu + zar */}
         <View style={styles.toolsRow}>
           <Pressable
-            style={styles.toolCard}
+            style={({ pressed }) => [styles.toolCard, pressed && styles.pressed]}
             onPress={() => router.push('/tools/first-player')}
           >
             <View style={styles.toolIcon}>
@@ -85,7 +88,7 @@ export default function HomeScreen() {
           </Pressable>
 
           <Pressable
-            style={styles.toolCard}
+            style={({ pressed }) => [styles.toolCard, pressed && styles.pressed]}
             onPress={() => router.push('/tools/dice')}
           >
             <View style={styles.toolIcon}>
@@ -101,15 +104,21 @@ export default function HomeScreen() {
         ) : (
           <>
             {sheets.length === 0 && (
-              <Text style={styles.empty}>{t('sheets.empty')}</Text>
+              <View style={styles.emptyCard}>
+                <View style={styles.emptyIcon}>
+                  <Camera size={22} color={colors.accent} />
+                </View>
+                <Text style={styles.emptyText}>{t('sheets.empty')}</Text>
+              </View>
             )}
 
             {sheets.map((s) => (
-              <View key={s.id} style={styles.card}>
-                <Pressable
-                  style={styles.thumb}
-                  onPress={() => router.push(`/sheet/${s.id}`)}
-                >
+              <Pressable
+                key={s.id}
+                style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+                onPress={() => router.push(`/sheet/${s.id}`)}
+              >
+                <View style={styles.thumb}>
                   {s.image_path ? (
                     <Image
                       source={{ uri: s.image_path }}
@@ -119,7 +128,7 @@ export default function HomeScreen() {
                   ) : (
                     <View style={styles.thumbEmpty} />
                   )}
-                </Pressable>
+                </View>
 
                 <View style={styles.cardBody}>
                   <View>
@@ -136,7 +145,10 @@ export default function HomeScreen() {
 
                   <View style={styles.cardActions}>
                     <Pressable
-                      style={styles.primaryChip}
+                      style={({ pressed }) => [
+                        styles.primaryChip,
+                        pressed && styles.pressed,
+                      ]}
                       onPress={() => router.push(`/play/${s.id}`)}
                     >
                       <Pencil size={13} color={colors.surface} />
@@ -145,7 +157,10 @@ export default function HomeScreen() {
                       </Text>
                     </Pressable>
                     <Pressable
-                      style={styles.ghostChip}
+                      style={({ pressed }) => [
+                        styles.ghostChip,
+                        pressed && styles.pressed,
+                      ]}
                       onPress={() => router.push(`/history/${s.id}`)}
                     >
                       <Clock size={13} color={colors.inkSoft} />
@@ -157,17 +172,22 @@ export default function HomeScreen() {
                 </View>
 
                 <Pressable
-                  style={styles.deleteBtn}
+                  style={({ pressed }) => [styles.deleteBtn, pressed && { opacity: 0.6 }]}
                   onPress={() => onDelete(s.id)}
                   hitSlop={8}
                 >
                   <Trash2 size={16} color={colors.inkSoft} />
                 </Pressable>
-              </View>
+              </Pressable>
             ))}
 
-            <Pressable style={styles.addBtn} onPress={pickAndCreate}>
-              <Camera size={18} color={colors.ink} />
+            <Pressable
+              style={({ pressed }) => [styles.addBtn, pressed && styles.pressed]}
+              onPress={pickAndCreate}
+            >
+              <View style={styles.addIcon}>
+                <Camera size={18} color={colors.ink} />
+              </View>
               <Text style={styles.addBtnText}>{t('sheets.newSheet')}</Text>
             </Pressable>
           </>
@@ -179,7 +199,11 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  header: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xs },
+  header: {
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.sm,
+  },
   tagline: {
     fontFamily: fonts.medium,
     fontSize: fontSize.xs,
@@ -189,28 +213,30 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: fonts.display,
-    fontSize: fontSize['2xl'],
+    fontSize: fontSize['3xl'],
     color: colors.ink,
     marginTop: 2,
   },
   list: { padding: spacing.md, paddingBottom: 40 },
-  toolsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+  pressed: { transform: [{ scale: 0.98 }], opacity: 0.92 },
+  toolsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.lg },
   toolCard: {
     flex: 1,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.line,
     borderRadius: radius.xl,
-    padding: spacing.md,
+    padding: spacing.lg,
+    ...shadow.card,
   },
   toolIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: radius.sm,
+    width: 38,
+    height: 38,
+    borderRadius: radius.sm + 2,
     backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
   toolName: { fontFamily: fonts.display, fontSize: fontSize.base, color: colors.ink },
   toolDesc: {
@@ -219,13 +245,31 @@ const styles = StyleSheet.create({
     color: colors.inkSoft,
     marginTop: 2,
   },
-  empty: {
+  emptyCard: {
+    alignItems: 'center',
+    paddingVertical: 44,
+    paddingHorizontal: spacing.xl,
+    borderRadius: radius.xl,
+    borderWidth: 2,
+    borderColor: colors.line,
+    borderStyle: 'dashed',
+    marginBottom: spacing.lg,
+  },
+  emptyIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accentSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.md,
+  },
+  emptyText: {
     textAlign: 'center',
     color: colors.inkSoft,
     fontFamily: fonts.regular,
     fontSize: fontSize.sm,
-    paddingVertical: 40,
-    paddingHorizontal: spacing.lg,
+    lineHeight: 20,
   },
   card: {
     flexDirection: 'row',
@@ -236,11 +280,12 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: spacing.md,
     marginBottom: spacing.md,
+    ...shadow.card,
   },
   thumb: {
-    width: 60,
-    height: 78,
-    borderRadius: radius.sm,
+    width: 64,
+    height: 84,
+    borderRadius: radius.sm + 2,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.line,
@@ -262,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     paddingHorizontal: 12,
-    paddingVertical: 7,
+    paddingVertical: 8,
     borderRadius: radius.sm,
     backgroundColor: colors.ink,
   },
@@ -276,7 +321,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 5,
     paddingHorizontal: 12,
-    paddingVertical: 7,
+    paddingVertical: 8,
     borderRadius: radius.sm,
     borderWidth: 1,
     borderColor: colors.line,
@@ -297,6 +342,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: colors.line,
     borderStyle: 'dashed',
+  },
+  addIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: radius.pill,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addBtnText: { color: colors.ink, fontFamily: fonts.semibold, fontSize: fontSize.base },
 });

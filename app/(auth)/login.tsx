@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { signIn, signUp } from '@/lib/supabase';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 
 type Mode = 'login' | 'signup';
 
@@ -233,8 +233,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: spacing.xs,
+    ...shadow.primary,
   },
-  buttonPressed: { opacity: 0.85 },
+  buttonPressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   buttonText: {
     color: colors.white,
     fontFamily: fonts.semibold,

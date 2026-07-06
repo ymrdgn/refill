@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Minus, Plus, Shuffle, Sparkles } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { Minus, Plus, Shuffle, Sparkles } from 'lucide-react-native';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import { Button, TopBar } from '@/components/ui';
 
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 10;
 
 export default function FirstPlayerScreen() {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const [count, setCount] = useState(4);
@@ -64,12 +63,7 @@ export default function FirstPlayerScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topbar}>
-        <Pressable style={styles.iconBtn} onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle}>{t('tools.firstPlayer')}</Text>
-      </View>
+      <TopBar title={t('tools.firstPlayer')} />
 
       <ScrollView contentContainerStyle={styles.body}>
         {/* Oyuncu sayısı */}
@@ -115,15 +109,20 @@ export default function FirstPlayerScreen() {
         )}
 
         {/* Aksiyonlar */}
-        <Pressable style={styles.primaryBtn} onPress={pick} disabled={spinning}>
-          <Sparkles size={18} color={colors.white} />
-          <Text style={styles.primaryBtnText}>{t('tools.pick')}</Text>
-        </Pressable>
-
-        <Pressable style={styles.ghostBtn} onPress={shuffleOrder} disabled={spinning}>
-          <Shuffle size={16} color={colors.ink} />
-          <Text style={styles.ghostBtnText}>{t('tools.shuffleOrder')}</Text>
-        </Pressable>
+        <Button
+          label={t('tools.pick')}
+          onPress={pick}
+          disabled={spinning}
+          icon={<Sparkles size={18} color={colors.white} />}
+          style={{ marginBottom: spacing.md }}
+        />
+        <Button
+          label={t('tools.shuffleOrder')}
+          onPress={shuffleOrder}
+          disabled={spinning}
+          variant="ghost"
+          icon={<Shuffle size={16} color={colors.ink} />}
+        />
 
         <View style={{ height: 24 }} />
       </ScrollView>
@@ -133,24 +132,6 @@ export default function FirstPlayerScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: { flex: 1, fontFamily: fonts.display, fontSize: fontSize.lg, color: colors.ink },
   body: { paddingHorizontal: spacing.md, paddingTop: spacing.sm, paddingBottom: 40 },
   label: {
     fontFamily: fonts.medium,
@@ -169,6 +150,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     marginBottom: spacing.xl,
+    ...shadow.card,
   },
   stepBtn: {
     width: 44,
@@ -225,27 +207,4 @@ const styles = StyleSheet.create({
   },
   orderIdx: { fontFamily: fonts.semibold, fontSize: fontSize.base, color: colors.accent, width: 26 },
   orderName: { fontFamily: fonts.medium, fontSize: fontSize.base, color: colors.ink },
-  primaryBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.ink,
-    borderRadius: radius.lg,
-    paddingVertical: 15,
-    marginBottom: spacing.md,
-  },
-  primaryBtnText: { color: colors.white, fontFamily: fonts.semibold, fontSize: fontSize.md },
-  ghostBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.line,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    paddingVertical: 14,
-  },
-  ghostBtnText: { color: colors.ink, fontFamily: fonts.semibold, fontSize: fontSize.base },
 });

@@ -84,6 +84,8 @@
   },
   "profile": {
     "title": "Profile",
+    "account": "Account",
+    "language": "Language",
     "signOut": "Sign Out"
   }
 }

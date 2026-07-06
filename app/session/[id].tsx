@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,14 +8,13 @@ import {
   type LayoutChangeEvent,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
+import { useLocalSearchParams } from 'expo-router';
 import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { TopBar } from '@/components/ui';
 import { getSessionDetail, getSheet, type SessionDetail } from '@/lib/db/repository';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
 
 export default function SessionScreen() {
-  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [detail, setDetail] = useState<SessionDetail | null>(null);
@@ -59,14 +57,7 @@ export default function SessionScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topbar}>
-        <Pressable style={styles.iconBtn} onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle} numberOfLines={1}>
-          {detail?.session.name || ''}
-        </Text>
-      </View>
+      <TopBar title={detail?.session.name || ''} />
 
       <ScrollView contentContainerStyle={styles.body}>
         {detail && (
@@ -91,24 +82,6 @@ export default function SessionScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: { flex: 1, fontFamily: fonts.display, fontSize: fontSize.lg, color: colors.ink },
   body: { paddingHorizontal: spacing.md, paddingBottom: 40 },
   date: {
     fontFamily: fonts.regular,

@@ -3,8 +3,9 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Plus, Trash2 } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { Plus, Trash2 } from 'lucide-react-native';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import { TopBar } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 import {
   deleteSession,
@@ -55,21 +56,18 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topbar}>
-        <Pressable style={styles.iconBtn} onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle} numberOfLines={1}>
-          {title} · {t('history.title')}
-        </Text>
-        <Pressable
-          style={styles.newBtn}
-          onPress={() => router.push(`/play/${sheetId}`)}
-        >
-          <Plus size={16} color={colors.surface} />
-          <Text style={styles.newBtnText}>{t('history.newGame')}</Text>
-        </Pressable>
-      </View>
+      <TopBar
+        title={`${title} · ${t('history.title')}`}
+        action={
+          <Pressable
+            style={({ pressed }) => [styles.newBtn, pressed && styles.pressed]}
+            onPress={() => router.push(`/play/${sheetId}`)}
+          >
+            <Plus size={16} color={colors.surface} />
+            <Text style={styles.newBtnText}>{t('history.newGame')}</Text>
+          </Pressable>
+        }
+      />
 
       <ScrollView contentContainerStyle={styles.list}>
         {sessions.length === 0 && (
@@ -100,24 +98,7 @@ export default function HistoryScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: { flex: 1, fontFamily: fonts.display, fontSize: fontSize.lg, color: colors.ink },
+  pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   newBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -146,8 +127,9 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
     borderRadius: radius.lg,
     paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
     marginBottom: 10,
+    ...shadow.card,
   },
   name: { fontFamily: fonts.display, fontSize: fontSize.base, color: colors.ink },
   meta: { fontFamily: fonts.regular, fontSize: fontSize.xs, color: colors.inkSoft, marginTop: 2 },

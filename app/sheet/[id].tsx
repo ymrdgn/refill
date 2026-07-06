@@ -12,8 +12,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft } from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { TopBar } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { getSheet, getSheetRows, saveSheet } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
@@ -108,20 +108,17 @@ export default function SheetSetupScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Üst bar */}
-      <View style={styles.topbar}>
-        <Pressable
-          style={styles.backBtn}
-          onPress={() => router.back()}
-          hitSlop={8}
-        >
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle}>{t('setup.title')}</Text>
-        <Pressable style={styles.saveBtn} onPress={save}>
-          <Text style={styles.saveBtnText}>{t('setup.save')}</Text>
-        </Pressable>
-      </View>
+      <TopBar
+        title={t('setup.title')}
+        action={
+          <Pressable
+            style={({ pressed }) => [styles.saveBtn, pressed && styles.pressed]}
+            onPress={save}
+          >
+            <Text style={styles.saveBtnText}>{t('setup.save')}</Text>
+          </Pressable>
+        }
+      />
 
       <ScrollView contentContainerStyle={styles.body}>
         <Text style={styles.hint}>{t('setup.hint')}</Text>
@@ -166,29 +163,7 @@ export default function SheetSetupScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  backBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: {
-    flex: 1,
-    fontFamily: fonts.display,
-    fontSize: fontSize.lg,
-    color: colors.ink,
-  },
+  pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   saveBtn: {
     paddingHorizontal: 18,
     paddingVertical: 10,

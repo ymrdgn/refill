@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Dices, Minus, Plus } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { Dices, Minus, Plus } from 'lucide-react-native';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import { Button, TopBar } from '@/components/ui';
 
 const DICE_TYPES = [4, 6, 8, 10, 12, 20] as const;
 const MIN_DICE = 1;
 const MAX_DICE = 6;
 
 export default function DiceScreen() {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const [sides, setSides] = useState<number>(6);
@@ -54,12 +53,7 @@ export default function DiceScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topbar}>
-        <Pressable style={styles.iconBtn} onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle}>{t('tools.dice')}</Text>
-      </View>
+      <TopBar title={t('tools.dice')} />
 
       <ScrollView contentContainerStyle={styles.body}>
         {/* Zar tipi */}
@@ -121,12 +115,12 @@ export default function DiceScreen() {
           </View>
         )}
 
-        <Pressable style={styles.primaryBtn} onPress={roll} disabled={rolling}>
-          <Dices size={18} color={colors.white} />
-          <Text style={styles.primaryBtnText}>
-            {results ? t('tools.rollAgain') : t('tools.roll')}
-          </Text>
-        </Pressable>
+        <Button
+          label={results ? t('tools.rollAgain') : t('tools.roll')}
+          onPress={roll}
+          disabled={rolling}
+          icon={<Dices size={18} color={colors.white} />}
+        />
 
         <View style={{ height: 24 }} />
       </ScrollView>
@@ -136,24 +130,6 @@ export default function DiceScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: { flex: 1, fontFamily: fonts.display, fontSize: fontSize.lg, color: colors.ink },
   body: { paddingHorizontal: spacing.md, paddingTop: spacing.sm, paddingBottom: 40 },
   typeRow: {
     flexDirection: 'row',
@@ -211,6 +187,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xl,
     paddingHorizontal: spacing.md,
     marginBottom: spacing.xl,
+    ...shadow.card,
   },
   diceRow: {
     flexDirection: 'row',
@@ -236,14 +213,4 @@ const styles = StyleSheet.create({
     color: colors.inkSoft,
   },
   totalValue: { fontFamily: fonts.display, color: colors.ink },
-  primaryBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.ink,
-    borderRadius: radius.lg,
-    paddingVertical: 15,
-  },
-  primaryBtnText: { color: colors.white, fontFamily: fonts.semibold, fontSize: fontSize.md },
 });

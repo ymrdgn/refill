@@ -13,8 +13,9 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, Pencil, Undo2 } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+import { Pencil, Undo2 } from 'lucide-react-native';
+import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import { TopBar } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
 import { getSheet, getSheetRows, saveSession } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
@@ -125,29 +126,30 @@ export default function PlayScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.topbar}>
-        <Pressable style={styles.iconBtn} onPress={() => router.back()} hitSlop={8}>
-          <ChevronLeft size={20} color={colors.ink} />
-        </Pressable>
-        <Text style={styles.topTitle} numberOfLines={1}>
-          {sheet?.name || ''}
-        </Text>
-        <Pressable
-          style={[styles.undoBtn, !strokes.length && styles.undoDisabled]}
-          onPress={undo}
-          disabled={!strokes.length}
-        >
-          <Undo2 size={15} color={strokes.length ? colors.ink : colors.inkSoft} />
-          <Text
-            style={[
-              styles.undoText,
-              { color: strokes.length ? colors.ink : colors.inkSoft },
+      <TopBar
+        title={sheet?.name || ''}
+        action={
+          <Pressable
+            style={({ pressed }) => [
+              styles.undoBtn,
+              !strokes.length && styles.undoDisabled,
+              pressed && strokes.length > 0 && styles.pressed,
             ]}
+            onPress={undo}
+            disabled={!strokes.length}
           >
-            {t('play.undo')}
-          </Text>
-        </Pressable>
-      </View>
+            <Undo2 size={15} color={strokes.length ? colors.ink : colors.inkSoft} />
+            <Text
+              style={[
+                styles.undoText,
+                { color: strokes.length ? colors.ink : colors.inkSoft },
+              ]}
+            >
+              {t('play.undo')}
+            </Text>
+          </Pressable>
+        }
+      />
 
       <ScrollView
         contentContainerStyle={styles.body}
@@ -207,24 +209,7 @@ export default function PlayScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  topbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: radius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
-  topTitle: { flex: 1, fontFamily: fonts.display, fontSize: fontSize.lg, color: colors.ink },
+  pressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   undoBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -264,10 +249,11 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     marginTop: spacing.lg,
-    paddingVertical: 15,
-    borderRadius: radius.lg,
+    paddingVertical: 16,
+    borderRadius: radius.md,
     backgroundColor: colors.ink,
     alignItems: 'center',
+    ...shadow.primary,
   },
   saveBtnText: { color: colors.white, fontFamily: fonts.display, fontSize: fontSize.md },
 });

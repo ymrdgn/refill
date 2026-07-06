@@ -84,6 +84,8 @@
   },
   "profile": {
     "title": "Profil",
+    "account": "Hesap",
+    "language": "Dil",
     "signOut": "Çıkış Yap"
   }
 }
