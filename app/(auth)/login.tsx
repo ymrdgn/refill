@@ -3,27 +3,37 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { signIn, signUp } from '@/lib/supabase';
+import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
+
+type Mode = 'login' | 'signup';
 
 export default function LoginScreen() {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isSignUp = mode === 'signup';
+
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setError(null);
+  };
 
   const handleSubmit = async () => {
     setError(null);
@@ -52,62 +62,103 @@ export default function LoginScreen() {
         style={styles.flex}
       >
         <View style={styles.content}>
-          <Text style={styles.logo}>Refill</Text>
-          <Text style={styles.subtitle}>
-            {isSignUp ? t('auth.signup') : t('auth.login')}
-          </Text>
+          {/* Marka */}
+          <View style={styles.brand}>
+            <Text style={styles.tagline}>{t('sheets.tagline')}</Text>
+            <Text style={styles.logo}>Refill</Text>
+          </View>
 
-          {isSignUp && (
+          {/* Segment geçişi: Giriş | Kayıt */}
+          <View style={styles.segment}>
+            <Pressable
+              style={[styles.segmentItem, !isSignUp && styles.segmentActive]}
+              onPress={() => switchMode('login')}
+            >
+              <Text
+                style={[
+                  styles.segmentText,
+                  !isSignUp && styles.segmentTextActive,
+                ]}
+              >
+                {t('auth.login')}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[styles.segmentItem, isSignUp && styles.segmentActive]}
+              onPress={() => switchMode('signup')}
+            >
+              <Text
+                style={[
+                  styles.segmentText,
+                  isSignUp && styles.segmentTextActive,
+                ]}
+              >
+                {t('auth.signup')}
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* Form */}
+          <View style={styles.form}>
+            {isSignUp && (
+              <TextInput
+                style={styles.input}
+                placeholder={t('auth.username')}
+                placeholderTextColor={colors.inkSoft}
+                autoCapitalize="none"
+                value={username}
+                onChangeText={setUsername}
+              />
+            )}
+
             <TextInput
               style={styles.input}
-              placeholder={t('auth.username')}
-              placeholderTextColor="#6B7280"
+              placeholder={t('auth.email')}
+              placeholderTextColor={colors.inkSoft}
               autoCapitalize="none"
-              value={username}
-              onChangeText={setUsername}
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
             />
-          )}
 
-          <TextInput
-            style={styles.input}
-            placeholder={t('auth.email')}
-            placeholderTextColor="#6B7280"
-            autoCapitalize="none"
-            keyboardType="email-address"
-            value={email}
-            onChangeText={setEmail}
-          />
+            <TextInput
+              style={styles.input}
+              placeholder={t('auth.password')}
+              placeholderTextColor={colors.inkSoft}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
 
-          <TextInput
-            style={styles.input}
-            placeholder={t('auth.password')}
-            placeholderTextColor="#6B7280"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+            {error && <Text style={styles.error}>{error}</Text>}
 
-          {error && <Text style={styles.error}>{error}</Text>}
+            <Pressable
+              style={({ pressed }) => [
+                styles.button,
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color={colors.white} />
+              ) : (
+                <Text style={styles.buttonText}>
+                  {isSignUp ? t('auth.signup') : t('auth.login')}
+                </Text>
+              )}
+            </Pressable>
+          </View>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleSubmit}
-            disabled={loading}
+          {/* Alt geçiş bağlantısı */}
+          <Pressable
+            style={styles.switchLink}
+            onPress={() => switchMode(isSignUp ? 'login' : 'signup')}
           >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>
-                {isSignUp ? t('auth.signup') : t('auth.login')}
-              </Text>
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setIsSignUp((v) => !v)}>
             <Text style={styles.switchText}>
               {isSignUp ? t('auth.haveAccount') : t('auth.noAccount')}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -115,55 +166,84 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#111827' },
+  container: { flex: 1, backgroundColor: colors.bg },
   flex: { flex: 1 },
-  content: { flex: 1, justifyContent: 'center', paddingHorizontal: 24 },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
+  },
+  brand: { alignItems: 'center', marginBottom: spacing['2xl'] },
+  tagline: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.xs,
+    letterSpacing: 2,
+    color: colors.accent,
+    textTransform: 'uppercase',
+    marginBottom: spacing.xs,
+  },
   logo: {
-    fontSize: 40,
-    fontFamily: 'Inter-Bold',
-    color: '#6366F1',
-    textAlign: 'center',
+    fontFamily: fonts.display,
+    fontSize: fontSize['4xl'],
+    color: colors.ink,
   },
-  subtitle: {
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    color: '#9CA3AF',
-    textAlign: 'center',
-    marginBottom: 32,
+  segment: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radius.md,
+    padding: 4,
+    marginBottom: spacing.xl,
   },
+  segmentItem: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: radius.sm,
+    alignItems: 'center',
+  },
+  segmentActive: { backgroundColor: colors.ink },
+  segmentText: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.base,
+    color: colors.inkSoft,
+  },
+  segmentTextActive: { color: colors.surface },
+  form: { gap: spacing.md },
   input: {
-    backgroundColor: '#1F2937',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.lg,
     paddingVertical: 14,
-    color: '#fff',
-    fontFamily: 'Inter-Regular',
-    fontSize: 15,
-    marginBottom: 12,
+    color: colors.ink,
+    fontFamily: fonts.regular,
+    fontSize: fontSize.base,
   },
   error: {
-    color: '#F87171',
-    fontFamily: 'Inter-Regular',
-    fontSize: 13,
-    marginBottom: 12,
+    color: colors.danger,
+    fontFamily: fonts.regular,
+    fontSize: fontSize.sm,
+    marginTop: -spacing.xs,
   },
   button: {
-    backgroundColor: '#6366F1',
-    borderRadius: 12,
-    paddingVertical: 15,
+    backgroundColor: colors.ink,
+    borderRadius: radius.md,
+    paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.xs,
   },
+  buttonPressed: { opacity: 0.85 },
   buttonText: {
-    color: '#fff',
-    fontFamily: 'Inter-SemiBold',
-    fontSize: 16,
+    color: colors.white,
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.md,
   },
+  switchLink: { alignItems: 'center', marginTop: spacing.xl },
   switchText: {
-    color: '#9CA3AF',
-    fontFamily: 'Inter-Medium',
-    fontSize: 14,
-    textAlign: 'center',
-    marginTop: 20,
+    color: colors.inkSoft,
+    fontFamily: fonts.medium,
+    fontSize: fontSize.sm,
   },
 });
