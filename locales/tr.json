@@ -46,6 +46,23 @@
     "needImage": "Önce bir foto seç.",
     "pickImage": "Foto seç"
   },
+  "tools": {
+    "title": "Araçlar",
+    "firstPlayer": "İlk oyuncu",
+    "firstPlayerDesc": "Kim başlayacak?",
+    "dice": "Zar at",
+    "diceDesc": "Zarlı oyunlar için",
+    "players": "Oyuncu sayısı",
+    "pick": "İlk oyuncuyu seç",
+    "shuffleOrder": "Sırayı karıştır",
+    "playerN": "Oyuncu {{n}}",
+    "starts": "başlıyor!",
+    "orderTitle": "Oyun sırası",
+    "diceCount": "Zar sayısı",
+    "roll": "Zarları at",
+    "rollAgain": "Tekrar at",
+    "total": "Toplam"
+  },
   "play": {
     "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",
     "writeHint": "Kağıdın üzerine parmağınla/kalemle yaz",

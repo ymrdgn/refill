@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
-import { Camera, Clock, Pencil, Trash2 } from 'lucide-react-native';
+import { Camera, Clock, Dices, Pencil, Sparkles, Trash2 } from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, spacing } from '@/lib/theme';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -71,6 +71,31 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.list}>
+        {/* Araçlar: ilk oyuncu + zar */}
+        <View style={styles.toolsRow}>
+          <Pressable
+            style={styles.toolCard}
+            onPress={() => router.push('/tools/first-player')}
+          >
+            <View style={styles.toolIcon}>
+              <Sparkles size={18} color={colors.accent} />
+            </View>
+            <Text style={styles.toolName}>{t('tools.firstPlayer')}</Text>
+            <Text style={styles.toolDesc}>{t('tools.firstPlayerDesc')}</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.toolCard}
+            onPress={() => router.push('/tools/dice')}
+          >
+            <View style={styles.toolIcon}>
+              <Dices size={18} color={colors.accent} />
+            </View>
+            <Text style={styles.toolName}>{t('tools.dice')}</Text>
+            <Text style={styles.toolDesc}>{t('tools.diceDesc')}</Text>
+          </Pressable>
+        </View>
+
         {loading ? (
           <ActivityIndicator color={colors.ink} style={{ marginTop: 40 }} />
         ) : (
@@ -169,6 +194,31 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   list: { padding: spacing.md, paddingBottom: 40 },
+  toolsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+  toolCard: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radius.xl,
+    padding: spacing.md,
+  },
+  toolIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: radius.sm,
+    backgroundColor: colors.accentSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.sm,
+  },
+  toolName: { fontFamily: fonts.display, fontSize: fontSize.base, color: colors.ink },
+  toolDesc: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.inkSoft,
+    marginTop: 2,
+  },
   empty: {
     textAlign: 'center',
     color: colors.inkSoft,

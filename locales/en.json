@@ -46,6 +46,23 @@
     "needImage": "Pick a photo first.",
     "pickImage": "Pick photo"
   },
+  "tools": {
+    "title": "Tools",
+    "firstPlayer": "First player",
+    "firstPlayerDesc": "Who goes first?",
+    "dice": "Roll dice",
+    "diceDesc": "For dice games",
+    "players": "Number of players",
+    "pick": "Pick first player",
+    "shuffleOrder": "Shuffle order",
+    "playerN": "Player {{n}}",
+    "starts": "goes first!",
+    "orderTitle": "Turn order",
+    "diceCount": "Number of dice",
+    "roll": "Roll the dice",
+    "rollAgain": "Roll again",
+    "total": "Total"
+  },
   "play": {
     "namePlaceholder": "Game name (e.g. Friday night)",
     "writeHint": "Write on the sheet with your finger/pen",
