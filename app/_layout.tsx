@@ -65,7 +65,11 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded || fontError) {
-      SplashScreen.hideAsync().catch(() => {});
+      // Splash'ı en az ~1 sn görünür tut (logo net görünsün), sonra gizle.
+      const t = setTimeout(() => {
+        SplashScreen.hideAsync().catch(() => {});
+      }, 1000);
+      return () => clearTimeout(t);
     }
   }, [fontsLoaded, fontError]);
 

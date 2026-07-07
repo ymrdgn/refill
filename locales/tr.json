@@ -63,7 +63,8 @@
     "diceCount": "Zar sayısı",
     "roll": "Zarları at",
     "rollAgain": "Tekrar at",
-    "total": "Toplam"
+    "total": "Toplam",
+    "shakeHint": "📳 Telefonu zar sallar gibi salla — bırakınca zarlar atılır"
   },
   "play": {
     "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",

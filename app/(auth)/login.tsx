@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -64,6 +65,11 @@ export default function LoginScreen() {
         <View style={styles.content}>
           {/* Marka */}
           <View style={styles.brand}>
+            <Image
+              source={require('@/assets/images/logo.png')}
+              style={styles.logoMark}
+              resizeMode="contain"
+            />
             <Text style={styles.tagline}>{t('sheets.tagline')}</Text>
             <Text style={styles.logo}>Refill</Text>
           </View>
@@ -174,6 +180,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
   },
   brand: { alignItems: 'center', marginBottom: spacing['2xl'] },
+  logoMark: { width: 96, height: 96, marginBottom: spacing.md },
   tagline: {
     fontFamily: fonts.medium,
     fontSize: fontSize.xs,

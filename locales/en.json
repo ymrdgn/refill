@@ -63,7 +63,8 @@
     "diceCount": "Number of dice",
     "roll": "Roll the dice",
     "rollAgain": "Roll again",
-    "total": "Total"
+    "total": "Total",
+    "shakeHint": "📳 Shake your phone like dice — release to cast"
   },
   "play": {
     "namePlaceholder": "Game name (e.g. Friday night)",
