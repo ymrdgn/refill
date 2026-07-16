@@ -72,6 +72,79 @@ create index if not exists idx_sessions_user     on public.sessions (user_id);
 create index if not exists idx_session_rows_sess on public.session_rows (session_id);
 create index if not exists idx_strokes_session   on public.strokes (session_id);
 
+-- ------------------------------------------------------------------
+-- ENTITLEMENTS: freemium hakları
+-- Ücretsiz kullanıcı AYNI ANDA en fazla 3 fotoğraf kağıdına sahip
+-- olabilir (silince hak geri gelir); Pro (yıllık abonelik) sınırsız.
+-- photo_sheets_used yalnızca istatistiktir (toplam oluşturma sayısı);
+-- kota anlık count(*) ile uygulanır. is_pro/pro_until yalnızca service
+-- role (RevenueCat webhook) tarafından yazılır.
+-- ------------------------------------------------------------------
+create table if not exists public.entitlements (
+  user_id           uuid primary key references auth.users (id) on delete cascade,
+  photo_sheets_used int not null default 0,
+  is_pro            boolean not null default false,
+  pro_until         timestamptz,
+  updated_at        timestamptz not null default now()
+);
+
+alter table public.entitlements enable row level security;
+
+-- Kullanıcı yalnızca kendi satırını okur; yazma sadece trigger + service role.
+create policy "entitlements_read_own" on public.entitlements
+  for select using (user_id = auth.uid());
+
+-- Fotoğraflı kağıt oluşturulunca kotayı düşen trigger (sunucu tarafı backstop).
+-- INSERT: image_path dolu ise sayar. UPDATE: boş kağıda sonradan foto
+-- eklenirse sayar; foto→foto güncellemeleri saymaz.
+create or replace function public.consume_photo_quota()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  cnt int;
+  pro boolean;
+begin
+  if tg_op = 'INSERT' then
+    if new.image_path is null then return new; end if;
+  else
+    if new.image_path is null or old.image_path is not null then return new; end if;
+  end if;
+
+  select coalesce(
+           (select is_pro and (pro_until is null or pro_until > now())
+              from public.entitlements
+             where user_id = new.user_id),
+           false)
+    into pro;
+
+  if not pro then
+    select count(*) into cnt
+      from public.sheets
+     where user_id = new.user_id and image_path is not null;
+    if cnt >= 3 then
+      raise exception 'photo_quota_exceeded';
+    end if;
+  end if;
+
+  -- İstatistik: toplam oluşturma sayısı
+  insert into public.entitlements (user_id, photo_sheets_used)
+  values (new.user_id, 1)
+  on conflict (user_id) do update
+    set photo_sheets_used = public.entitlements.photo_sheets_used + 1,
+        updated_at = now();
+
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_photo_quota on public.sheets;
+create trigger trg_photo_quota
+  before insert or update on public.sheets
+  for each row execute function public.consume_photo_quota();
+
 -- =====================================================================
 --  RLS
 -- =====================================================================

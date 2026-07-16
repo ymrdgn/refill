@@ -71,6 +71,20 @@
     "total": "Toplam",
     "shakeHint": "📳 Telefonu zar sallar gibi salla — bırakınca zarlar atılır"
   },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "Ücretsiz planda aynı anda en fazla {{limit}} fotoğraf kağıdı olabilir",
+    "feature1": "Fotoğraftan sınırsız skor kağıdı",
+    "feature2": "Tüm cihazlarında senkron",
+    "feature3": "Yeni premium özelliklere erken erişim",
+    "yearly": "Yıllık abonelik",
+    "yearlyNote": "İstediğin zaman iptal et",
+    "bestValue": "En avantajlı",
+    "cta": "Pro'ya geç",
+    "comingSoon": "Satın alma çok yakında aktif olacak. Takipte kal!",
+    "restore": "Satın alımı geri yükle",
+    "later": "Belki daha sonra"
+  },
   "play": {
     "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",
     "writeHint": "Kağıdın üzerine parmağınla/kalemle yaz",

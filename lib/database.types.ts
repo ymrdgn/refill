@@ -120,6 +120,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      entitlements: {
+        Row: {
+          user_id: string;
+          photo_sheets_used: number;
+          is_pro: boolean;
+          pro_until: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          photo_sheets_used?: number;
+          is_pro?: boolean;
+          pro_until?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          photo_sheets_used?: number;
+          is_pro?: boolean;
+          pro_until?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       strokes: {
         Row: {
           id: string;

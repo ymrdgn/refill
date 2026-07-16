@@ -29,6 +29,11 @@ import {
 } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import { setSheetDraft } from '@/lib/draft';
+import {
+  FREE_PHOTO_SHEETS,
+  getIsPro,
+  remainingPhotoSheets,
+} from '@/lib/entitlements';
 import { Skeleton } from '@/components/ui';
 
 export default function HomeScreen() {
@@ -37,9 +42,11 @@ export default function HomeScreen() {
   const { userId } = useAuth();
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isPro, setIsPro] = useState(false);
 
   const load = useCallback(async () => {
     if (!userId) return;
+    getIsPro().then(setIsPro);
     // 1) Yerelde veri varsa anında göster (offline-first).
     const localRows = await listSheets(userId);
     if (localRows.length > 0) {
@@ -60,6 +67,11 @@ export default function HomeScreen() {
   );
 
   const pickAndCreate = async () => {
+    // Ücretsiz eşzamanlı fotoğraf kağıdı limiti doluysa paywall'a yönlendir.
+    if (remainingPhotoSheets(sheets, isPro) <= 0) {
+      router.push('/paywall');
+      return;
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 0.8,
@@ -228,6 +240,13 @@ export default function HomeScreen() {
                   <Camera size={18} color={colors.ink} />
                 </View>
                 <Text style={styles.addBtnText}>{t('sheets.newSheetPhoto')}</Text>
+                {!isPro && (
+                  <View style={styles.quotaBadge}>
+                    <Text style={styles.quotaBadgeText}>
+                      {remainingPhotoSheets(sheets, isPro)}/{FREE_PHOTO_SHEETS}
+                    </Text>
+                  </View>
+                )}
               </Pressable>
 
               <Pressable
@@ -412,4 +431,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   addBtnText: { color: colors.ink, fontFamily: fonts.semibold, fontSize: fontSize.base },
+  quotaBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 10,
+    backgroundColor: colors.accentSoft,
+    borderRadius: radius.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  quotaBadgeText: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.xs,
+    color: colors.accent,
+  },
 });

@@ -71,6 +71,20 @@
     "total": "Total",
     "shakeHint": "📳 Shake your phone like dice — release to cast"
   },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "The free plan includes up to {{limit}} photo sheets at a time",
+    "feature1": "Unlimited score sheets from photos",
+    "feature2": "Sync across all your devices",
+    "feature3": "Early access to new premium features",
+    "yearly": "Yearly subscription",
+    "yearlyNote": "Cancel anytime",
+    "bestValue": "Best value",
+    "cta": "Go Pro",
+    "comingSoon": "Purchases will be available very soon. Stay tuned!",
+    "restore": "Restore purchase",
+    "later": "Maybe later"
+  },
   "play": {
     "namePlaceholder": "Game name (e.g. Friday night)",
     "writeHint": "Write on the sheet with your finger/pen",
