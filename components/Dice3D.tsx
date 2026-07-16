@@ -213,6 +213,8 @@ export default function Dice3D({ sides, count, tumbling, results, height }: Prop
     rebuild: true,
   }).current;
   const disposedRef = useRef(false);
+  /** height değişince GLView remount olur; eski render döngüsünü durdurmak için. */
+  const ctxIdRef = useRef(0);
 
   useEffect(() => {
     st.sides = sides;
@@ -239,6 +241,7 @@ export default function Dice3D({ sides, count, tumbling, results, height }: Prop
   }, []);
 
   const onContextCreate = async (gl: ExpoWebGLRenderingContext) => {
+    const ctxId = ++ctxIdRef.current;
     const w = gl.drawingBufferWidth;
     const h = gl.drawingBufferHeight;
     const renderer = new Renderer({ gl });
@@ -391,8 +394,13 @@ export default function Dice3D({ sides, count, tumbling, results, height }: Prop
     const axis = new THREE.Vector3();
     let last = 0;
 
+    // Bu context kendi sahnesini mutlaka kursun: eski döngü bayrağı
+    // tüketmiş olsa bile ilk karede buildAll çalışır.
+    st.rebuild = true;
+
     const render = (now: number) => {
-      if (disposedRef.current) return;
+      // Bileşen kaldırıldıysa VEYA yeni bir GL context açıldıysa bu döngü ölür.
+      if (disposedRef.current || ctxId !== ctxIdRef.current) return;
       requestAnimationFrame(render);
       const dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
       last = now;
