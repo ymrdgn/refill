@@ -1,210 +1,331 @@
+/**
+ * İlk oyuncu seçimi — parmak dokunmalı meeple modu.
+ *
+ * Herkes bir parmağını ekrana basılı tutar; her parmağın altında
+ * çizgi (outline) halinde renkli bir meeple döner. Kısa bir bekleme
+ * sonrasında rastgele birinin meeple'ı dolu renge boyanır — o başlar.
+ */
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Animated,
+  Easing,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  type GestureResponderEvent,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { Minus, Plus, Shuffle, Sparkles } from 'lucide-react-native';
-import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import Svg, { Path } from 'react-native-svg';
+import * as Haptics from 'expo-haptics';
+import { RotateCcw } from 'lucide-react-native';
+import { colors, fonts, fontSize, spacing } from '@/lib/theme';
 import { Button, TopBar } from '@/components/ui';
 
-const MIN_PLAYERS = 2;
-const MAX_PLAYERS = 10;
+/** Klasik board game oyuncu renkleri. */
+const MEEPLE_COLORS = [
+  '#E5484D', // kırmızı
+  '#3B82F6', // mavi
+  '#22C55E', // yeşil
+  '#EAB308', // sarı
+  '#A855F7', // mor
+  '#F97316', // turuncu
+  '#14B8A6', // turkuaz
+  '#EC4899', // pembe
+  '#8B5A2B', // kahve
+  '#64748B', // gri
+];
+
+/** Son parmak değişikliğinden kazanan seçimine kadar geçen süre. */
+const PICK_DELAY_MS = 3000;
+const MEEPLE_SIZE = 104;
+
+/** Meeple silüeti (0 0 100 100). */
+const MEEPLE_PATH =
+  'M50 3 C57.45 3 63.5 9.05 63.5 16.5 C63.5 21.5 60.8 25.9 56.7 28.3 ' +
+  'C66 31.5 74.5 36.5 81 42.5 C86.5 47.5 92.5 52 94.5 57 C96.5 62.5 91.5 66.5 86 65 ' +
+  'C79 63 72.5 59.5 68.5 56 C70 64.5 73.5 72.5 78 80 C80.5 84.5 82 88.5 81.5 91.5 ' +
+  'C80.8 96 74.5 97.5 69.5 96.4 C64.5 95.3 60.5 91.5 58 86.5 C55.5 81.5 53 77.5 50 77.5 ' +
+  'C47 77.5 44.5 81.5 42 86.5 C39.5 91.5 35.5 95.3 30.5 96.4 C25.5 97.5 19.2 96 18.5 91.5 ' +
+  'C18 88.5 19.5 84.5 22 80 C26.5 72.5 30 64.5 31.5 56 C27.5 59.5 21 63 14 65 ' +
+  'C8.5 66.5 3.5 62.5 5.5 57 C7.5 52 13.5 47.5 19 42.5 C25.5 36.5 34 31.5 43.3 28.3 ' +
+  'C39.2 25.9 36.5 21.5 36.5 16.5 C36.5 9.05 42.55 3 50 3 Z';
+
+function Meeple({ color, filled }: { color: string; filled: boolean }) {
+  return (
+    <Svg width={MEEPLE_SIZE} height={MEEPLE_SIZE} viewBox="0 0 100 100">
+      <Path
+        d={MEEPLE_PATH}
+        stroke={color}
+        strokeWidth={filled ? 0 : 4}
+        fill={filled ? color : 'none'}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      />
+    </Svg>
+  );
+}
+
+/**
+ * Dönen outline meeple. Animasyon her mount'ta yeniden başlar;
+ * paylaşılan bir loop'a bağlanmak yerine kendi Animated.Value'sunu
+ * kullanır — aksi halde reset sonrası yeniden mount olan view'lar
+ * çalışan native animasyona bağlanamayıp donuk kalıyor.
+ */
+function SpinningMeeple({ color }: { color: string }) {
+  const anim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: 1800,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [anim]);
+  const spin = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+  return (
+    <Animated.View style={{ transform: [{ rotate: spin }] }}>
+      <Meeple color={color} filled={false} />
+    </Animated.View>
+  );
+}
+
+interface Finger {
+  id: string;
+  x: number;
+  y: number;
+  color: string;
+}
 
 export default function FirstPlayerScreen() {
   const { t } = useTranslation();
 
-  const [count, setCount] = useState(4);
-  const [picked, setPicked] = useState<number | null>(null);
-  const [order, setOrder] = useState<number[] | null>(null);
-  const [spinning, setSpinning] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [fingers, setFingers] = useState<Finger[]>([]);
+  const [winner, setWinner] = useState<Finger | null>(null);
 
-  // Ekrandan çıkarken animasyon zamanlayıcısını temizle
+  const fingersRef = useRef<Finger[]>([]);
+  fingersRef.current = fingers;
+  const winnerRef = useRef<Finger | null>(null);
+  winnerRef.current = winner;
+
+  /** identifier → renk; parmak kalkarsa rengi geri havuza döner. */
+  const colorMapRef = useRef(new Map<string, string>());
+  const arenaRef = useRef<View>(null);
+  const arenaOffset = useRef({ x: 0, y: 0 });
+  const pickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /* Kazanan "pop" animasyonu. */
+  const winScale = useRef(new Animated.Value(0.6)).current;
+  useEffect(() => {
+    if (winner) {
+      winScale.setValue(0.6);
+      Animated.spring(winScale, {
+        toValue: 1.25,
+        friction: 4,
+        tension: 80,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [winner, winScale]);
+
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (pickTimerRef.current) clearTimeout(pickTimerRef.current);
     };
   }, []);
 
-  const changeCount = (delta: number) => {
-    setCount((c) => Math.min(MAX_PLAYERS, Math.max(MIN_PLAYERS, c + delta)));
-    setPicked(null);
-    setOrder(null);
+  const lightTap = () => {
+    if (Platform.OS === 'web') return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
   };
 
-  /** Kısa "rulet" animasyonu: hızlıca numara değiştirip birinde durur. */
-  const pick = () => {
-    if (spinning) return;
-    setOrder(null);
-    setSpinning(true);
-    let ticks = 0;
-    const totalTicks = 14;
-    timerRef.current = setInterval(() => {
-      ticks += 1;
-      setPicked(1 + Math.floor(Math.random() * count));
-      if (ticks >= totalTicks && timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-        setSpinning(false);
+  /** Aktif dokunuşlardan parmak listesini günceller. */
+  const updateFingers = (e: GestureResponderEvent) => {
+    if (winnerRef.current) return; // sonuç ekranında dokunuş yok sayılır
+    const list = e.nativeEvent.touches;
+    const next: Finger[] = [];
+    const alive = new Set<string>();
+    let added = false;
+
+    for (const touch of list) {
+      const id = String(touch.identifier);
+      alive.add(id);
+      let color = colorMapRef.current.get(id);
+      if (!color) {
+        const taken = new Set(colorMapRef.current.values());
+        color =
+          MEEPLE_COLORS.find((c) => !taken.has(c)) ??
+          MEEPLE_COLORS[colorMapRef.current.size % MEEPLE_COLORS.length];
+        colorMapRef.current.set(id, color);
+        added = true;
       }
-    }, 90);
+      next.push({
+        id,
+        x: touch.pageX - arenaOffset.current.x,
+        y: touch.pageY - arenaOffset.current.y,
+        color,
+      });
+    }
+    // Kalkan parmakların renklerini serbest bırak
+    for (const key of [...colorMapRef.current.keys()]) {
+      if (!alive.has(key)) colorMapRef.current.delete(key);
+    }
+    if (added) lightTap();
+    setFingers(next);
   };
 
-  /** Fisher–Yates ile tam oyun sırası üretir. */
-  const shuffleOrder = () => {
-    if (spinning) return;
-    setPicked(null);
-    const arr = Array.from({ length: count }, (_, i) => i + 1);
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+  /** Parmak kümesi değişince seçim sayacını (yeniden) başlat. */
+  const idsKey = fingers
+    .map((f) => f.id)
+    .sort()
+    .join(',');
+  useEffect(() => {
+    if (pickTimerRef.current) {
+      clearTimeout(pickTimerRef.current);
+      pickTimerRef.current = null;
     }
-    setOrder(arr);
+    if (winner || fingers.length < 2) return;
+    pickTimerRef.current = setTimeout(() => {
+      const current = fingersRef.current;
+      if (current.length < 2) return;
+      const chosen = current[Math.floor(Math.random() * current.length)];
+      setWinner(chosen);
+      if (Platform.OS !== 'web') {
+        Haptics.notificationAsync(
+          Haptics.NotificationFeedbackType.Success
+        ).catch(() => {});
+      }
+    }, PICK_DELAY_MS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idsKey, winner]);
+
+  const reset = () => {
+    setWinner(null);
+    setFingers([]);
+    colorMapRef.current.clear();
+  };
+
+  const measureArena = () => {
+    arenaRef.current?.measureInWindow((x, y) => {
+      arenaOffset.current = { x, y };
+    });
   };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <TopBar title={t('tools.firstPlayer')} />
 
-      <ScrollView contentContainerStyle={styles.body}>
-        {/* Oyuncu sayısı */}
-        <Text style={styles.label}>{t('tools.players')}</Text>
-        <View style={styles.stepper}>
-          <Pressable
-            style={[styles.stepBtn, count <= MIN_PLAYERS && styles.stepBtnDisabled]}
-            onPress={() => changeCount(-1)}
-            disabled={count <= MIN_PLAYERS}
-          >
-            <Minus size={20} color={count <= MIN_PLAYERS ? colors.inkSoft : colors.ink} />
-          </Pressable>
-          <Text style={styles.stepValue}>{count}</Text>
-          <Pressable
-            style={[styles.stepBtn, count >= MAX_PLAYERS && styles.stepBtnDisabled]}
-            onPress={() => changeCount(1)}
-            disabled={count >= MAX_PLAYERS}
-          >
-            <Plus size={20} color={count >= MAX_PLAYERS ? colors.inkSoft : colors.ink} />
-          </Pressable>
-        </View>
-
-        {/* Sonuç alanı */}
-        {picked != null && (
-          <View style={styles.resultCard}>
-            <Text style={styles.resultPlayer}>
-              {t('tools.playerN', { n: picked })}
-            </Text>
-            {!spinning && <Text style={styles.resultSub}>{t('tools.starts')}</Text>}
+      <View
+        ref={arenaRef}
+        style={styles.arena}
+        onLayout={measureArena}
+        onTouchStart={updateFingers}
+        onTouchMove={updateFingers}
+        onTouchEnd={updateFingers}
+        onTouchCancel={updateFingers}
+      >
+        {/* İpucu metinleri */}
+        {!winner && fingers.length === 0 && (
+          <View style={styles.hintWrap} pointerEvents="none">
+            <Text style={styles.hintEmoji}>👆</Text>
+            <Text style={styles.hint}>{t('tools.touchHint')}</Text>
+          </View>
+        )}
+        {!winner && fingers.length === 1 && (
+          <View style={styles.hintWrap} pointerEvents="none">
+            <Text style={styles.hint}>{t('tools.touchMore')}</Text>
           </View>
         )}
 
-        {order && (
-          <View style={styles.orderCard}>
-            <Text style={styles.orderTitle}>{t('tools.orderTitle')}</Text>
-            {order.map((p, i) => (
-              <View key={p} style={styles.orderRow}>
-                <Text style={styles.orderIdx}>{i + 1}.</Text>
-                <Text style={styles.orderName}>{t('tools.playerN', { n: p })}</Text>
-              </View>
-            ))}
-          </View>
+        {/* Parmak altındaki dönen outline meeple'lar */}
+        {!winner &&
+          fingers.map((f) => (
+            <View
+              key={f.id}
+              pointerEvents="none"
+              style={[
+                styles.meeple,
+                {
+                  left: f.x - MEEPLE_SIZE / 2,
+                  top: f.y - MEEPLE_SIZE / 2,
+                },
+              ]}
+            >
+              <SpinningMeeple color={f.color} />
+            </View>
+          ))}
+
+        {/* Kazanan: dolu renkli meeple + yazı */}
+        {winner && (
+          <>
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.meeple,
+                {
+                  left: winner.x - MEEPLE_SIZE / 2,
+                  top: winner.y - MEEPLE_SIZE / 2,
+                  transform: [{ scale: winScale }],
+                },
+              ]}
+            >
+              <Meeple color={winner.color} filled />
+            </Animated.View>
+            <View style={styles.winnerBanner} pointerEvents="box-none">
+              <Text style={[styles.winnerText, { color: winner.color }]}>
+                {t('tools.starts')}
+              </Text>
+              <Button
+                label={t('tools.touchAgain')}
+                onPress={reset}
+                icon={<RotateCcw size={16} color={colors.white} />}
+              />
+            </View>
+          </>
         )}
-
-        {/* Aksiyonlar */}
-        <Button
-          label={t('tools.pick')}
-          onPress={pick}
-          disabled={spinning}
-          icon={<Sparkles size={18} color={colors.white} />}
-          style={{ marginBottom: spacing.md }}
-        />
-        <Button
-          label={t('tools.shuffleOrder')}
-          onPress={shuffleOrder}
-          disabled={spinning}
-          variant="ghost"
-          icon={<Shuffle size={16} color={colors.ink} />}
-        />
-
-        <View style={{ height: 24 }} />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg },
-  body: { paddingHorizontal: spacing.md, paddingTop: spacing.sm, paddingBottom: 40 },
-  label: {
-    fontFamily: fonts.medium,
-    fontSize: fontSize.sm,
-    color: colors.inkSoft,
-    marginBottom: spacing.sm,
-  },
-  stepper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-    borderRadius: radius.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    marginBottom: spacing.xl,
-    ...shadow.card,
-  },
-  stepBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
+  arena: { flex: 1 },
+  hintWrap: {
+    ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.bg,
-    borderWidth: 1,
-    borderColor: colors.line,
+    gap: spacing.md,
+    paddingHorizontal: spacing.xl,
   },
-  stepBtnDisabled: { opacity: 0.5 },
-  stepValue: { fontFamily: fonts.display, fontSize: fontSize['3xl'], color: colors.ink },
-  resultCard: {
-    alignItems: 'center',
-    backgroundColor: colors.accentSoft,
-    borderWidth: 2,
-    borderColor: colors.accent,
-    borderRadius: radius.xl,
-    paddingVertical: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-  resultPlayer: { fontFamily: fonts.display, fontSize: fontSize['3xl'], color: colors.ink },
-  resultSub: {
+  hintEmoji: { fontSize: 44 },
+  hint: {
     fontFamily: fonts.medium,
     fontSize: fontSize.md,
-    color: colors.accent,
-    marginTop: spacing.xs,
+    color: colors.inkSoft,
+    textAlign: 'center',
   },
-  orderCard: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.line,
-    borderRadius: radius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    marginBottom: spacing.xl,
-  },
-  orderTitle: {
-    fontFamily: fonts.display,
-    fontSize: fontSize.sm,
-    color: colors.ink,
-    paddingVertical: spacing.sm,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.line,
-  },
-  orderRow: {
-    flexDirection: 'row',
+  meeple: { position: 'absolute' },
+  winnerBanner: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing.xl,
     alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.line,
+    gap: spacing.lg,
+    paddingHorizontal: spacing.xl,
   },
-  orderIdx: { fontFamily: fonts.semibold, fontSize: fontSize.base, color: colors.accent, width: 26 },
-  orderName: { fontFamily: fonts.medium, fontSize: fontSize.base, color: colors.ink },
+  winnerText: {
+    fontFamily: fonts.display,
+    fontSize: fontSize['3xl'],
+    textAlign: 'center',
+  },
 });
