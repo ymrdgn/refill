@@ -20,7 +20,9 @@
     "username": "Username",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
-    "forgotPassword": "Forgot password?"
+    "forgotPassword": "Forgot password?",
+    "or": "or",
+    "continueWithGoogle": "Continue with Google"
   },
   "home": {
     "title": "Welcome to Refill",

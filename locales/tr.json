@@ -20,7 +20,9 @@
     "username": "Kullanıcı Adı",
     "noAccount": "Hesabın yok mu?",
     "haveAccount": "Zaten hesabın var mı?",
-    "forgotPassword": "Şifreni mi unuttun?"
+    "forgotPassword": "Şifreni mi unuttun?",
+    "or": "veya",
+    "continueWithGoogle": "Google ile devam et"
   },
   "home": {
     "title": "Refill'e Hoş Geldin",

@@ -11,9 +11,10 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { signIn, signUp } from '@/lib/supabase';
+import { signIn, signInWithGoogle, signUp } from '@/lib/supabase';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 
 type Mode = 'login' | 'signup';
@@ -27,6 +28,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isSignUp = mode === 'signup';
@@ -53,6 +55,24 @@ export default function LoginScreen() {
       setError(e?.message ?? t('common.error'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setError(null);
+    setGoogleLoading(true);
+    try {
+      const { error, cancelled } = await signInWithGoogle();
+      if (cancelled) return;
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      router.replace('/(tabs)');
+    } catch (e: any) {
+      setError(e?.message ?? t('common.error'));
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -154,6 +174,39 @@ export default function LoginScreen() {
                 </Text>
               )}
             </Pressable>
+
+            {/* Ayraç */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t('auth.or')}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {/* Google ile devam et */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.googleButton,
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={handleGoogle}
+              disabled={googleLoading || loading}
+            >
+              {googleLoading ? (
+                <ActivityIndicator color={colors.ink} />
+              ) : (
+                <>
+                  <Ionicons
+                    name="logo-google"
+                    size={20}
+                    color={colors.ink}
+                    style={styles.googleIcon}
+                  />
+                  <Text style={styles.googleButtonText}>
+                    {t('auth.continueWithGoogle')}
+                  </Text>
+                </>
+              )}
+            </Pressable>
           </View>
 
           {/* Alt geçiş bağlantısı */}
@@ -245,6 +298,34 @@ const styles = StyleSheet.create({
   buttonPressed: { transform: [{ scale: 0.98 }], opacity: 0.9 },
   buttonText: {
     color: colors.white,
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.md,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    marginVertical: spacing.xs,
+  },
+  dividerLine: { flex: 1, height: 1, backgroundColor: colors.line },
+  dividerText: {
+    color: colors.inkSoft,
+    fontFamily: fonts.medium,
+    fontSize: fontSize.sm,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radius.md,
+    paddingVertical: 16,
+  },
+  googleIcon: { marginRight: spacing.sm },
+  googleButtonText: {
+    color: colors.ink,
     fontFamily: fonts.semibold,
     fontSize: fontSize.md,
   },
