@@ -21,6 +21,7 @@ import { getSheet, getSheetRows, saveSession } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
 import BlankPaper from '@/components/BlankPaper';
+import { useSheetImage } from '@/hooks/useSheetImage';
 import type { Sheet, SheetRow, StrokePoint } from '@/lib/database.types';
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
@@ -43,6 +44,8 @@ export default function PlayScreen() {
   const [drawing, setDrawing] = useState(false);
   const liveRef = useRef<StrokePoint[] | null>(null);
 
+  const imageUri = useSheetImage(sheet?.id, sheet?.image_path);
+
   useEffect(() => {
     (async () => {
       if (!sheetId) return;
@@ -50,15 +53,17 @@ export default function PlayScreen() {
       const r = await getSheetRows(sheetId);
       setSheet(s);
       setRows(r);
-      if (s?.image_path) {
-        Image.getSize(
-          s.image_path,
-          (w, h) => setAspect(w / h),
-          () => setAspect(0.75)
-        );
-      }
     })();
   }, [sheetId]);
+
+  useEffect(() => {
+    if (!imageUri) return;
+    Image.getSize(
+      imageUri,
+      (w, h) => setAspect(w / h),
+      () => setAspect(0.75)
+    );
+  }, [imageUri]);
 
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
@@ -172,9 +177,9 @@ export default function PlayScreen() {
 
         {sheet ? (
           <View style={styles.canvas} onLayout={onLayout}>
-            {sheet.image_path ? (
+            {imageUri ? (
               <Image
-                source={{ uri: sheet.image_path }}
+                source={{ uri: imageUri }}
                 style={{ width: '100%', aspectRatio: aspect }}
                 resizeMode="cover"
               />

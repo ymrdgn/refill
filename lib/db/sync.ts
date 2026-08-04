@@ -10,6 +10,8 @@
 import { supabase } from '../supabase';
 import * as local from './local';
 import type { OutboxEntry } from './local';
+import { removeRemoteImage, uploadImage } from '../images';
+import { migrateLegacyImages } from './repository';
 
 let syncing = false;
 
@@ -17,6 +19,8 @@ export interface SyncResult {
   ok: boolean;
   pushed: number;
   pulled: number;
+  /** Storage'a yüklenen/silinen görsel sayısı */
+  images: number;
   reason?: string;
 }
 
@@ -58,6 +62,28 @@ export async function pushOutbox(): Promise<number> {
     }
   }
   if (done.length) await local.removeFromOutbox(done);
+  return done.length;
+}
+
+/**
+ * Bekleyen görsel işlerini (yükleme/silme) Storage'a taşır.
+ * Satır senkronundan ayrıdır: bir görsel yüklenemezse veri senkronu durmaz,
+ * iş kuyrukta kalır ve sonraki denemede tekrar denenir.
+ */
+export async function pushImages(): Promise<number> {
+  const pending = await local.getPendingImages();
+  if (pending.length === 0) return 0;
+
+  const done: string[] = [];
+  for (const item of pending) {
+    const ok =
+      item.op === 'upload'
+        ? await uploadImage(item.sheetId, item.path)
+        : await removeRemoteImage(item.path);
+    if (!ok) break; // ağ yok: sırayı koru, sonra devam et
+    done.push(item.sheetId);
+  }
+  if (done.length) await local.removePendingImages(done);
   return done.length;
 }
 
@@ -108,24 +134,35 @@ export async function pullAll(userId: string): Promise<number> {
   return (sheets?.length ?? 0) + (sessions?.length ?? 0);
 }
 
-/** Tam senkron: push sonra pull. Ağ yoksa sessizce ok:false döner. */
+/** Tam senkron: push (satırlar + görseller) sonra pull. Ağ yoksa sessizce ok:false döner. */
 export async function sync(userId: string): Promise<SyncResult> {
-  if (syncing) return { ok: false, pushed: 0, pulled: 0, reason: 'busy' };
+  if (syncing)
+    return { ok: false, pushed: 0, pulled: 0, images: 0, reason: 'busy' };
   syncing = true;
   try {
+    // Storage öncesi ham URI'li kağıtları önce kurtar ki aynı push'ta gitsinler.
+    await migrateLegacyImages(userId).catch(() => 0);
     const pushed = await pushOutbox();
+    const images = await pushImages();
     // Outbox hâlâ doluysa (bir şey push edilemedi) pull'u atla.
     const remaining = (await local.getOutbox()).length;
     if (remaining > 0) {
-      return { ok: false, pushed, pulled: 0, reason: 'outbox-not-drained' };
+      return {
+        ok: false,
+        pushed,
+        pulled: 0,
+        images,
+        reason: 'outbox-not-drained',
+      };
     }
     const pulled = await pullAll(userId);
-    return { ok: true, pushed, pulled };
+    return { ok: true, pushed, pulled, images };
   } catch (e: any) {
     return {
       ok: false,
       pushed: 0,
       pulled: 0,
+      images: 0,
       reason: e?.message ?? 'network',
     };
   } finally {

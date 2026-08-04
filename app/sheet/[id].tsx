@@ -20,6 +20,7 @@ import { getSheet, getSheetRows, saveSheet } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import { getSheetDraft, clearSheetDraft } from '@/lib/draft';
 import { uuid } from '@/lib/uuid';
+import { useSheetImage } from '@/hooks/useSheetImage';
 
 interface RowDraft {
   id: string;
@@ -34,24 +35,28 @@ export default function SheetSetupScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const isNew = id === 'new';
 
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  /** Kaydedilecek değer: taslakta ham URI, mevcut kağıtta Storage yolu. */
+  const [imagePath, setImagePath] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [rows, setRows] = useState<RowDraft[]>([]);
   const [imgHeight, setImgHeight] = useState(0);
   const [aspect, setAspect] = useState(0.75); // w/h fallback
+
+  /** Ekranda gösterilecek URI (yerel dosya ya da imzalı URL). */
+  const imageUri = useSheetImage(id, imagePath);
 
   // Yükleme: yeni ise draft'tan, değilse repo'dan
   useEffect(() => {
     (async () => {
       if (isNew) {
         const d = getSheetDraft();
-        setImageUri(d?.imageUri ?? null);
+        setImagePath(d?.imageUri ?? null);
         setName(d?.name ?? '');
         setRows([]);
       } else if (id) {
         const sheet = await getSheet(id);
         const existing = await getSheetRows(id);
-        setImageUri(sheet?.image_path ?? null);
+        setImagePath(sheet?.image_path ?? null);
         setName(sheet?.name ?? '');
         setRows(existing.map((r) => ({ id: r.id, y: r.y, label: r.label })));
       }
@@ -99,7 +104,7 @@ export default function SheetSetupScreen() {
       id: isNew ? undefined : id,
       userId,
       name,
-      imagePath: imageUri,
+      imagePath,
       rows: rows.map((r) => ({ id: r.id, y: r.y, label: r.label })),
     });
     clearSheetDraft();

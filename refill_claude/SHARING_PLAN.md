@@ -75,15 +75,20 @@ Bugün `sheets.image_path` alanına **ImagePicker'ın yerel dosya yolu** yazıl�
 - Görsel gösterirken `createSignedUrl` ile imzalı URL al (ör. 60 dk), `expo-file-system` ile yerelde önbellekle — offline-first bozulmasın.
 - Yerel dosyayı da sakla ki çevrimdışıyken kendi kağıdın görünsün.
 
-**Dosya düzeni değişikliği:** bugünkü şema `{user_id}/{sheet_id}.jpg` diyor. Paylaşımda bu düzen sorun çıkarır (okuyan kişi başkasının klasörüne erişemez). Henüz yüklenmiş veri **olmadığı için** düzeni serbestçe değiştirebiliriz:
+**Dosya düzeni — uygulanan karar:** `{user_id}/{sheet_id}.jpg` **korundu** (bu doküman önce düz `{sheet_id}.jpg` öneriyordu). Gerekçe: mevcut storage politikaları klasör tabanlı (`foldername(name)[1] = auth.uid()`) ve bu hâliyle **yazma izni hiçbir şeye bağımlı değil**. Düz isme geçmek, yükleme izninin `sheets` satırının sunucuda var olmasına bağlanmasını gerektirirdi — offline-first'te satır henüz push edilmemiş olabileceği için yükleme reddedilirdi.
 
-```
-sheets/{sheet_id}.jpg
+Paylaşım bunu engellemiyor: Faz C'de **okuma** politikası klasör adına değil, yoldan ayrıştırılan sheet id'ye bakacak:
+
+```sql
+-- Faz C'de sheets_storage_read politikası şununla değişir:
+public.can_read_sheet(split_part(split_part(name, '/', 2), '.', 1)::uuid)
 ```
 
-ve okuma izni dosya yoluna değil, §7'deki `can_read_sheet()` fonksiyonuna bağlanır.
+Yani sahibinin uid'si yolda kalır ama erişim kararını `can_read_sheet()` verir. `supabase/schema.sql` değişmeden çalışır.
 
 > Bu faz tek başına da değerlidir: kağıtlar nihayet cihazlar arası senkronlanır ve çıkış/giriş sonrası görseller kaybolmaz.
+
+**Faz A'da ayrıca yapıldı — eski kayıtların kurtarılması.** Storage öncesinde `image_path` alanına ImagePicker'ın **önbellek** yolu yazılıyordu (`.../cache/ImagePicker/...`); Android bu dizini istediği zaman temizler ve fotoğraf sunucuda olmadığı için kalıcı olarak kaybolurdu. `migrateLegacyImages()` her senkronda bu satırları tarar, dosya duruyorsa kalıcı dizine alır ve yükler; dosya çoktan silinmişse satırı görselsiz bırakır.
 
 ---
 
@@ -390,11 +395,14 @@ Sahibi olmadığın kağıtta `saveSheet`/`deleteSheet` **istemci tarafında da*
 
 Her fazın sonunda uygulama çalışır durumda olmalı.
 
-### Faz A — Storage yüklemesi (ön koşul, bağımsız değerli)
-- [ ] Kağıt kaydında görseli private `sheets` bucket'ına yükle; `image_path` = Storage yolu (`{sheet_id}.jpg`).
-- [ ] Gösterimde imzalı URL + yerel dosya önbelleği; çevrimdışında kendi kağıdın görünmeye devam etsin.
-- [ ] Kağıt silinince Storage nesnesini de sil.
-- [ ] `supabase/schema.sql` içindeki dosya düzeni yorumunu güncelle.
+### Faz A — Storage yüklemesi (ön koşul, bağımsız değerli) — ✅ TAMAMLANDI (2026-08-05)
+- [x] Kağıt kaydında görsel kalıcı yerel dizine kopyalanır, `image_path` = Storage yolu (`{user_id}/{sheet_id}.jpg`), yükleme kuyruğa girer (`lib/images.ts`, `lib/db/repository.ts`).
+- [x] Gösterimde önce yerel dosya, yoksa imzalı URL + arka planda indirme (`hooks/useSheetImage.ts`); çevrimdışında kendi kağıdın görünür.
+- [x] Kağıt silinince yerel dosya silinir, Storage nesnesi silme kuyruğuna girer.
+- [x] Görsel kuyruğu satır senkronundan ayrı (`pushImages`): başarısız bir yükleme veri senkronunu bloklamaz.
+- [x] Storage öncesi ham `file://` kayıtları kurtaran `migrateLegacyImages()`.
+- [x] Çıkışta yerel görseller de silinir (gizlilik).
+- [x] `supabase/schema.sql` değişmedi — dosya düzeni korundu (bkz. §3).
 
 ### Faz B — Kurumlar ve Aile paketi
 - [ ] `organizations`, `org_members` tabloları + koltuk limiti trigger'ı.

@@ -35,6 +35,7 @@ import {
   remainingPhotoSheets,
 } from '@/lib/entitlements';
 import { Skeleton } from '@/components/ui';
+import { resolveImageUri } from '@/lib/images';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -43,6 +44,18 @@ export default function HomeScreen() {
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [isPro, setIsPro] = useState(false);
+  /** sheetId -> gösterilecek görsel URI (yerel dosya ya da imzalı URL) */
+  const [thumbs, setThumbs] = useState<Record<string, string>>({});
+
+  /** Kağıtların küçük görsellerini çözer; çözülemeyenler boş kağıt olarak çizilir. */
+  const loadThumbs = useCallback(async (rows: SheetSummary[]) => {
+    const pairs = await Promise.all(
+      rows.map(async (s) => [s.id, await resolveImageUri(s.id, s.image_path)] as const)
+    );
+    setThumbs(
+      Object.fromEntries(pairs.filter((p): p is [string, string] => !!p[1]))
+    );
+  }, []);
 
   const load = useCallback(async () => {
     if (!userId) return;
@@ -51,14 +64,19 @@ export default function HomeScreen() {
     const localRows = await listSheets(userId);
     if (localRows.length > 0) {
       setSheets(localRows);
+      loadThumbs(localRows);
       setLoading(false);
     }
     // 2) Yerel boşsa (ör. çıkış sonrası temizlendi) skeleton'ı sync bitene
     //    kadar tut; sync sunucudan çekince gerçek liste gelir.
     const res = await sync(userId).catch(() => null);
-    if (res?.ok) setSheets(await listSheets(userId));
+    if (res?.ok) {
+      const fresh = await listSheets(userId);
+      setSheets(fresh);
+      loadThumbs(fresh);
+    }
     setLoading(false);
-  }, [userId]);
+  }, [userId, loadThumbs]);
 
   useFocusEffect(
     useCallback(() => {
@@ -167,9 +185,9 @@ export default function HomeScreen() {
                 onPress={() => router.push(`/sheet/${s.id}`)}
               >
                 <View style={styles.thumb}>
-                  {s.image_path ? (
+                  {thumbs[s.id] ? (
                     <Image
-                      source={{ uri: s.image_path }}
+                      source={{ uri: thumbs[s.id] }}
                       style={styles.thumbImg}
                       resizeMode="cover"
                     />

@@ -15,6 +15,13 @@ import type {
   StrokePoint,
 } from '../database.types';
 import * as local from './local';
+import {
+  adoptLegacyImage,
+  isStoragePath,
+  persistLocalImage,
+  removeLocalImage,
+  storagePathFor,
+} from '../images';
 
 /* ------------------------------------------------------------------ */
 /*  Outbox yardımcıları                                               */
@@ -84,6 +91,10 @@ export async function getSheetRows(sheetId: string): Promise<SheetRow[]> {
  * Bir kağıdı (foto + satırlar) oluşturur ya da günceller.
  * rows: satırların tam listesi — mevcut satırlarla diff'lenip
  * eklenen/güncellenen upsert, kaldırılan delete olarak kuyruğa girer.
+ *
+ * imagePath: cihazdan yeni seçilmiş fotoğrafın ham URI'si YA DA kağıdın
+ * mevcut Storage yolu. Ham URI gelirse kalıcı yerel kopya alınır, satıra
+ * Storage yolu yazılır ve yükleme kuyruğa eklenir (bkz. lib/images.ts).
  */
 export async function saveSheet(input: {
   id?: string;
@@ -93,13 +104,33 @@ export async function saveSheet(input: {
   rows: { id?: string; y: number; label: string }[];
 }): Promise<Sheet> {
   const now = nowIso();
+  const id = input.id ?? uuid();
   const existing = input.id ? await getSheet(input.id) : null;
 
+  let imagePath: string | null = null;
+  if (input.imagePath) {
+    if (isStoragePath(input.imagePath)) {
+      imagePath = input.imagePath; // değişmedi
+    } else {
+      persistLocalImage(id, input.imagePath);
+      imagePath = storagePathFor(input.userId, id);
+      await local.enqueueImage({ sheetId: id, path: imagePath, op: 'upload' });
+    }
+  } else if (existing?.image_path && isStoragePath(existing.image_path)) {
+    // Fotoğraf kaldırıldı: uzaktaki nesne de silinsin.
+    await local.enqueueImage({
+      sheetId: id,
+      path: existing.image_path,
+      op: 'delete',
+    });
+    removeLocalImage(id);
+  }
+
   const sheet: Sheet = {
-    id: input.id ?? uuid(),
+    id,
     user_id: input.userId,
     name: input.name || 'İsimsiz kağıt',
-    image_path: input.imagePath,
+    image_path: imagePath,
     created_at: existing?.created_at ?? now,
     updated_at: now,
   };
@@ -133,6 +164,17 @@ export async function saveSheet(input: {
 }
 
 export async function deleteSheet(id: string): Promise<void> {
+  // Görsel: yereli hemen sil, Storage'dakini kuyruğa al.
+  const sheet = await getSheet(id);
+  if (sheet?.image_path && isStoragePath(sheet.image_path)) {
+    await local.enqueueImage({
+      sheetId: id,
+      path: sheet.image_path,
+      op: 'delete',
+    });
+  }
+  removeLocalImage(id);
+
   // Yerelde cascade: satırlar, oturumlar, session_rows, strokes
   const [rows, sessions] = await Promise.all([
     local.getAll('sheet_rows'),
@@ -147,6 +189,40 @@ export async function deleteSheet(id: string): Promise<void> {
   await local.deleteRow('sheets', { id });
   // Sunucuda ON DELETE CASCADE hallediyor; tek delete yeterli.
   await enqueueDelete('sheets', { id });
+}
+
+/**
+ * Storage öncesi kayıtları kurtarır.
+ *
+ * O dönemde `image_path` alanına ImagePicker'ın ÖNBELLEK yolu yazılıyordu;
+ * Android bu dizini istediği zaman temizler ve fotoğraf sunucuda olmadığı için
+ * kalıcı olarak kaybolurdu. Burada dosya hâlâ duruyorsa kalıcı dizine alınır,
+ * satıra Storage yolu yazılır ve yükleme kuyruğa girer. Dosya çoktan silinmişse
+ * satır görselsiz bırakılır — kırık bir URI taşımaktansa boş kağıt daha dürüst.
+ *
+ * @returns kurtarılan kağıt sayısı
+ */
+export async function migrateLegacyImages(userId: string): Promise<number> {
+  const sheets = await local.getAll('sheets');
+  let rescued = 0;
+
+  for (const s of sheets) {
+    if (s.user_id !== userId) continue;
+    if (!s.image_path || isStoragePath(s.image_path)) continue;
+
+    const adopted = adoptLegacyImage(s.id, s.image_path);
+    const imagePath = adopted ? storagePathFor(userId, s.id) : null;
+    const next: Sheet = { ...s, image_path: imagePath, updated_at: nowIso() };
+
+    await local.upsertRow('sheets', next, ['id']);
+    await enqueueUpsert('sheets', next);
+
+    if (imagePath) {
+      await local.enqueueImage({ sheetId: s.id, path: imagePath, op: 'upload' });
+      rescued++;
+    }
+  }
+  return rescued;
 }
 
 /* ================================================================== */

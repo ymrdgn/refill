@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { LogOut } from 'lucide-react-native';
 import { getCurrentUser, signOut } from '@/lib/supabase';
 import { clearAll } from '@/lib/db/local';
+import { removeAllLocalImages } from '@/lib/images';
 import { sync } from '@/lib/db/sync';
 import { changeLanguage } from '@/i18n';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
@@ -35,6 +36,7 @@ export default function ProfileScreen() {
     if (uid) await sync(uid).catch(() => {});
     await signOut();
     await clearAll(); // yerel veriyi temizle (başka kullanıcıya sızmasın)
+    removeAllLocalImages(); // kağıt fotoğrafları da cihazda kalmasın
     router.replace('/(auth)/login');
   };
 

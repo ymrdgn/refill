@@ -14,33 +14,36 @@ import { TopBar } from '@/components/ui';
 import { getSessionDetail, getSheet, type SessionDetail } from '@/lib/db/repository';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
 import BlankPaper from '@/components/BlankPaper';
+import { useSheetImage } from '@/hooks/useSheetImage';
+import type { Sheet } from '@/lib/database.types';
 
 export default function SessionScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const [detail, setDetail] = useState<SessionDetail | null>(null);
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<Sheet | null>(null);
   const [aspect, setAspect] = useState(0.75);
   const [size, setSize] = useState({ w: 0, h: 0 });
+
+  const imageUri = useSheetImage(sheet?.id, sheet?.image_path);
 
   useEffect(() => {
     (async () => {
       if (!id) return;
       const d = await getSessionDetail(id);
       setDetail(d);
-      if (d) {
-        const sheet = await getSheet(d.session.sheet_id);
-        setImageUri(sheet?.image_path ?? null);
-        if (sheet?.image_path) {
-          Image.getSize(
-            sheet.image_path,
-            (w, h) => setAspect(w / h),
-            () => setAspect(0.75)
-          );
-        }
-      }
+      if (d) setSheet(await getSheet(d.session.sheet_id));
     })();
   }, [id]);
+
+  useEffect(() => {
+    if (!imageUri) return;
+    Image.getSize(
+      imageUri,
+      (w, h) => setAspect(w / h),
+      () => setAspect(0.75)
+    );
+  }, [imageUri]);
 
   const onLayout = (e: LayoutChangeEvent) =>
     setSize({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height });

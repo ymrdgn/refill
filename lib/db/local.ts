@@ -133,6 +133,41 @@ export async function removeFromOutbox(ids: string[]): Promise<void> {
 }
 
 /* ------------------------------------------------------------------ */
+/*  BEKLEYEN GÖRSEL İŞLERİ (Storage'a yükleme / Storage'dan silme)     */
+/*  Satır verisinden ayrı bir kuyruk: görseller outbox'a sığmaz ve     */
+/*  başarısız bir yükleme satır senkronunu bloklamamalıdır.            */
+/* ------------------------------------------------------------------ */
+const IMAGES = 'pendingImages';
+
+export type ImageOp = 'upload' | 'delete';
+export interface PendingImage {
+  sheetId: string;
+  /** Storage yolu: {user_id}/{sheet_id}.jpg */
+  path: string;
+  op: ImageOp;
+}
+
+export async function getPendingImages(): Promise<PendingImage[]> {
+  return readJson<PendingImage[]>(IMAGES, []);
+}
+
+/** Bir kağıt için tek kayıt tutulur; yeni istek öncekini geçersiz kılar. */
+export async function enqueueImage(entry: PendingImage): Promise<void> {
+  const q = (await getPendingImages()).filter((e) => e.sheetId !== entry.sheetId);
+  q.push(entry);
+  await writeJson(IMAGES, q);
+}
+
+export async function removePendingImages(sheetIds: string[]): Promise<void> {
+  const set = new Set(sheetIds);
+  const q = await getPendingImages();
+  await writeJson(
+    IMAGES,
+    q.filter((e) => !set.has(e.sheetId))
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  SENKRON META (son pull zamanı vb.)                                */
 /* ------------------------------------------------------------------ */
 export async function getMeta(name: string): Promise<string | null> {
