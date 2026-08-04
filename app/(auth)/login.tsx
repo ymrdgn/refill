@@ -14,7 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { signIn, signInWithGoogle, signUp } from '@/lib/supabase';
+import {
+  isGoogleSignInAvailable,
+  signIn,
+  signInWithGoogle,
+  signUp,
+} from '@/lib/supabase';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 
 type Mode = 'login' | 'signup';
@@ -175,38 +180,42 @@ export default function LoginScreen() {
               )}
             </Pressable>
 
-            {/* Ayraç */}
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{t('auth.or')}</Text>
-              <View style={styles.dividerLine} />
-            </View>
+            {/* Google ile devam et — native modül Expo Go'da yok, orada gizlenir. */}
+            {isGoogleSignInAvailable && (
+              <>
+                {/* Ayraç */}
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>{t('auth.or')}</Text>
+                  <View style={styles.dividerLine} />
+                </View>
 
-            {/* Google ile devam et */}
-            <Pressable
-              style={({ pressed }) => [
-                styles.googleButton,
-                pressed && styles.buttonPressed,
-              ]}
-              onPress={handleGoogle}
-              disabled={googleLoading || loading}
-            >
-              {googleLoading ? (
-                <ActivityIndicator color={colors.ink} />
-              ) : (
-                <>
-                  <Ionicons
-                    name="logo-google"
-                    size={20}
-                    color={colors.ink}
-                    style={styles.googleIcon}
-                  />
-                  <Text style={styles.googleButtonText}>
-                    {t('auth.continueWithGoogle')}
-                  </Text>
-                </>
-              )}
-            </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    styles.googleButton,
+                    pressed && styles.buttonPressed,
+                  ]}
+                  onPress={handleGoogle}
+                  disabled={googleLoading || loading}
+                >
+                  {googleLoading ? (
+                    <ActivityIndicator color={colors.ink} />
+                  ) : (
+                    <>
+                      <Ionicons
+                        name="logo-google"
+                        size={20}
+                        color={colors.ink}
+                        style={styles.googleIcon}
+                      />
+                      <Text style={styles.googleButtonText}>
+                        {t('auth.continueWithGoogle')}
+                      </Text>
+                    </>
+                  )}
+                </Pressable>
+              </>
+            )}
           </View>
 
           {/* Alt geçiş bağlantısı */}

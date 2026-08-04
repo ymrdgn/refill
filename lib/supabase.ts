@@ -1,11 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  GoogleSignin,
-  isSuccessResponse,
-  isErrorWithCode,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import type { Database } from './database.types';
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
@@ -59,14 +54,48 @@ export const signIn = async (email: string, password: string) => {
   return { data, error };
 };
 
-// Google (Gmail) native sign-in
-// Client ID'leri Google Cloud Console'dan alınır (README'deki kurulum adımları).
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-  iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-});
+/* ------------------------------------------------------------------ */
+/*  Google (Gmail) native sign-in                                      */
+/* ------------------------------------------------------------------ */
+/**
+ * google-signin bir NATIVE modüldür ve Expo Go'nun ikili dosyasında yoktur.
+ * Dosyanın tepesinden import edilirse Expo Go uygulamayı daha açarken
+ * "TurboModuleRegistry... 'RNGoogleSignin' could not be found" ile çöker.
+ * Bu yüzden modülü ilk kullanımda (butona basınca) yükleriz — dev build ve
+ * mağaza sürümünde davranış aynıdır, sadece Expo Go'da buton gizlenir
+ * (bkz. app/(auth)/login.tsx) ve uygulama çökmeden açılır.
+ */
+export const isGoogleSignInAvailable =
+  Constants.executionEnvironment !== ExecutionEnvironment.StoreClient;
+
+type GoogleModule = typeof import('@react-native-google-signin/google-signin');
+
+let googleModule: GoogleModule | null = null;
+
+/** Modülü tembel yükler ve yalnızca bir kez configure eder. */
+function loadGoogle(): GoogleModule {
+  if (!googleModule) {
+    const mod: GoogleModule = require('@react-native-google-signin/google-signin');
+    // Client ID'leri Google Cloud Console'dan alınır (README'deki kurulum adımları).
+    mod.GoogleSignin.configure({
+      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    });
+    googleModule = mod;
+  }
+  return googleModule;
+}
 
 export const signInWithGoogle = async () => {
+  if (!isGoogleSignInAvailable) {
+    return {
+      data: null,
+      error: { message: 'Google ile giriş Expo Go’da kullanılamaz.' },
+      cancelled: false,
+    };
+  }
+  const { GoogleSignin, isSuccessResponse, isErrorWithCode, statusCodes } =
+    loadGoogle();
   try {
     await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     const response = await GoogleSignin.signIn();
@@ -107,10 +136,12 @@ export const signInWithGoogle = async () => {
 
 export const signOut = async () => {
   // Google oturumunu da kapat (varsa) ki hesap seçici tekrar sorsun.
-  try {
-    await GoogleSignin.signOut();
-  } catch {
-    // Google ile giriş yapılmamışsa yok sayılır.
+  if (isGoogleSignInAvailable) {
+    try {
+      await loadGoogle().GoogleSignin.signOut();
+    } catch {
+      // Google ile giriş yapılmamışsa ya da modül yüklenemediyse yok sayılır.
+    }
   }
   const { error } = await supabase.auth.signOut();
   return { error };
