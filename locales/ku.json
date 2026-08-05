@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "Tê barkirin…",
+    "error": "Çewtiyek çêbû",
+    "save": "Tomar bike",
+    "cancel": "Betal",
+    "delete": "Jê bibe",
+    "edit": "Biguhêre",
+    "search": "Bigere",
+    "close": "Bigire"
+  },
+  "tabs": {
+    "home": "Destpêk",
+    "profile": "Profîl"
+  },
+  "auth": {
+    "login": "Têkeve",
+    "signup": "Tomar bibe",
+    "email": "E-name",
+    "password": "Şîfre",
+    "username": "Navê bikarhêner",
+    "noAccount": "Hesabê te tune?",
+    "haveAccount": "Jixwe hesabê te heye?",
+    "forgotPassword": "Şîfre ji bîr kir?",
+    "or": "an jî",
+    "continueWithGoogle": "Bi Google berdewam bike"
+  },
+  "home": {
+    "title": "Bi xêr hatî Refill",
+    "subtitle": "Projeya te ya bingehîn amade ye."
+  },
+  "sheets": {
+    "tagline": "Puanê wêneyî · pênûs",
+    "title": "Kaxezên min",
+    "newSheet": "Kaxezeke nû lê zêde bike",
+    "newSheetPhoto": "Ji wêneyê",
+    "newSheetBlank": "Kaxeza vala",
+    "empty": "Hê kaxez tune ne. Bi bişkoka jorîn ya yekem lê zêde bike.",
+    "meta": "{{rows}} rêz · {{sessions}} lîstik",
+    "newGame": "Lîstika nû",
+    "history": "Dîrok",
+    "untitled": "Kaxeza bênav",
+    "deleteConfirm": "Ev kaxez û hemû lîstikên wê werin jêbirin?"
+  },
+  "setup": {
+    "title": "Rêzan nîşan bike",
+    "hint": "Li bilindahiya her rêza puanan bitikîne — tiştê ku tê nivîsandin bi wê rêzê ve tê girêdan. Ji bo rakirina xetekê dîsa lê bitikîne.",
+    "namePlaceholder": "Navekî li kaxezê bike",
+    "rowPlaceholder": "Rêz {{n}} (nav bijarte ye)",
+    "save": "Tomar bike",
+    "needImage": "Pêşî wêneyekî hilbijêre.",
+    "pickImage": "Wêne hilbijêre"
+  },
+  "tools": {
+    "title": "Amûr",
+    "firstPlayer": "Lîstikvanê yekem",
+    "firstPlayerDesc": "Kî dest pê bike?",
+    "dice": "Zaran bavêje",
+    "diceDesc": "Ji bo lîstikên zaran",
+    "players": "Hejmara lîstikvanan",
+    "pick": "Lîstikvanê yekem hilbijêre",
+    "shuffleOrder": "Rêzê tevlihev bike",
+    "playerN": "Lîstikvan {{n}}",
+    "starts": "dest pê dike!",
+    "touchHint": "Her kes tiliyekê deyne ser ekranê û bigire",
+    "touchMore": "Li benda tiliyeke din…",
+    "touchAgain": "Dîsa hilbijêre",
+    "orderTitle": "Rêza lîstinê",
+    "diceCount": "Hejmara zaran",
+    "roll": "Zaran bavêje",
+    "rollAgain": "Dîsa bavêje",
+    "total": "Giştî",
+    "shakeHint": "📳 Telefonê wek qedeha zaran bihejîne — berde da ku bikeve"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "Plana belaş di heman demê de herî zêde {{limit}} kaxezên wêneyî dihewîne",
+    "feature1": "Ji wêneyan kaxezên puanan bêsînor",
+    "feature2": "Li ser hemû amûrên te hevdemkirin",
+    "feature3": "Gihîştina zû ya taybetmendiyên nû yên premium",
+    "yearly": "Abonetiya salane",
+    "yearlyNote": "Kengî bixwazî betal bike",
+    "bestValue": "Herî bikêrhatî",
+    "cta": "Bibe Pro",
+    "comingSoon": "Kirîn pir zû dê çalak bibe. Li benda me be!",
+    "restore": "Kirînê vegerîne",
+    "later": "Belkî paşê"
+  },
+  "play": {
+    "namePlaceholder": "Navê lîstikê (mînak: Êvara înê)",
+    "writeHint": "Bi tilî an pênûsê li ser kaxezê binivîse",
+    "undo": "Vegerîne",
+    "recognized": "Nirxên naskirî",
+    "recognizedHint": "bi destan binivîse · di Qonaxa 5an de bixweber",
+    "written": "✏ hatiye nivîsandin",
+    "save": "Lîstikê tomar bike",
+    "rowFallback": "Rêz {{n}}"
+  },
+  "history": {
+    "title": "Dîrok",
+    "empty": "Hê lîstik tune ne. Bi Lîstikê ya jorîn ya yekem çêbike.",
+    "newGame": "Lîstik",
+    "strokeCount": "{{n}} xêz"
+  },
+  "session": {
+    "savedData": "Daneyên tomarkirî"
+  },
+  "profile": {
+    "title": "Profîl",
+    "account": "Hesab",
+    "language": "Ziman",
+    "signOut": "Derkeve",
+    "restartTitle": "Ji nû ve destpêkirin pêwîst e",
+    "restartBody": "Ji bo ku dîzayna rastê-ber-çepê bixebite, sepanê bigire û dîsa veke."
+  }
+}

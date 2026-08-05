@@ -6,7 +6,8 @@
     "cancel": "İptal",
     "delete": "Sil",
     "edit": "Düzenle",
-    "search": "Ara"
+    "search": "Ara",
+    "close": "Kapat"
   },
   "tabs": {
     "home": "Ana Sayfa",
@@ -108,6 +109,8 @@
     "title": "Profil",
     "account": "Hesap",
     "language": "Dil",
-    "signOut": "Çıkış Yap"
+    "signOut": "Çıkış Yap",
+    "restartTitle": "Yeniden başlatma gerekli",
+    "restartBody": "Sağdan sola yerleşimin uygulanması için uygulamayı kapatıp yeniden açın."
   }
 }

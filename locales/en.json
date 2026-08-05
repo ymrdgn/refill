@@ -6,7 +6,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "search": "Search"
+    "search": "Search",
+    "close": "Close"
   },
   "tabs": {
     "home": "Home",
@@ -108,6 +109,8 @@
     "title": "Profile",
     "account": "Account",
     "language": "Language",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "restartTitle": "Restart required",
+    "restartBody": "Close and reopen the app for the right-to-left layout to apply."
   }
 }

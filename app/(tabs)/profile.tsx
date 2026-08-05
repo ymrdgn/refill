@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  I18nManager,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { LogOut } from 'lucide-react-native';
+import { Check, ChevronDown, LogOut, X } from 'lucide-react-native';
+import { LANGUAGES, findLanguage, isRTL } from '@/lib/languages';
 import { getCurrentUser, signOut } from '@/lib/supabase';
 import { clearAll } from '@/lib/db/local';
 import { removeAllLocalImages } from '@/lib/images';
@@ -11,17 +21,39 @@ import { sync } from '@/lib/db/sync';
 import { changeLanguage } from '@/i18n';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 
-const LANGS = [
-  { code: 'tr', label: 'Türkçe' },
-  { code: 'en', label: 'English' },
-] as const;
-
 export default function ProfileScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const [email, setEmail] = useState<string | null>(null);
   const [uid, setUid] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+
+  const current = findLanguage(i18n.language);
+
+  /**
+   * Dili değiştirir. Sağdan sola yazılan bir dile (ar/fa) geçişte yerleşimin
+   * dönmesi için I18nManager gerekir ve bu ancak uygulama yeniden açılınca
+   * etkili olur — bu yüzden kullanıcıya söylüyoruz, sessizce yarım bırakmıyoruz.
+   */
+  const pickLanguage = async (code: string) => {
+    setLangOpen(false);
+    await changeLanguage(code);
+
+    const shouldBeRTL = isRTL(code);
+    // isRTL yalnızca uygulama açılışında okunur; forceRTL bir sonraki açılış için
+    // yazar. Bu yüzden bayrağı HER seçimde yazmalıyız — yoksa ar/fa'dan çıkınca
+    // eski RTL isteği asılı kalır ve uygulama yeniden açılınca LTR dili ters çizer.
+    const wasRTL = I18nManager.isRTL;
+    I18nManager.allowRTL(shouldBeRTL);
+    I18nManager.forceRTL(shouldBeRTL);
+
+    // Uyarı yalnızca ekrandaki yerleşim gerçekten bayatladıysa gösterilir.
+    if (shouldBeRTL !== wasRTL) {
+      // t() bu kapanışta bir önceki dile bağlı kalır; i18n.t her zaman güncel dili verir.
+      Alert.alert(i18n.t('profile.restartTitle'), i18n.t('profile.restartBody'));
+    }
+  };
 
   useEffect(() => {
     getCurrentUser().then(({ user }) => {
@@ -62,28 +94,13 @@ export default function ProfileScreen() {
 
         {/* Dil seçimi */}
         <Text style={styles.sectionLabel}>{t('profile.language')}</Text>
-        <View style={styles.langRow}>
-          {LANGS.map((l) => {
-            const active = i18n.language === l.code;
-            return (
-              <Pressable
-                key={l.code}
-                style={({ pressed }) => [
-                  styles.langChip,
-                  active && styles.langChipActive,
-                  pressed && styles.pressed,
-                ]}
-                onPress={() => changeLanguage(l.code)}
-              >
-                <Text
-                  style={[styles.langText, active && styles.langTextActive]}
-                >
-                  {l.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        <Pressable
+          style={({ pressed }) => [styles.select, pressed && styles.pressed]}
+          onPress={() => setLangOpen(true)}
+        >
+          <Text style={styles.selectValue}>{current?.label ?? i18n.language}</Text>
+          <ChevronDown size={18} color={colors.inkSoft} />
+        </Pressable>
 
         {/* Çıkış */}
         <Pressable
@@ -99,6 +116,55 @@ export default function ProfileScreen() {
           <Text style={styles.signOutText}>{t('profile.signOut')}</Text>
         </Pressable>
       </View>
+
+      {/* Dil listesi */}
+      <Modal
+        visible={langOpen}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLangOpen(false)}
+      >
+        <Pressable style={styles.backdrop} onPress={() => setLangOpen(false)}>
+          {/* İçeriğe dokunuş modalı kapatmasın */}
+          <Pressable style={styles.sheet} onPress={() => {}}>
+            <View style={styles.sheetHeader}>
+              <Text style={styles.sheetTitle}>{t('profile.language')}</Text>
+              <Pressable onPress={() => setLangOpen(false)} hitSlop={10}>
+                <X size={20} color={colors.inkSoft} />
+              </Pressable>
+            </View>
+
+            <ScrollView
+              style={styles.sheetList}
+              showsVerticalScrollIndicator={false}
+            >
+              {LANGUAGES.map((l) => {
+                const active = i18n.language === l.code;
+                return (
+                  <Pressable
+                    key={l.code}
+                    style={({ pressed }) => [
+                      styles.option,
+                      pressed && { backgroundColor: colors.bg },
+                    ]}
+                    onPress={() => pickLanguage(l.code)}
+                  >
+                    <Text
+                      style={[
+                        styles.optionText,
+                        active && styles.optionTextActive,
+                      ]}
+                    >
+                      {l.label}
+                    </Text>
+                    {active && <Check size={18} color={colors.accent} />}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -157,18 +223,65 @@ const styles = StyleSheet.create({
     color: colors.inkSoft,
     marginBottom: spacing.sm,
   },
-  langRow: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing['2xl'] },
-  langChip: {
-    paddingHorizontal: 18,
-    paddingVertical: 10,
+  select: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 15,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: colors.line,
     backgroundColor: colors.surface,
+    marginBottom: spacing['2xl'],
   },
-  langChipActive: { backgroundColor: colors.ink, borderColor: colors.ink },
-  langText: { fontFamily: fonts.semibold, fontSize: fontSize.base, color: colors.inkSoft },
-  langTextActive: { color: colors.surface },
+  selectValue: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.base,
+    color: colors.ink,
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(30, 58, 51, 0.45)',
+    justifyContent: 'flex-end',
+  },
+  sheet: {
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    paddingBottom: spacing.xl,
+    maxHeight: '75%',
+  },
+  sheetHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.line,
+  },
+  sheetTitle: {
+    fontFamily: fonts.display,
+    fontSize: fontSize.md,
+    color: colors.ink,
+  },
+  sheetList: { paddingHorizontal: spacing.sm },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 15,
+    borderRadius: radius.md,
+  },
+  optionText: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.base,
+    color: colors.ink,
+  },
+  optionTextActive: { fontFamily: fonts.semibold, color: colors.accent },
   signOut: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "Wird geladen …",
+    "error": "Ein Fehler ist aufgetreten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "search": "Suchen",
+    "close": "Schließen"
+  },
+  "tabs": {
+    "home": "Start",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "username": "Benutzername",
+    "noAccount": "Noch kein Konto?",
+    "haveAccount": "Schon ein Konto?",
+    "forgotPassword": "Passwort vergessen?",
+    "or": "oder",
+    "continueWithGoogle": "Mit Google fortfahren"
+  },
+  "home": {
+    "title": "Willkommen bei Refill",
+    "subtitle": "Dein Basisprojekt ist bereit."
+  },
+  "sheets": {
+    "tagline": "Fotoscore · Stift",
+    "title": "Meine Blätter",
+    "newSheet": "Neues Blatt hinzufügen",
+    "newSheetPhoto": "Aus Foto",
+    "newSheetBlank": "Leeres Blatt",
+    "empty": "Noch keine Blätter. Füge dein erstes mit der Schaltfläche oben hinzu.",
+    "meta": "{{rows}} Zeilen · {{sessions}} Spiele",
+    "newGame": "Neues Spiel",
+    "history": "Verlauf",
+    "untitled": "Unbenanntes Blatt",
+    "deleteConfirm": "Dieses Blatt und alle zugehörigen Spiele löschen?"
+  },
+  "setup": {
+    "title": "Zeilen markieren",
+    "hint": "Tippe auf Höhe jeder Punktzeile — Geschriebenes wird dieser Zeile zugeordnet. Tippe erneut auf eine Linie, um sie zu entfernen.",
+    "namePlaceholder": "Gib dem Blatt einen Namen",
+    "rowPlaceholder": "Zeile {{n}} (optionaler Name)",
+    "save": "Speichern",
+    "needImage": "Wähle zuerst ein Foto.",
+    "pickImage": "Foto wählen"
+  },
+  "tools": {
+    "title": "Werkzeuge",
+    "firstPlayer": "Erster Spieler",
+    "firstPlayerDesc": "Wer fängt an?",
+    "dice": "Würfeln",
+    "diceDesc": "Für Würfelspiele",
+    "players": "Anzahl Spieler",
+    "pick": "Ersten Spieler wählen",
+    "shuffleOrder": "Reihenfolge mischen",
+    "playerN": "Spieler {{n}}",
+    "starts": "fängt an!",
+    "touchHint": "Alle legen einen Finger auf den Bildschirm und halten ihn",
+    "touchMore": "Warte auf einen weiteren Finger …",
+    "touchAgain": "Neu wählen",
+    "orderTitle": "Zugreihenfolge",
+    "diceCount": "Anzahl Würfel",
+    "roll": "Würfeln",
+    "rollAgain": "Nochmal würfeln",
+    "total": "Gesamt",
+    "shakeHint": "📳 Schüttle dein Handy wie einen Würfelbecher — loslassen zum Werfen"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "Der kostenlose Plan umfasst bis zu {{limit}} Fotoblätter gleichzeitig",
+    "feature1": "Unbegrenzte Punkteblätter aus Fotos",
+    "feature2": "Synchronisierung auf allen Geräten",
+    "feature3": "Früher Zugang zu neuen Premium-Funktionen",
+    "yearly": "Jahresabo",
+    "yearlyNote": "Jederzeit kündbar",
+    "bestValue": "Bestes Angebot",
+    "cta": "Pro werden",
+    "comingSoon": "Käufe sind bald verfügbar. Bleib dran!",
+    "restore": "Kauf wiederherstellen",
+    "later": "Vielleicht später"
+  },
+  "play": {
+    "namePlaceholder": "Spielname (z. B. Freitagabend)",
+    "writeHint": "Schreibe mit Finger oder Stift auf das Blatt",
+    "undo": "Rückgängig",
+    "recognized": "Erkannte Werte",
+    "recognizedHint": "manuell eingeben · automatisch in Phase 5",
+    "written": "✏ geschrieben",
+    "save": "Spiel speichern",
+    "rowFallback": "Zeile {{n}}"
+  },
+  "history": {
+    "title": "Verlauf",
+    "empty": "Noch keine Spiele. Starte dein erstes oben mit Spiel.",
+    "newGame": "Spiel",
+    "strokeCount": "{{n}} Striche"
+  },
+  "session": {
+    "savedData": "Gespeicherte Daten"
+  },
+  "profile": {
+    "title": "Profil",
+    "account": "Konto",
+    "language": "Sprache",
+    "signOut": "Abmelden",
+    "restartTitle": "Neustart erforderlich",
+    "restartBody": "Schließe die App und öffne sie erneut, damit das Rechts-nach-links-Layout wirksam wird."
+  }
+}

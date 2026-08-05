@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "加载中…",
+    "error": "发生错误",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "search": "搜索",
+    "close": "关闭"
+  },
+  "tabs": {
+    "home": "首页",
+    "profile": "我的"
+  },
+  "auth": {
+    "login": "登录",
+    "signup": "注册",
+    "email": "邮箱",
+    "password": "密码",
+    "username": "用户名",
+    "noAccount": "还没有账号？",
+    "haveAccount": "已经有账号了？",
+    "forgotPassword": "忘记密码？",
+    "or": "或",
+    "continueWithGoogle": "使用 Google 继续"
+  },
+  "home": {
+    "title": "欢迎使用 Refill",
+    "subtitle": "你的基础项目已就绪。"
+  },
+  "sheets": {
+    "tagline": "照片计分 · 手写",
+    "title": "我的计分表",
+    "newSheet": "添加新计分表",
+    "newSheetPhoto": "从照片添加",
+    "newSheetBlank": "空白计分表",
+    "empty": "还没有计分表。用上面的按钮添加第一张吧。",
+    "meta": "{{rows}} 行 · {{sessions}} 局",
+    "newGame": "新的一局",
+    "history": "历史",
+    "untitled": "未命名计分表",
+    "deleteConfirm": "删除这张计分表及其所有对局？"
+  },
+  "setup": {
+    "title": "标记行",
+    "hint": "在每一计分行的位置轻点——书写内容会绑定到该行。再次轻点某条线可将其删除。",
+    "namePlaceholder": "给计分表起个名字",
+    "rowPlaceholder": "第 {{n}} 行（名称可选）",
+    "save": "保存",
+    "needImage": "请先选择一张照片。",
+    "pickImage": "选择照片"
+  },
+  "tools": {
+    "title": "工具",
+    "firstPlayer": "首位玩家",
+    "firstPlayerDesc": "谁先开始？",
+    "dice": "掷骰子",
+    "diceDesc": "适用于骰子游戏",
+    "players": "玩家人数",
+    "pick": "选出首位玩家",
+    "shuffleOrder": "打乱顺序",
+    "playerN": "玩家 {{n}}",
+    "starts": "先开始！",
+    "touchHint": "所有人把一根手指放在屏幕上并保持不动",
+    "touchMore": "还差一根手指…",
+    "touchAgain": "重新选择",
+    "orderTitle": "出场顺序",
+    "diceCount": "骰子数量",
+    "roll": "掷骰子",
+    "rollAgain": "再掷一次",
+    "total": "合计",
+    "shakeHint": "📳 像摇骰盅一样摇动手机——松手即可投掷"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "免费版最多可同时保留 {{limit}} 张照片计分表",
+    "feature1": "从照片创建的计分表不限量",
+    "feature2": "在所有设备间同步",
+    "feature3": "抢先体验新的高级功能",
+    "yearly": "年度订阅",
+    "yearlyNote": "随时可取消",
+    "bestValue": "最超值",
+    "cta": "升级 Pro",
+    "comingSoon": "购买功能即将上线，敬请期待！",
+    "restore": "恢复购买",
+    "later": "以后再说"
+  },
+  "play": {
+    "namePlaceholder": "对局名称（例如：周五之夜）",
+    "writeHint": "用手指或触控笔在计分表上书写",
+    "undo": "撤销",
+    "recognized": "识别到的数值",
+    "recognizedHint": "手动输入 · 第 5 阶段自动识别",
+    "written": "✏ 已填写",
+    "save": "保存对局",
+    "rowFallback": "第 {{n}} 行"
+  },
+  "history": {
+    "title": "历史",
+    "empty": "还没有对局。用上面的“对局”添加第一条。",
+    "newGame": "对局",
+    "strokeCount": "{{n}} 笔"
+  },
+  "session": {
+    "savedData": "已保存的数据"
+  },
+  "profile": {
+    "title": "我的",
+    "account": "账号",
+    "language": "语言",
+    "signOut": "退出登录",
+    "restartTitle": "需要重启",
+    "restartBody": "请关闭并重新打开应用，以应用从右到左的布局。"
+  }
+}

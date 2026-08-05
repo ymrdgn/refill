@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "読み込み中…",
+    "error": "エラーが発生しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "search": "検索",
+    "close": "閉じる"
+  },
+  "tabs": {
+    "home": "ホーム",
+    "profile": "プロフィール"
+  },
+  "auth": {
+    "login": "ログイン",
+    "signup": "新規登録",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "username": "ユーザー名",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "haveAccount": "すでにアカウントをお持ちですか？",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "or": "または",
+    "continueWithGoogle": "Google で続行"
+  },
+  "home": {
+    "title": "Refill へようこそ",
+    "subtitle": "ベースプロジェクトの準備ができました。"
+  },
+  "sheets": {
+    "tagline": "写真スコア · ペン",
+    "title": "マイシート",
+    "newSheet": "新しいシートを追加",
+    "newSheetPhoto": "写真から",
+    "newSheetBlank": "空白のシート",
+    "empty": "シートがまだありません。上のボタンから最初の1枚を追加しましょう。",
+    "meta": "{{rows}} 行 · {{sessions}} ゲーム",
+    "newGame": "新しいゲーム",
+    "history": "履歴",
+    "untitled": "名称未設定のシート",
+    "deleteConfirm": "このシートとすべてのゲームを削除しますか？"
+  },
+  "setup": {
+    "title": "行をマーク",
+    "hint": "各得点行の位置をタップします。書いた内容はその行に結び付きます。線をもう一度タップすると削除できます。",
+    "namePlaceholder": "シートに名前を付ける",
+    "rowPlaceholder": "行 {{n}}（任意の名前）",
+    "save": "保存",
+    "needImage": "先に写真を選んでください。",
+    "pickImage": "写真を選ぶ"
+  },
+  "tools": {
+    "title": "ツール",
+    "firstPlayer": "最初のプレイヤー",
+    "firstPlayerDesc": "誰から始める？",
+    "dice": "サイコロを振る",
+    "diceDesc": "ダイスゲーム用",
+    "players": "プレイヤー数",
+    "pick": "最初のプレイヤーを選ぶ",
+    "shuffleOrder": "順番をシャッフル",
+    "playerN": "プレイヤー {{n}}",
+    "starts": "から始めます！",
+    "touchHint": "全員が画面に指を置いたままにしてください",
+    "touchMore": "もう1本の指を待っています…",
+    "touchAgain": "もう一度選ぶ",
+    "orderTitle": "手番の順序",
+    "diceCount": "サイコロの数",
+    "roll": "サイコロを振る",
+    "rollAgain": "もう一度振る",
+    "total": "合計",
+    "shakeHint": "📳 スマホをダイスカップのように振って、離すと転がります"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "無料プランでは写真シートを同時に {{limit}} 枚まで持てます",
+    "feature1": "写真から作るスコアシートが無制限",
+    "feature2": "すべての端末で同期",
+    "feature3": "新しいプレミアム機能に先行アクセス",
+    "yearly": "年間サブスクリプション",
+    "yearlyNote": "いつでもキャンセル可能",
+    "bestValue": "いちばんお得",
+    "cta": "Pro にする",
+    "comingSoon": "購入機能はまもなく利用可能になります。お楽しみに！",
+    "restore": "購入を復元",
+    "later": "あとで"
+  },
+  "play": {
+    "namePlaceholder": "ゲーム名（例：金曜の夜）",
+    "writeHint": "指やペンでシートに書き込みます",
+    "undo": "元に戻す",
+    "recognized": "認識された値",
+    "recognizedHint": "手入力 · フェーズ5で自動化",
+    "written": "✏ 記入済み",
+    "save": "ゲームを保存",
+    "rowFallback": "行 {{n}}"
+  },
+  "history": {
+    "title": "履歴",
+    "empty": "ゲームがまだありません。上の「ゲーム」から最初の1件を追加しましょう。",
+    "newGame": "ゲーム",
+    "strokeCount": "{{n}} ストローク"
+  },
+  "session": {
+    "savedData": "保存されたデータ"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "account": "アカウント",
+    "language": "言語",
+    "signOut": "ログアウト",
+    "restartTitle": "再起動が必要です",
+    "restartBody": "右から左のレイアウトを適用するには、アプリを閉じて開き直してください。"
+  }
+}

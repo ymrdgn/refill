@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "close": "Fermer"
+  },
+  "tabs": {
+    "home": "Accueil",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": "Se connecter",
+    "signup": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "username": "Nom d'utilisateur",
+    "noAccount": "Pas encore de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "forgotPassword": "Mot de passe oublié ?",
+    "or": "ou",
+    "continueWithGoogle": "Continuer avec Google"
+  },
+  "home": {
+    "title": "Bienvenue sur Refill",
+    "subtitle": "Votre projet de base est prêt."
+  },
+  "sheets": {
+    "tagline": "Score photo · stylo",
+    "title": "Mes feuilles",
+    "newSheet": "Ajouter une feuille",
+    "newSheetPhoto": "Depuis une photo",
+    "newSheetBlank": "Feuille vierge",
+    "empty": "Aucune feuille pour l'instant. Ajoutez la première avec le bouton ci-dessus.",
+    "meta": "{{rows}} lignes · {{sessions}} parties",
+    "newGame": "Nouvelle partie",
+    "history": "Historique",
+    "untitled": "Feuille sans titre",
+    "deleteConfirm": "Supprimer cette feuille et toutes ses parties ?"
+  },
+  "setup": {
+    "title": "Marquer les lignes",
+    "hint": "Touchez à hauteur de chaque ligne de score — ce que vous écrivez y sera rattaché. Touchez une ligne à nouveau pour la retirer.",
+    "namePlaceholder": "Donnez un nom à la feuille",
+    "rowPlaceholder": "Ligne {{n}} (nom facultatif)",
+    "save": "Enregistrer",
+    "needImage": "Choisissez d'abord une photo.",
+    "pickImage": "Choisir une photo"
+  },
+  "tools": {
+    "title": "Outils",
+    "firstPlayer": "Premier joueur",
+    "firstPlayerDesc": "Qui commence ?",
+    "dice": "Lancer les dés",
+    "diceDesc": "Pour les jeux de dés",
+    "players": "Nombre de joueurs",
+    "pick": "Choisir le premier joueur",
+    "shuffleOrder": "Mélanger l'ordre",
+    "playerN": "Joueur {{n}}",
+    "starts": "commence !",
+    "touchHint": "Que chacun pose un doigt sur l'écran et le maintienne",
+    "touchMore": "En attente d'un doigt de plus…",
+    "touchAgain": "Choisir à nouveau",
+    "orderTitle": "Ordre de jeu",
+    "diceCount": "Nombre de dés",
+    "roll": "Lancer les dés",
+    "rollAgain": "Relancer",
+    "total": "Total",
+    "shakeHint": "📳 Secouez le téléphone comme un gobelet — relâchez pour lancer"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "L'offre gratuite inclut jusqu'à {{limit}} feuilles photo à la fois",
+    "feature1": "Feuilles de score illimitées à partir de photos",
+    "feature2": "Synchronisation sur tous vos appareils",
+    "feature3": "Accès anticipé aux nouvelles fonctionnalités premium",
+    "yearly": "Abonnement annuel",
+    "yearlyNote": "Annulable à tout moment",
+    "bestValue": "Meilleure offre",
+    "cta": "Passer à Pro",
+    "comingSoon": "Les achats seront disponibles très bientôt. Restez connecté !",
+    "restore": "Restaurer l'achat",
+    "later": "Peut-être plus tard"
+  },
+  "play": {
+    "namePlaceholder": "Nom de la partie (ex. Vendredi soir)",
+    "writeHint": "Écrivez sur la feuille avec le doigt ou un stylet",
+    "undo": "Annuler",
+    "recognized": "Valeurs reconnues",
+    "recognizedHint": "saisie manuelle · automatique en phase 5",
+    "written": "✏ écrit",
+    "save": "Enregistrer la partie",
+    "rowFallback": "Ligne {{n}}"
+  },
+  "history": {
+    "title": "Historique",
+    "empty": "Aucune partie pour l'instant. Créez la première avec Partie ci-dessus.",
+    "newGame": "Partie",
+    "strokeCount": "{{n}} tracés"
+  },
+  "session": {
+    "savedData": "Données enregistrées"
+  },
+  "profile": {
+    "title": "Profil",
+    "account": "Compte",
+    "language": "Langue",
+    "signOut": "Se déconnecter",
+    "restartTitle": "Redémarrage nécessaire",
+    "restartBody": "Fermez puis rouvrez l'application pour appliquer la mise en page de droite à gauche."
+  }
+}

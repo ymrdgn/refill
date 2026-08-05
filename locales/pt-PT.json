@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "A carregar…",
+    "error": "Ocorreu um erro",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Pesquisar",
+    "close": "Fechar"
+  },
+  "tabs": {
+    "home": "Início",
+    "profile": "Perfil"
+  },
+  "auth": {
+    "login": "Iniciar sessão",
+    "signup": "Registar",
+    "email": "E-mail",
+    "password": "Palavra-passe",
+    "username": "Nome de utilizador",
+    "noAccount": "Não tem conta?",
+    "haveAccount": "Já tem conta?",
+    "forgotPassword": "Esqueceu-se da palavra-passe?",
+    "or": "ou",
+    "continueWithGoogle": "Continuar com o Google"
+  },
+  "home": {
+    "title": "Bem-vindo ao Refill",
+    "subtitle": "O seu projeto base está pronto."
+  },
+  "sheets": {
+    "tagline": "Pontuação por foto · caneta",
+    "title": "As minhas folhas",
+    "newSheet": "Adicionar nova folha",
+    "newSheetPhoto": "A partir de foto",
+    "newSheetBlank": "Folha em branco",
+    "empty": "Ainda não há folhas. Adicione a primeira com o botão acima.",
+    "meta": "{{rows}} linhas · {{sessions}} jogos",
+    "newGame": "Novo jogo",
+    "history": "Histórico",
+    "untitled": "Folha sem título",
+    "deleteConfirm": "Eliminar esta folha e todos os seus jogos?"
+  },
+  "setup": {
+    "title": "Marcar linhas",
+    "hint": "Toque à altura de cada linha de pontuação — o que escrever fica ligado a essa linha. Toque novamente numa linha para a remover.",
+    "namePlaceholder": "Dê um nome à folha",
+    "rowPlaceholder": "Linha {{n}} (nome opcional)",
+    "save": "Guardar",
+    "needImage": "Escolha primeiro uma foto.",
+    "pickImage": "Escolher foto"
+  },
+  "tools": {
+    "title": "Ferramentas",
+    "firstPlayer": "Primeiro jogador",
+    "firstPlayerDesc": "Quem começa?",
+    "dice": "Lançar dados",
+    "diceDesc": "Para jogos de dados",
+    "players": "Número de jogadores",
+    "pick": "Escolher primeiro jogador",
+    "shuffleOrder": "Baralhar a ordem",
+    "playerN": "Jogador {{n}}",
+    "starts": "começa!",
+    "touchHint": "Todos coloquem um dedo no ecrã e mantenham",
+    "touchMore": "A aguardar mais um dedo…",
+    "touchAgain": "Escolher novamente",
+    "orderTitle": "Ordem de jogo",
+    "diceCount": "Número de dados",
+    "roll": "Lançar os dados",
+    "rollAgain": "Lançar novamente",
+    "total": "Total",
+    "shakeHint": "📳 Abane o telemóvel como um copo de dados — largue para lançar"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "O plano gratuito inclui até {{limit}} folhas com foto de cada vez",
+    "feature1": "Folhas de pontuação ilimitadas a partir de fotos",
+    "feature2": "Sincronização em todos os seus dispositivos",
+    "feature3": "Acesso antecipado a novas funcionalidades premium",
+    "yearly": "Subscrição anual",
+    "yearlyNote": "Cancele quando quiser",
+    "bestValue": "Melhor valor",
+    "cta": "Passar a Pro",
+    "comingSoon": "As compras ficarão disponíveis muito em breve. Fique atento!",
+    "restore": "Restaurar compra",
+    "later": "Talvez mais tarde"
+  },
+  "play": {
+    "namePlaceholder": "Nome do jogo (ex.: Sexta à noite)",
+    "writeHint": "Escreva na folha com o dedo ou a caneta",
+    "undo": "Anular",
+    "recognized": "Valores reconhecidos",
+    "recognizedHint": "escrever manualmente · automático na Fase 5",
+    "written": "✏ escrito",
+    "save": "Guardar jogo",
+    "rowFallback": "Linha {{n}}"
+  },
+  "history": {
+    "title": "Histórico",
+    "empty": "Ainda não há jogos. Crie o primeiro com Jogo acima.",
+    "newGame": "Jogo",
+    "strokeCount": "{{n}} traços"
+  },
+  "session": {
+    "savedData": "Dados guardados"
+  },
+  "profile": {
+    "title": "Perfil",
+    "account": "Conta",
+    "language": "Idioma",
+    "signOut": "Terminar sessão",
+    "restartTitle": "É necessário reiniciar",
+    "restartBody": "Feche e volte a abrir a aplicação para aplicar o esquema da direita para a esquerda."
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "common": {
+    "loading": "Caricamento…",
+    "error": "Si è verificato un errore",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "search": "Cerca",
+    "close": "Chiudi"
+  },
+  "tabs": {
+    "home": "Home",
+    "profile": "Profilo"
+  },
+  "auth": {
+    "login": "Accedi",
+    "signup": "Registrati",
+    "email": "E-mail",
+    "password": "Password",
+    "username": "Nome utente",
+    "noAccount": "Non hai un account?",
+    "haveAccount": "Hai già un account?",
+    "forgotPassword": "Password dimenticata?",
+    "or": "oppure",
+    "continueWithGoogle": "Continua con Google"
+  },
+  "home": {
+    "title": "Benvenuto su Refill",
+    "subtitle": "Il tuo progetto base è pronto."
+  },
+  "sheets": {
+    "tagline": "Foto punteggio · penna",
+    "title": "I miei fogli",
+    "newSheet": "Aggiungi nuovo foglio",
+    "newSheetPhoto": "Da foto",
+    "newSheetBlank": "Foglio vuoto",
+    "empty": "Ancora nessun foglio. Aggiungi il primo con il pulsante qui sopra.",
+    "meta": "{{rows}} righe · {{sessions}} partite",
+    "newGame": "Nuova partita",
+    "history": "Cronologia",
+    "untitled": "Foglio senza titolo",
+    "deleteConfirm": "Eliminare questo foglio e tutte le sue partite?"
+  },
+  "setup": {
+    "title": "Segna le righe",
+    "hint": "Tocca all'altezza di ogni riga di punteggio: ciò che scrivi verrà collegato a quella riga. Tocca di nuovo una linea per rimuoverla.",
+    "namePlaceholder": "Dai un nome al foglio",
+    "rowPlaceholder": "Riga {{n}} (nome facoltativo)",
+    "save": "Salva",
+    "needImage": "Scegli prima una foto.",
+    "pickImage": "Scegli foto"
+  },
+  "tools": {
+    "title": "Strumenti",
+    "firstPlayer": "Primo giocatore",
+    "firstPlayerDesc": "Chi inizia?",
+    "dice": "Tira i dadi",
+    "diceDesc": "Per i giochi di dadi",
+    "players": "Numero di giocatori",
+    "pick": "Scegli il primo giocatore",
+    "shuffleOrder": "Mescola l'ordine",
+    "playerN": "Giocatore {{n}}",
+    "starts": "inizia!",
+    "touchHint": "Tutti appoggino un dito sullo schermo e lo tengano premuto",
+    "touchMore": "In attesa di un altro dito…",
+    "touchAgain": "Scegli di nuovo",
+    "orderTitle": "Ordine di turno",
+    "diceCount": "Numero di dadi",
+    "roll": "Tira i dadi",
+    "rollAgain": "Tira di nuovo",
+    "total": "Totale",
+    "shakeHint": "📳 Agita il telefono come un bicchiere da dadi — rilascia per lanciare"
+  },
+  "paywall": {
+    "title": "Refill Pro",
+    "quotaReached": "Il piano gratuito include fino a {{limit}} fogli con foto alla volta",
+    "feature1": "Fogli punteggio illimitati dalle foto",
+    "feature2": "Sincronizzazione su tutti i tuoi dispositivi",
+    "feature3": "Accesso anticipato alle nuove funzioni premium",
+    "yearly": "Abbonamento annuale",
+    "yearlyNote": "Disdici quando vuoi",
+    "bestValue": "Miglior offerta",
+    "cta": "Passa a Pro",
+    "comingSoon": "Gli acquisti saranno disponibili molto presto. Resta sintonizzato!",
+    "restore": "Ripristina acquisto",
+    "later": "Forse più tardi"
+  },
+  "play": {
+    "namePlaceholder": "Nome della partita (es. Venerdì sera)",
+    "writeHint": "Scrivi sul foglio con il dito o la penna",
+    "undo": "Annulla",
+    "recognized": "Valori riconosciuti",
+    "recognizedHint": "inserimento manuale · automatico nella Fase 5",
+    "written": "✏ scritto",
+    "save": "Salva partita",
+    "rowFallback": "Riga {{n}}"
+  },
+  "history": {
+    "title": "Cronologia",
+    "empty": "Ancora nessuna partita. Crea la prima con Partita qui sopra.",
+    "newGame": "Partita",
+    "strokeCount": "{{n}} tratti"
+  },
+  "session": {
+    "savedData": "Dati salvati"
+  },
+  "profile": {
+    "title": "Profilo",
+    "account": "Account",
+    "language": "Lingua",
+    "signOut": "Esci",
+    "restartTitle": "Riavvio necessario",
+    "restartBody": "Chiudi e riapri l'app per applicare il layout da destra a sinistra."
+  }
+}
