@@ -141,6 +141,10 @@
   "profile": {
     "title": "我的",
     "account": "账号",
+    "plan": "套餐",
+    "planFree": "免费",
+    "planFreeHint": "同时最多 {{limit}} 张照片计分表",
+    "planProHint": "无限照片计分表",
     "language": "语言",
     "signOut": "退出登录",
     "restartTitle": "需要重启",

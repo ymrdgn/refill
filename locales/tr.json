@@ -141,6 +141,10 @@
   "profile": {
     "title": "Profil",
     "account": "Hesap",
+    "plan": "Plan",
+    "planFree": "Ücretsiz",
+    "planFreeHint": "Aynı anda en fazla {{limit}} fotoğraf kağıdı",
+    "planProHint": "Sınırsız fotoğraf kağıdı",
     "language": "Dil",
     "signOut": "Çıkış Yap",
     "restartTitle": "Yeniden başlatma gerekli",

@@ -141,6 +141,10 @@
   "profile": {
     "title": "الملف الشخصي",
     "account": "الحساب",
+    "plan": "الخطة",
+    "planFree": "مجاني",
+    "planFreeHint": "حتى {{limit}} أوراق صور في الوقت نفسه",
+    "planProHint": "أوراق صور غير محدودة",
     "language": "اللغة",
     "signOut": "تسجيل الخروج",
     "restartTitle": "يلزم إعادة التشغيل",

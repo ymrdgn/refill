@@ -272,11 +272,15 @@ export default function HomeScreen() {
                 </View>
                 <Text style={styles.addBtnText}>{t('sheets.newSheetPhoto')}</Text>
                 {!unlimited && (
-                  <View style={styles.quotaBadge}>
+                  <Pressable
+                    style={styles.quotaBadge}
+                    onPress={() => router.push('/paywall')}
+                    hitSlop={8}
+                  >
                     <Text style={styles.quotaBadgeText}>
                       {remainingPhotoSheets(sheets, unlimited)}/{FREE_PHOTO_SHEETS}
                     </Text>
-                  </View>
+                  </Pressable>
                 )}
               </Pressable>
 

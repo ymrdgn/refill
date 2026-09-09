@@ -141,6 +141,10 @@
   "profile": {
     "title": "Profile",
     "account": "Account",
+    "plan": "Plan",
+    "planFree": "Free",
+    "planFreeHint": "Up to {{limit}} photo sheets at a time",
+    "planProHint": "Unlimited photo sheets",
     "language": "Language",
     "signOut": "Sign Out",
     "restartTitle": "Restart required",

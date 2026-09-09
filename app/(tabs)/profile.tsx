@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   I18nManager,
@@ -17,11 +17,14 @@ import {
   ChevronDown,
   ChevronRight,
   LogOut,
-  Users,
+  Sparkles,
   X,
 } from 'lucide-react-native';
+import { useFocusEffect } from 'expo-router';
 import { LANGUAGES, findLanguage, isRTL } from '@/lib/languages';
 import { getCurrentUser, signOut } from '@/lib/supabase';
+import { FREE_PHOTO_SHEETS, getEntitlement } from '@/lib/entitlements';
+import { isPlanActive, listMyOrgs } from '@/lib/orgs';
 import { clearAll } from '@/lib/db/local';
 import { removeAllLocalImages } from '@/lib/images';
 import { sync } from '@/lib/db/sync';
@@ -35,6 +38,8 @@ export default function ProfileScreen() {
   const [uid, setUid] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  /** Görünen plan: kendi aboneliğim ya da aktif planlı bir ailenin üyeliği. */
+  const [plan, setPlan] = useState<'free' | 'individual' | 'family'>('free');
 
   const current = findLanguage(i18n.language);
 
@@ -69,6 +74,22 @@ export default function ProfileScreen() {
     });
   }, []);
 
+  // Her odaklanmada tazele: paywall'dan / aile ekranından dönünce güncel olsun.
+  useFocusEffect(
+    useCallback(() => {
+      if (!uid) return;
+      (async () => {
+        const ent = await getEntitlement();
+        if (ent.plan === 'family') return setPlan('family');
+        const orgs = await listMyOrgs(uid);
+        if (orgs.some((o) => o.kind === 'family' && isPlanActive(o))) {
+          return setPlan('family');
+        }
+        setPlan(ent.isPro ? 'individual' : 'free');
+      })();
+    }, [uid])
+  );
+
   const handleSignOut = async () => {
     setSigningOut(true);
     // Bekleyen yerel değişiklikleri kaybetmemek için önce senkronu dene.
@@ -99,16 +120,36 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Aile */}
+        {/* Plan: paketler ve (aile planında) üye yönetimi buradan. Ayrı "Aile" satırı yok. */}
         <Pressable
-          style={({ pressed }) => [styles.select, pressed && styles.pressed]}
-          onPress={() => router.push('/org')}
+          style={({ pressed }) => [styles.planCard, pressed && styles.pressed]}
+          onPress={() => router.push(plan === 'family' ? '/org' : '/paywall')}
         >
-          <View style={styles.rowLeft}>
-            <Users size={18} color={colors.accent} />
-            <Text style={styles.selectValue}>{t('org.title')}</Text>
+          <View style={styles.planIcon}>
+            <Sparkles size={18} color={colors.accent} />
           </View>
-          <ChevronRight size={18} color={colors.inkSoft} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.cardLabel}>{t('profile.plan')}</Text>
+            <Text style={styles.planName}>
+              {plan === 'family'
+                ? t('paywall.planFamily')
+                : plan === 'individual'
+                  ? t('paywall.planIndividual')
+                  : t('profile.planFree')}
+            </Text>
+            <Text style={styles.planHint}>
+              {plan === 'free'
+                ? t('profile.planFreeHint', { limit: FREE_PHOTO_SHEETS })
+                : t('profile.planProHint')}
+            </Text>
+          </View>
+          {plan === 'free' ? (
+            <View style={styles.planCta}>
+              <Text style={styles.planCtaText}>{t('org.goFamily')}</Text>
+            </View>
+          ) : (
+            <ChevronRight size={18} color={colors.inkSoft} />
+          )}
         </Pressable>
 
         {/* Dil seçimi */}
@@ -259,7 +300,49 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.ink,
   },
-  rowLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  planCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: radius.xl,
+    padding: spacing.lg,
+    marginBottom: spacing['2xl'],
+    ...shadow.card,
+  },
+  planIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.sm + 2,
+    backgroundColor: colors.accentSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  planName: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.base,
+    color: colors.ink,
+    marginTop: 2,
+  },
+  planHint: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.inkSoft,
+    marginTop: 2,
+  },
+  planCta: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.sm,
+    backgroundColor: colors.ink,
+  },
+  planCtaText: {
+    color: colors.surface,
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.xs,
+  },
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(30, 58, 51, 0.45)',

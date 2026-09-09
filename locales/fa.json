@@ -141,6 +141,10 @@
   "profile": {
     "title": "پروفایل",
     "account": "حساب",
+    "plan": "طرح",
+    "planFree": "رایگان",
+    "planFreeHint": "هم‌زمان حداکثر {{limit}} برگه عکسی",
+    "planProHint": "برگه‌های عکسی نامحدود",
     "language": "زبان",
     "signOut": "خروج",
     "restartTitle": "نیاز به راه‌اندازی مجدد",

@@ -141,6 +141,10 @@
   "profile": {
     "title": "Profil",
     "account": "Compte",
+    "plan": "Offre",
+    "planFree": "Gratuit",
+    "planFreeHint": "Jusqu'à {{limit}} feuilles photo à la fois",
+    "planProHint": "Feuilles photo illimitées",
     "language": "Langue",
     "signOut": "Se déconnecter",
     "restartTitle": "Redémarrage nécessaire",

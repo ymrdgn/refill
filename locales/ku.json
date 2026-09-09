@@ -141,6 +141,10 @@
   "profile": {
     "title": "Profîl",
     "account": "Hesab",
+    "plan": "Plan",
+    "planFree": "Belaş",
+    "planFreeHint": "Di heman demê de herî zêde {{limit}} kaxezên wêneyî",
+    "planProHint": "Kaxezên wêneyî yên bêsînor",
     "language": "Ziman",
     "signOut": "Derkeve",
     "restartTitle": "Ji nû ve destpêkirin pêwîst e",

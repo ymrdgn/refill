@@ -141,6 +141,10 @@
   "profile": {
     "title": "プロフィール",
     "account": "アカウント",
+    "plan": "プラン",
+    "planFree": "無料",
+    "planFreeHint": "写真シートは同時に最大 {{limit}} 枚",
+    "planProHint": "写真シート無制限",
     "language": "言語",
     "signOut": "ログアウト",
     "restartTitle": "再起動が必要です",

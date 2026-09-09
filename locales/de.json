@@ -141,6 +141,10 @@
   "profile": {
     "title": "Profil",
     "account": "Konto",
+    "plan": "Abo",
+    "planFree": "Kostenlos",
+    "planFreeHint": "Bis zu {{limit}} Foto-Blätter gleichzeitig",
+    "planProHint": "Unbegrenzt Foto-Blätter",
     "language": "Sprache",
     "signOut": "Abmelden",
     "restartTitle": "Neustart erforderlich",

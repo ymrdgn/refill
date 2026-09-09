@@ -141,6 +141,10 @@
   "profile": {
     "title": "Perfil",
     "account": "Conta",
+    "plan": "Plano",
+    "planFree": "Grátis",
+    "planFreeHint": "Até {{limit}} folhas com foto por vez",
+    "planProHint": "Folhas com foto ilimitadas",
     "language": "Idioma",
     "signOut": "Sair",
     "restartTitle": "Reinício necessário",
