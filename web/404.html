@@ -1,0 +1,73 @@
+<!doctype html>
+<!--
+  Refill bağlantı sayfası — davet (ve ileride QR) bağlantılarının https tarafı.
+
+  /org/join/<token> gibi bir yolla açılır, aynı yolu refill:// şemasıyla
+  uygulamada açmayı dener. Uygulama kurulu değilse mağaza düğmelerini ve
+  "kurduktan sonra bağlantıyı tekrar aç" notunu gösterir.
+
+  GitHub Pages: yeniden yazma (rewrite) desteği olmadığı için bu dosyanın bir
+  kopyası 404.html olarak durur; bilinmeyen her yol ona düşer ve JS çalışır.
+  Vercel/Netlify: vercel.json / _redirects ile /org/* ve /s/* buraya yönlenir.
+  Yol tabanı ne olursa olsun (/refill-legal/org/join/X gibi) "org/" ya da "s/"
+  parçasından itibaren alınır.
+-->
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refill</title>
+<style>
+  /* Bilerek gömülü: 404.html olarak derin yollardan (/org/join/X) sunulur, göreli CSS yolu kırılırdı. */
+  :root{--bg:#E7ECE7;--surface:#FCFBF7;--ink:#1E3A33;--muted:#5B6B66;--accent:#C2702A;--line:#D9E0DA}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;line-height:1.5}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px}
+  h1{font-size:28px;margin:0 0 4px}
+  body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+  .card{max-width:380px;width:100%;text-align:center;padding:32px 24px;box-shadow:0 8px 30px rgba(30,58,51,.12)}
+  h1{margin-bottom:4px}
+  p{margin:8px 0;color:var(--muted)}
+  .btn{display:block;width:100%;margin-top:12px;padding:14px 16px;border-radius:12px;text-decoration:none;font-weight:600;background:var(--ink);color:#fff;box-sizing:border-box}
+  .btn.secondary{background:var(--bg);color:var(--ink)}
+  .stores{display:none}.stores.show{display:block}
+  .note{font-size:13px;margin-top:16px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>Refill</h1>
+    <p id="msg">Uygulama açılıyor… / Opening the app…</p>
+    <a id="open" class="btn" href="#">Refill'de aç / Open in Refill</a>
+    <div id="stores" class="stores">
+      <p>Uygulama kurulu değil mi? / Don't have the app?</p>
+      <a id="ios" class="btn secondary" href="#">App Store</a>
+      <a id="android" class="btn secondary" href="#">Google Play</a>
+      <p class="note">Kurduktan sonra bu bağlantıyı tekrar aç.<br/>After installing, open this link again.</p>
+    </div>
+  </div>
+  <script>
+    // Mağaza adresleri: yayınlanınca doldur. Play adresi paket adından türetilir.
+    var APP_STORE_URL = 'https://apps.apple.com/app/id0000000000';
+    var PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.refill.app';
+    var SCHEME = 'refill://';
+
+    // Yol tabanından bağımsız: ".../org/join/X" → "org/join/X", ".../s/X" → "s/X"
+    var m = location.pathname.match(/\/(org|s)\/.*$/);
+    var path = m ? m[0].replace(/^\//, '') + location.search : '';
+    var deep = SCHEME + path;
+
+    document.getElementById('open').href = deep;
+    document.getElementById('ios').href = APP_STORE_URL;
+    document.getElementById('android').href = PLAY_STORE_URL;
+
+    function showStores(){ document.getElementById('msg').textContent=''; document.getElementById('stores').className='stores show'; }
+    if (path) {
+      var t0 = Date.now();
+      location.href = deep;
+      // Uygulama açıldıysa sayfa arka plana düşer ve zamanlayıcı gecikir; açılmadıysa mağazaları göster.
+      setTimeout(function(){ if (Date.now() - t0 < 2500) showStores(); }, 1500);
+    } else {
+      showStores();
+    }
+  </script>
+</body>
+</html>

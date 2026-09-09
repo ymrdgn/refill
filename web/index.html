@@ -1,76 +1,22 @@
 <!doctype html>
-<!--
-  Refill bağlantı sayfası — davet (ve ileride QR) bağlantılarının https tarafı.
-
-  Ne yapar: /org/join/<token> gibi bir yolla açılır, aynı yolu refill:// şemasıyla
-  uygulamada açmayı dener. Uygulama kurulu değilse mağaza düğmelerini ve
-  "kurduktan sonra bağlantıyı tekrar aç" notunu gösterir.
-
-  Nereye konur: EXPO_PUBLIC_LINK_BASE'in gösterdiği adresin köküne. Tüm yollar
-  bu dosyaya düşmeli (Vercel: vercel.json rewrite; Netlify: _redirects
-  "/* /index.html 200"; GitHub Pages: dosyayı 404.html olarak da kopyala).
--->
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Refill</title>
-  <style>
-    :root { --bg:#E7ECE7; --ink:#1E3A33; --accent:#C2702A; --surface:#fff; --soft:#5B6B66; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-           background:var(--bg); color:var(--ink); font:16px/1.5 -apple-system, "Segoe UI", Roboto, sans-serif; padding:24px; }
-    .card { background:var(--surface); border-radius:20px; padding:32px 24px; max-width:380px; width:100%;
-            text-align:center; box-shadow:0 8px 30px rgba(30,58,51,.12); }
-    h1 { font-size:28px; margin:0 0 4px; }
-    p  { margin:8px 0; color:var(--soft); }
-    .btn { display:block; width:100%; margin-top:12px; padding:14px 16px; border-radius:12px; text-decoration:none;
-           font-weight:600; background:var(--ink); color:#fff; }
-    .btn.secondary { background:var(--bg); color:var(--ink); }
-    .stores { display:none; }
-    .stores.show { display:block; }
-    .note { font-size:13px; margin-top:16px; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Refill Legal</title>
+<link rel="stylesheet" href="_style.css">
+<style>.wrap{text-align:center;padding-top:60px}.links a{display:inline-block;margin:1rem;font-weight:600;text-decoration:none}.links a:hover{text-decoration:underline}</style>
 </head>
 <body>
-  <div class="card">
-    <h1>Refill</h1>
-    <p id="msg">Uygulama açılıyor… / Opening the app…</p>
-    <a id="open" class="btn" href="#">Refill'de aç / Open in Refill</a>
-    <div id="stores" class="stores">
-      <p>Uygulama kurulu değil mi? / Don't have the app?</p>
-      <a id="ios" class="btn secondary" href="#">App Store</a>
-      <a id="android" class="btn secondary" href="#">Google Play</a>
-      <p class="note">Kurduktan sonra bu bağlantıyı tekrar aç.<br/>After installing, open this link again.</p>
-    </div>
+<div class="wrap">
+  <div class="brand">Photo score · Pen</div>
+  <h1>Refill Legal</h1>
+  <p>Select a document below to view its contents:</p>
+  <div class="links">
+    <a href="privacy.html">📜 Privacy Policy</a>
+    <a href="terms.html">⚖️ Terms of Use</a>
+    <a href="account-deletion.html">‼️ Account Deletion</a>
   </div>
-  <script>
-    // Mağaza adresleri: yayınlanınca doldur. Play adresi paket adından türetilir.
-    var APP_STORE_URL = 'https://apps.apple.com/app/id0000000000';
-    var PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.refill.app';
-    var SCHEME = 'refill://';
-
-    var path = location.pathname.replace(/^\/+/, '') + location.search;
-    var deep = SCHEME + path;
-
-    document.getElementById('open').href = deep;
-    document.getElementById('ios').href = APP_STORE_URL;
-    document.getElementById('android').href = PLAY_STORE_URL;
-
-    // Uygulamayı açmayı dene; sayfa görünür kalırsa (uygulama yok) mağazaları göster.
-    if (path) {
-      var t0 = Date.now();
-      location.href = deep;
-      setTimeout(function () {
-        if (Date.now() - t0 < 2500) {
-          document.getElementById('msg').textContent = '';
-          document.getElementById('stores').className = 'stores show';
-        }
-      }, 1500);
-    } else {
-      document.getElementById('msg').textContent = '';
-      document.getElementById('stores').className = 'stores show';
-    }
-  </script>
+  <footer>&copy; 2026 Refill</footer>
+</div>
 </body>
 </html>

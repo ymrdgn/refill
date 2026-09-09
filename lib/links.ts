@@ -3,9 +3,10 @@
  *
  * Bağlantı https olmalı: özel şema (refill://) uygulama kurulu değilse
  * açılmaz, mesajlaşma uygulamalarında tıklanabilir bile olmayabilir.
- * EXPO_PUBLIC_LINK_BASE altındaki sayfa (web/index.html) uygulamayı açmayı
- * dener, açamazsa mağazaya yönlendirir ve "kurduktan sonra bağlantıyı tekrar
- * aç" der. Yol yapısı uygulama rotasıyla AYNIDIR (/org/join/<token>) ki
+ * EXPO_PUBLIC_LINK_BASE altındaki sayfa (web/join.html, GitHub Pages'te
+ * 404.html kopyası) uygulamayı açmayı dener, açamazsa mağazaya yönlendirir ve
+ * "kurduktan sonra bağlantıyı tekrar aç" der. Aynı taban yasal sayfaları da
+ * taşır (privacy.html, terms.html, account-deletion.html). Yol yapısı uygulama rotasıyla AYNIDIR (/org/join/<token>) ki
  * ileride universal/app link eklenince sayfa hiç görünmeden rota açılsın.
  *
  * Taban adres tanımlı değilse (geliştirme) Expo'nun kendi derin bağlantısı

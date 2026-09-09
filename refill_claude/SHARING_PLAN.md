@@ -382,7 +382,7 @@ Sahibi olmadığın kağıtta `saveSheet`/`deleteSheet` **istemci tarafında da*
 - `app/org/index.tsx` — aile: üyeler, davet linki, koltuk sayacı (`3/5`), plan durumu. "Aile oluştur" adımı yok; plan varsa aile kendiliğinden açılır.
 - `lib/links.ts` — dışa verilen `https` bağlantılar (`EXPO_PUBLIC_LINK_BASE`) + giriş öncesi tıklanan davetin saklanması.
 - `lib/purchases.ts` — RevenueCat bağlantı noktası (`buyPlan`, `restorePurchases`); paywall yalnızca bunu çağırır.
-- `web/index.html` — bağlantı sayfası: `refill://` ile uygulamayı açmayı dener, olmazsa mağaza + "tekrar aç". Faz C'deki `/s/<token>` de aynı sayfadan geçer.
+- `web/` — GitHub Pages'e (`refill-legal` reposu, Watchbase ile aynı düzen) yayınlanan statik site: `join.html` (+ `404.html` kopyası) bağlantı sayfası, `refill://` ile uygulamayı açmayı dener, olmazsa mağaza + "tekrar aç"; Faz C'deki `/s/<token>` de aynı sayfadan geçer. Yanında `privacy.html`, `terms.html`, `account-deletion.html`.
 - `app/org/qr/[sheetId].tsx` — QR göster / yazdır / paylaş; token iptal etme.
 - `app/paywall.tsx` — üç plan gösterecek şekilde güncellenir; Business "bize ulaşın" akışına gider (bkz. §9).
 - `app/(tabs)/index.tsx` — paylaşılan kağıtlar için rozet, sahibi değilse silme butonu gizli.
@@ -443,8 +443,8 @@ Her fazın sonunda uygulama çalışır durumda olmalı.
 - [x] `lib/orgs.ts`, aile ekranı (`app/org/index.tsx`), davetle katılma (`app/org/join/[token].tsx`), profilde giriş noktası, 13 dilde `org.*` metinleri.
 - [x] (2026-09-09) Koltuk 5; "aile oluştur" adımı kaldırıldı, aile plan görülünce kendiliğinden açılıyor; plan kaynağı `entitlements.plan` + `plan_active` hesaplanmış alanı; davet linki `https` + giriş sonrası bekleyen davet; `lib/purchases.ts` seam'i.
 - [ ] **Şemayı Supabase SQL editöründe çalıştır** — bunsuz aile akışı çalışmaz (uygulama bozulmaz, yalnızca aile kurulamaz). Dosyanın sonundaki doğrulama sorgusunu ve ödeme olmadan denemek için `entitlements` güncelleme örneğini kullan.
-- [ ] `web/` sayfasını yayınla (Vercel/Netlify/GitHub Pages ya da kendi alan adı) ve adresi `EXPO_PUBLIC_LINK_BASE` olarak `.env`'e yaz. Boşken Expo derin bağlantısı üretilir (yalnızca geliştirme).
-- [ ] `web/index.html` içindeki App Store adresi yayınlanınca doldurulacak.
+- [ ] `web/` içeriğini `ymrdgn/refill-legal` reposuna (GitHub Pages) yayınla ve `EXPO_PUBLIC_LINK_BASE=https://ymrdgn.github.io/refill-legal` olarak `.env`'e yaz (karar 2026-09-10: alan adı alınmadı, Watchbase gibi GitHub Pages). Basılı QR (Faz C) gelince kalıcı alan adı yeniden değerlendirilir.
+- [ ] `web/join.html` ve `404.html` içindeki App Store adresi yayınlanınca doldurulacak; yasal sayfalardaki destek e-postası (`REFILL_SUPPORT_EMAIL`) gerçek adresle değiştirilecek.
 - [ ] Aile planının satın alınması → Faz E (`buyPlan` gerçek RevenueCat çağrısına bağlanır; webhook `entitlements.plan='family'` yazar).
 
 > Not: `share_grants` tablosu Faz B'de **boş** oluşturuldu. Sebep: RLS politikalarını iki kez yeniden yazmamak. Faz C yalnızca `share_links` + `redeem_share_token` ekleyecek, politikalara dokunmayacak.
