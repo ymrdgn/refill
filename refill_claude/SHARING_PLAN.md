@@ -21,6 +21,18 @@ Karar verilmeden Faz C'ye (QR) başlanmamalı. Faz A ve B (Storage + Aile) bu ri
 
 ---
 
+## 0.1 Verilen karar — Aile paketi (2026-09-09)
+
+**Aile = Duolingo tipi koltuk paketi.** Satın alan kişi 5 koltuğun sahibidir, üyeleri davet eder; her üye **sınırsız fotoğraf kağıdı** hakkı kazanır. Kağıtlar aile içinde **paylaşılmaz** — bir oyun için tek kişinin skor tutması yeter (§13 soru 5 böylece kapandı). `sheets.org_id` / `can_read_sheet` altyapısı kodda duruyor ama **yalnızca Business/QR (Faz C) için**; aile ekranında kağıt paylaşma arayüzü yoktur ve eklenmeyecektir.
+
+Bunun teknik sonuçları:
+
+- **Planın kaynağı sahibinin `entitlements` satırıdır** (`is_pro` + `plan = 'family'` + `pro_until`). RevenueCat webhook'u yalnızca bu tabloya yazar. `organizations.plan/plan_until` **aile için kullanılmaz**, yalnızca Business'ta anlamlıdır. `org_plan_active()` bu ayrımı yapar; istemciye `plan_active` hesaplanmış alanı olarak iner (`select('*, plan_active')`).
+- **"Aile oluştur" adımı yok.** Aile kaydı, aile planı olan kullanıcı aile ekranını açtığında kendiliğinden oluşur (`create_organization` aile için idempotent). Satın alma → aile ekranı → doğrudan "davet et".
+- **Davet linki `https`** (`EXPO_PUBLIC_LINK_BASE` + `web/index.html` yönlendirme sayfası, yol `/org/join/<token>`). Giriş yapmamış kişi tıklarsa token saklanır, girişten sonra katılma ekranına dönülür.
+
+---
+
 ## 1. Ayırt edilmesi gereken iki paylaşım tipi
 
 Tasarımın tamamı bu ayrıma dayanır:
@@ -29,8 +41,8 @@ Tasarımın tamamı bu ayrıma dayanır:
 |---|---|---|
 | Kim | Aile üyesi, kalıcı | Kafe müşterisi, geçici |
 | Nasıl | Davetle katılır, üye olur | QR tarar, hesap oluşturmaz |
-| Sayı | Sınırlı (4) ve sayılır | Sınırsız, sayılmaz |
-| Kağıtta yetki | Okur + yazar (düzenleyebilir) | **Salt-okunur** kağıt, kendi oyununu açar |
+| Sayı | Sınırlı (5, sahip dahil) ve sayılır | Sınırsız, sayılmaz |
+| Kağıtta yetki | Kağıt paylaşımı **yok**; herkes sınırsız kağıt hakkı alır | **Salt-okunur** kağıt, kendi oyununu açar |
 | Modeli | `org_members` | `share_grants` |
 
 **En sık yapılacak hata:** kafe müşterilerini koltuk olarak saymak. O zaman kafeye "kaç müşterin gelecek" diye sormuş olursunuz; hem satılamaz hem de anlamsızdır. Business paketi **sınırsız müşteri / N oyun** üzerinden kurgulanır.
@@ -44,7 +56,7 @@ Tasarımın tamamı bu ayrıma dayanır:
 | Kendi fotoğraflı kağıdı | 3 | Sınırsız | Sınırsız | Sınırsız |
 | Boş (fotoğrafsız) kağıt | Sınırsız | Sınırsız | Sınırsız | Sınırsız |
 | Kağıttan yeni oyun açma | Sınırsız | Sınırsız | Sınırsız | Sınırsız |
-| Paylaşım | — | — | 4 koltuk | QR, sınırsız müşteri |
+| Paylaşım | — | — | 5 koltuk (herkese sınırsız kağıt; kağıt paylaşımı yok) | QR, sınırsız müşteri |
 | QR üretme | — | — | — | ✅ |
 | Kafe paneli (istatistik) | — | — | — | ✅ |
 | Satın alma kanalı | — | IAP | IAP | Fatura / Stripe |
@@ -103,12 +115,15 @@ create table public.organizations (
   name       text not null,
   kind       text not null check (kind in ('family','business')),
   owner_id   uuid not null references auth.users (id) on delete cascade,
-  plan       text not null default 'none' check (plan in ('none','family','business')),
+  plan       text not null default 'none' check (plan in ('none','family','business')),  -- yalnızca business; aile → sahibin entitlements.plan
   plan_until timestamptz,
-  seat_limit int  not null default 4,
+  seat_limit int  not null default 5,
   logo_path  text,                       -- business: kağıt ekranındaki marka
   created_at timestamptz not null default now()
 );
+
+-- entitlements.plan: satın alınan paket ('individual' | 'family'); aile planının kaynağı
+alter table public.entitlements add column plan text check (plan in ('individual','family'));
 
 -- ------------------------------------------------------------------
 -- ORG_MEMBERS: koltuklar
@@ -127,6 +142,22 @@ create table public.org_members (
 alter table public.sheets
   add column org_id uuid references public.organizations (id) on delete cascade;
 create index idx_sheets_org on public.sheets (org_id);
+
+-- ------------------------------------------------------------------
+-- ORG_INVITES: aileye katılma bağlantısı (Faz B'de eklendi)
+-- share_links'ten AYRIDIR: bu ÜYELİK verir, kağıt erişimi değil.
+-- ------------------------------------------------------------------
+create table public.org_invites (
+  id         uuid primary key default gen_random_uuid(),
+  org_id     uuid not null references public.organizations (id) on delete cascade,
+  token      text not null unique,
+  created_by uuid not null references auth.users (id) on delete cascade,
+  expires_at timestamptz,
+  max_uses   int,
+  uses       int not null default 0,
+  revoked    boolean not null default false,
+  created_at timestamptz not null default now()
+);
 
 -- ------------------------------------------------------------------
 -- SHARE_LINKS: QR'ın arkasındaki token (tek kağıt ya da tüm katalog)
@@ -208,6 +239,7 @@ Bugün `consume_photo_quota` trigger'ı yalnızca kişisel `entitlements.is_pro`
 - Kağıdın `org_id`'si varsa ve o kurumun planı aktifse → **kota uygulanmaz**.
 - Kişisel kota hesabı aynı kalır (aynı anda 3 fotoğraflı kağıt, silince hak geri gelir).
 - Kullanıcı "sınırsız" sayılır eğer: kişisel Pro **ya da** aktif planlı bir kurumun üyesiyse.
+- Kurumun planı aktif mi (`org_plan_active`): **aile** için sahibinin `entitlements` satırı (`is_pro and plan='family'`), **işletme** için `organizations.plan='business'`.
 
 ```sql
 create or replace function public.has_unlimited_sheets(p_user uuid)
@@ -217,10 +249,7 @@ returns boolean language sql stable security definer set search_path = public as
                 from public.entitlements where user_id = p_user), false)
     or exists (
       select 1 from public.org_members m
-        join public.organizations o on o.id = m.org_id
-       where m.user_id = p_user
-         and o.plan <> 'none'
-         and (o.plan_until is null or o.plan_until > now())
+       where m.user_id = p_user and public.org_plan_active(m.org_id)
     );
 $$;
 ```
@@ -350,7 +379,10 @@ Sahibi olmadığın kağıtta `saveSheet`/`deleteSheet` **istemci tarafında da*
 **Yeni ekranlar**
 
 - `app/join/[token].tsx` — token kullanma: anonim giriş → `redeem_share_token` → başarılıysa kağıda/kataloğa yönlendir, hata durumunda ("süresi dolmuş", "iptal edilmiş") anlaşılır mesaj.
-- `app/org/index.tsx` — kurum yönetimi: üyeler, davet linki, koltuk sayacı (`3/4`), plan durumu.
+- `app/org/index.tsx` — aile: üyeler, davet linki, koltuk sayacı (`3/5`), plan durumu. "Aile oluştur" adımı yok; plan varsa aile kendiliğinden açılır.
+- `lib/links.ts` — dışa verilen `https` bağlantılar (`EXPO_PUBLIC_LINK_BASE`) + giriş öncesi tıklanan davetin saklanması.
+- `lib/purchases.ts` — RevenueCat bağlantı noktası (`buyPlan`, `restorePurchases`); paywall yalnızca bunu çağırır.
+- `web/index.html` — bağlantı sayfası: `refill://` ile uygulamayı açmayı dener, olmazsa mağaza + "tekrar aç". Faz C'deki `/s/<token>` de aynı sayfadan geçer.
 - `app/org/qr/[sheetId].tsx` — QR göster / yazdır / paylaş; token iptal etme.
 - `app/paywall.tsx` — üç plan gösterecek şekilde güncellenir; Business "bize ulaşın" akışına gider (bkz. §9).
 - `app/(tabs)/index.tsx` — paylaşılan kağıtlar için rozet, sahibi değilse silme butonu gizli.
@@ -404,11 +436,18 @@ Her fazın sonunda uygulama çalışır durumda olmalı.
 - [x] Çıkışta yerel görseller de silinir (gizlilik).
 - [x] `supabase/schema.sql` değişmedi — dosya düzeni korundu (bkz. §3).
 
-### Faz B — Kurumlar ve Aile paketi
-- [ ] `organizations`, `org_members` tabloları + koltuk limiti trigger'ı.
-- [ ] `sheets.org_id` + RLS'in yeniden yazımı (§7) + `has_unlimited_sheets` ile kota entegrasyonu.
-- [ ] `sync.ts` ve `repository.ts` değişiklikleri (§8) + sahiplik rozeti.
-- [ ] Davet akışı (link ile katılma), kurum yönetim ekranı.
+### Faz B — Kurumlar ve Aile paketi — kod tamam, şema uygulanmayı bekliyor
+- [x] `supabase/schema_orgs.sql`: `organizations`, `org_members`, `org_invites`, `share_grants` + koltuk limiti trigger'ı + `create_organization` / `redeem_org_invite` RPC'leri.
+- [x] `sheets.org_id` + RLS'in yeniden yazımı (§7) + `has_unlimited_sheets` ile kota entegrasyonu + storage okuma politikası.
+- [x] `sync.ts` (kurum/üyelik pull, sheets'te user_id filtresinin kaldırılması) ve `repository.ts` (`canEdit`/`source`, `setSheetOrg`, yetkisiz yazma koruması).
+- [x] `lib/orgs.ts`, aile ekranı (`app/org/index.tsx`), davetle katılma (`app/org/join/[token].tsx`), profilde giriş noktası, 13 dilde `org.*` metinleri.
+- [x] (2026-09-09) Koltuk 5; "aile oluştur" adımı kaldırıldı, aile plan görülünce kendiliğinden açılıyor; plan kaynağı `entitlements.plan` + `plan_active` hesaplanmış alanı; davet linki `https` + giriş sonrası bekleyen davet; `lib/purchases.ts` seam'i.
+- [ ] **Şemayı Supabase SQL editöründe çalıştır** — bunsuz aile akışı çalışmaz (uygulama bozulmaz, yalnızca aile kurulamaz). Dosyanın sonundaki doğrulama sorgusunu ve ödeme olmadan denemek için `entitlements` güncelleme örneğini kullan.
+- [ ] `web/` sayfasını yayınla (Vercel/Netlify/GitHub Pages ya da kendi alan adı) ve adresi `EXPO_PUBLIC_LINK_BASE` olarak `.env`'e yaz. Boşken Expo derin bağlantısı üretilir (yalnızca geliştirme).
+- [ ] `web/index.html` içindeki App Store adresi yayınlanınca doldurulacak.
+- [ ] Aile planının satın alınması → Faz E (`buyPlan` gerçek RevenueCat çağrısına bağlanır; webhook `entitlements.plan='family'` yazar).
+
+> Not: `share_grants` tablosu Faz B'de **boş** oluşturuldu. Sebep: RLS politikalarını iki kez yeniden yazmamak. Faz C yalnızca `share_links` + `redeem_share_token` ekleyecek, politikalara dokunmayacak.
 
 ### Faz C — QR ve Business
 - [ ] §0'daki telif kararı verilmiş ve `CLAUDE.md` güncellenmiş olmalı.
@@ -424,14 +463,18 @@ Her fazın sonunda uygulama çalışır durumda olmalı.
 - [ ] Web panel: oyun bazlı oynanma sayısı, saat dağılımı, QR yönetimi.
 
 ### Faz E — Fiyatlandırma
-- [ ] RevenueCat: Bireysel + Aile ürünleri, `entitlements` webhook'u.
+- [ ] RevenueCat: Bireysel + Aile ürünleri; `lib/purchases.ts` içindeki `buyPlan`/`restorePurchases` gerçek çağrılara bağlanır.
+- [ ] Webhook (service role) yalnızca `entitlements` yazar: `is_pro`, `pro_until`, `plan` ('individual' | 'family'). Aile kaydına dokunmaz.
 - [ ] Business: Stripe/fatura + "işletme kodu" eşleme akışı.
 
 ---
 
 ## 12. Test kontrol listesi
 
-- [ ] Aile üyesi kağıdı görüyor, oyun açabiliyor; koltuk limiti dolunca 5. kişi eklenemiyor.
+- [ ] Aile planı olan kullanıcı aile ekranını açınca aile kendiliğinden oluşuyor ve "davet et" görünüyor.
+- [ ] Davetle katılan üye sınırsız fotoğraf kağıdı hakkı alıyor; koltuk limiti dolunca 6. kişi eklenemiyor.
+- [ ] Giriş yapmamış kişi davet linkine tıklayınca giriş sonrası katılma ekranına otomatik dönüyor.
+- [ ] Sahibin planı bitince üyelerin sınırsız hakkı düşüyor, davet butonu kapanıyor.
 - [ ] QR tarayan kullanıcı kağıdı görüyor, oyun açıp kaydedebiliyor; kağıdı **düzenleyemiyor/silemiyor**.
 - [ ] Token iptal edilince erişim anında kesiliyor; süresi dolan grant çalışmıyor.
 - [ ] Başka bir kafenin kağıdı, token olmadan hiçbir sorguda görünmüyor (RLS sızıntı testi).
@@ -449,4 +492,4 @@ Her fazın sonunda uygulama çalışır durumda olmalı.
 2. Telif kararı (§0): devam mı, yoksa paylaşım yalnızca **boş/kullanıcının kendi çizdiği** kağıtlarla mı sınırlansın? İkincisi riski büyük ölçüde kaldırır ama kafe senaryosunu zayıflatır.
 3. Kafe paneli nerede yaşayacak — ayrı bir web uygulaması mı, Expo web mi?
 4. Fiyatlar: kafenin aylık kağıt gideri ne kadar? Çıpa oradan kurulmalı.
-5. Aile paketinde kağıtlar ortak mı olacak, yoksa "benim kağıdım, aileme açtım" mı? (Bu doküman ortak varsayıyor: kağıt `org_id`'ye ait.)
+5. ~~Aile paketinde kağıtlar ortak mı olacak?~~ **Karar (2026-09-09): hayır.** Aile yalnızca koltuk paketidir; kağıt paylaşımı Business/QR'a özeldir (bkz. §0.1).

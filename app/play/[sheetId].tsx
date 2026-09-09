@@ -17,12 +17,12 @@ import { Pencil, Undo2 } from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 import { TopBar } from '@/components/ui';
 import { useAuth } from '@/hooks/useAuth';
-import { getSheet, getSheetRows, saveSession } from '@/lib/db/repository';
+import { getSheet, saveSession } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import InkLayer, { type InkStroke } from '@/components/InkLayer';
 import BlankPaper from '@/components/BlankPaper';
 import { useSheetImage } from '@/hooks/useSheetImage';
-import type { Sheet, SheetRow, StrokePoint } from '@/lib/database.types';
+import type { Sheet, StrokePoint } from '@/lib/database.types';
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -33,13 +33,11 @@ export default function PlayScreen() {
   const { sheetId } = useLocalSearchParams<{ sheetId: string }>();
 
   const [sheet, setSheet] = useState<Sheet | null>(null);
-  const [rows, setRows] = useState<SheetRow[]>([]);
   const [aspect, setAspect] = useState(0.75);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
   const [gameName, setGameName] = useState('');
   const [strokes, setStrokes] = useState<InkStroke[]>([]);
-  const [highlight, setHighlight] = useState<string | null>(null);
   const [live, setLive] = useState<StrokePoint[] | null>(null);
   const [drawing, setDrawing] = useState(false);
   const liveRef = useRef<StrokePoint[] | null>(null);
@@ -49,10 +47,7 @@ export default function PlayScreen() {
   useEffect(() => {
     (async () => {
       if (!sheetId) return;
-      const s = await getSheet(sheetId);
-      const r = await getSheetRows(sheetId);
-      setSheet(s);
-      setRows(r);
+      setSheet(await getSheet(sheetId));
     })();
   }, [sheetId]);
 
@@ -76,19 +71,6 @@ export default function PlayScreen() {
     t: Date.now(),
   });
 
-  const nearestRow = (cy: number): string | null => {
-    let best: string | null = null;
-    let bd = Infinity;
-    for (const r of rows) {
-      const d = Math.abs(r.y - cy);
-      if (d < bd) {
-        bd = d;
-        best = r.id;
-      }
-    }
-    return best;
-  };
-
   const start = (e: GestureResponderEvent) => {
     setDrawing(true);
     liveRef.current = [pt(e)];
@@ -105,10 +87,9 @@ export default function PlayScreen() {
     liveRef.current = null;
     setLive(null);
     if (p && p.length > 1) {
-      const cy = p.reduce((a, q) => a + q.y, 0) / p.length;
-      const rowId = nearestRow(cy);
-      setStrokes((prev) => [...prev, { rowId, points: p }]);
-      setHighlight(rowId);
+      // Satır işaretleme kaldırıldı: iz bir satıra bağlanmaz, kağıdın
+      // tamamı yazı alanıdır (rowId her zaman boş).
+      setStrokes((prev) => [...prev, { rowId: null, points: p }]);
     }
   };
 
@@ -126,9 +107,6 @@ export default function PlayScreen() {
     sync(userId).catch(() => {});
     router.replace(`/history/${sheet.id}`);
   };
-
-  const highlightY =
-    highlight != null ? rows.find((r) => r.id === highlight)?.y ?? null : null;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -191,7 +169,6 @@ export default function PlayScreen() {
               current={live}
               width={size.w}
               height={size.h}
-              highlightY={highlightY}
             />
             <View
               style={StyleSheet.absoluteFill}

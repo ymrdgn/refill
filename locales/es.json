@@ -36,20 +36,17 @@
     "newSheetPhoto": "Desde foto",
     "newSheetBlank": "Hoja en blanco",
     "empty": "Aún no hay hojas. Añade la primera con el botón de arriba.",
-    "meta": "{{rows}} filas · {{sessions}} partidas",
+    "meta": "{{sessions}} partidas",
     "newGame": "Nueva partida",
     "history": "Historial",
     "untitled": "Hoja sin título",
     "deleteConfirm": "¿Eliminar esta hoja y todas sus partidas?"
   },
   "setup": {
-    "title": "Marcar filas",
-    "hint": "Toca a la altura de cada fila de puntuación: lo que escribas quedará asociado a esa fila. Toca una línea de nuevo para quitarla.",
+    "title": "Nombra la hoja",
+    "hint": "Si quieres, ponle un nombre a la hoja. Durante la partida escribes directamente sobre ella.",
     "namePlaceholder": "Ponle un nombre a la hoja",
-    "rowPlaceholder": "Fila {{n}} (nombre opcional)",
-    "save": "Guardar",
-    "needImage": "Elige una foto primero.",
-    "pickImage": "Elegir foto"
+    "save": "Guardar"
   },
   "tools": {
     "title": "Herramientas",
@@ -84,17 +81,21 @@
     "cta": "Hazte Pro",
     "comingSoon": "Las compras estarán disponibles muy pronto. ¡Atento!",
     "restore": "Restaurar compra",
-    "later": "Quizá más tarde"
+    "later": "Quizá más tarde",
+    "planIndividual": "Individual",
+    "planFamily": "Familia",
+    "familySeats": "Para {{seats}} personas",
+    "feature4": "Hojas con foto ilimitadas para hasta {{seats}} personas",
+    "ctaFamily": "Obtener Familia",
+    "priceSoon": "Precio muy pronto",
+    "business": "¿Eres una empresa? Escríbenos",
+    "perYear": "/ año"
   },
   "play": {
     "namePlaceholder": "Nombre de la partida (p. ej. Viernes por la noche)",
     "writeHint": "Escribe en la hoja con el dedo o el lápiz",
     "undo": "Deshacer",
-    "recognized": "Valores reconocidos",
-    "recognizedHint": "escribir a mano · automático en la Fase 5",
-    "written": "✏ escrito",
-    "save": "Guardar partida",
-    "rowFallback": "Fila {{n}}"
+    "save": "Guardar partida"
   },
   "history": {
     "title": "Historial",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Datos guardados"
+  },
+  "org": {
+    "title": "Familia",
+    "defaultName": "Mi familia",
+    "pitchTitle": "Plan Familia",
+    "pitchText": "Todos en tu familia tienen hojas con foto ilimitadas. Hasta {{seats}} personas.",
+    "setupFailed": "No se pudo crear tu familia. Comprueba tu conexión e inténtalo de nuevo.",
+    "retry": "Reintentar",
+    "shared": "Compartido",
+    "members": "Miembros",
+    "seats": "{{used}}/{{total}} plazas",
+    "invite": "Invitar a alguien",
+    "inviteMessage": "Únete a mi familia en Refill:",
+    "you": "Tú",
+    "member": "Miembro",
+    "remove": "Quitar",
+    "role_owner": "Propietario",
+    "role_admin": "Administrador",
+    "role_member": "Miembro",
+    "leave": "Salir de la familia",
+    "leaveConfirm": "Perderás las hojas con foto ilimitadas de la familia.",
+    "planInactive": "El plan Familia no está activo",
+    "planInactiveHint": "Renueva el plan Familia para que hasta {{seats}} personas sigan teniendo hojas con foto ilimitadas.",
+    "goFamily": "Ver planes",
+    "joinTitle": "Unirse a la familia",
+    "joining": "Uniéndose…",
+    "joinSuccess": "¡Ya estás dentro!",
+    "joinSuccessHint": "Ahora tienes hojas con foto ilimitadas.",
+    "joinInvalid": "Este enlace de invitación no es válido o ha caducado.",
+    "joinFull": "La familia está llena",
+    "joinFullHint": "Todas las plazas están ocupadas o la familia no tiene un plan activo.",
+    "goToSheets": "Ir a mis hojas"
   },
   "profile": {
     "title": "Perfil",

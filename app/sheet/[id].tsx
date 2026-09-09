@@ -1,4 +1,13 @@
-import { useCallback, useEffect, useState } from 'react';
+/**
+ * Kağıt kurulumu — isim ver, önizle, kaydet.
+ *
+ * Satır işaretleme adımı kaldırıldı (2026-09-09): kullanıcı oyun sırasında
+ * kağıdın TAMAMINA yazar, izler bir satıra bağlanmaz (strokes.row_id boş).
+ * sheet_rows tablosu şemada duruyor; tanıma fazı gelirse satırlar otomatik
+ * tespit ya da sonradan tanımlama ile eklenir. Eski kağıtların satırları
+ * silinmez, olduğu gibi korunur.
+ */
+import { useEffect, useState } from 'react';
 import {
   Image,
   Pressable,
@@ -7,7 +16,6 @@ import {
   Text,
   TextInput,
   View,
-  type GestureResponderEvent,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -19,14 +27,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { getSheet, getSheetRows, saveSheet } from '@/lib/db/repository';
 import { sync } from '@/lib/db/sync';
 import { getSheetDraft, clearSheetDraft } from '@/lib/draft';
-import { uuid } from '@/lib/uuid';
 import { useSheetImage } from '@/hooks/useSheetImage';
-
-interface RowDraft {
-  id: string;
-  y: number;
-  label: string;
-}
+import type { SheetRow } from '@/lib/database.types';
 
 export default function SheetSetupScreen() {
   const router = useRouter();
@@ -38,8 +40,8 @@ export default function SheetSetupScreen() {
   /** Kaydedilecek değer: taslakta ham URI, mevcut kağıtta Storage yolu. */
   const [imagePath, setImagePath] = useState<string | null>(null);
   const [name, setName] = useState('');
-  const [rows, setRows] = useState<RowDraft[]>([]);
-  const [imgHeight, setImgHeight] = useState(0);
+  /** Eski kağıtlardan kalan satırlar; düzenlemede olduğu gibi geri yazılır. */
+  const [rows, setRows] = useState<SheetRow[]>([]);
   const [aspect, setAspect] = useState(0.75); // w/h fallback
 
   /** Ekranda gösterilecek URI (yerel dosya ya da imzalı URL). */
@@ -55,10 +57,9 @@ export default function SheetSetupScreen() {
         setRows([]);
       } else if (id) {
         const sheet = await getSheet(id);
-        const existing = await getSheetRows(id);
         setImagePath(sheet?.image_path ?? null);
         setName(sheet?.name ?? '');
-        setRows(existing.map((r) => ({ id: r.id, y: r.y, label: r.label })));
+        setRows(await getSheetRows(id));
       }
     })();
   }, [id, isNew]);
@@ -72,31 +73,6 @@ export default function SheetSetupScreen() {
       () => setAspect(0.75)
     );
   }, [imageUri]);
-
-  // Foto'ya dokun: yakın bir çizgi varsa onu kaldır (toggle), yoksa yeni satır ekle.
-  const TAP_THRESHOLD = 0.025; // ekran yüksekliğinin ~%2.5'i
-  const addRow = useCallback(
-    (e: GestureResponderEvent) => {
-      if (!imgHeight) return;
-      const y = Math.min(1, Math.max(0, e.nativeEvent.locationY / imgHeight));
-      setRows((prev) => {
-        let nearest: RowDraft | null = null;
-        let nd = Infinity;
-        for (const r of prev) {
-          const d = Math.abs(r.y - y);
-          if (d < nd) {
-            nd = d;
-            nearest = r;
-          }
-        }
-        if (nearest && nd <= TAP_THRESHOLD) {
-          return prev.filter((r) => r.id !== nearest!.id);
-        }
-        return [...prev, { id: uuid(), y, label: '' }].sort((a, b) => a.y - b.y);
-      });
-    },
-    [imgHeight]
-  );
 
   const save = async () => {
     if (!userId) return;
@@ -126,7 +102,10 @@ export default function SheetSetupScreen() {
         }
       />
 
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView
+        contentContainerStyle={styles.body}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.hint}>{t('setup.hint')}</Text>
 
         <TextInput
@@ -135,13 +114,12 @@ export default function SheetSetupScreen() {
           onChangeText={setName}
           placeholder={t('setup.namePlaceholder')}
           placeholderTextColor={colors.inkSoft}
+          autoFocus={isNew}
+          returnKeyType="done"
+          onSubmitEditing={save}
         />
 
-        <Pressable
-          style={styles.imageWrap}
-          onPress={addRow}
-          onLayout={(e) => setImgHeight(e.nativeEvent.layout.height)}
-        >
+        <View style={styles.imageWrap}>
           {imageUri ? (
             <Image
               source={{ uri: imageUri }}
@@ -151,13 +129,7 @@ export default function SheetSetupScreen() {
           ) : (
             <BlankPaper />
           )}
-          {rows.map((r) => (
-            <View
-              key={r.id}
-              style={[styles.rowLine, { top: `${r.y * 100}%` }]}
-            />
-          ))}
-        </Pressable>
+        </View>
 
         <View style={{ height: 24 }} />
       </ScrollView>
@@ -206,14 +178,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.line,
     backgroundColor: colors.surface,
-  },
-  rowLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 0,
-    borderTopWidth: 2,
-    borderTopColor: colors.accent,
-    borderStyle: 'dashed',
   },
 });

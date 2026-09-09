@@ -12,6 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { supabase } from '@/lib/supabase';
+import { openedWithDeepLink } from '@/lib/links';
 import { colors } from '@/lib/theme';
 import '@/i18n'; // Initialize i18n
 import { initializeLanguage } from '@/i18n';
@@ -19,6 +20,9 @@ import { initializeLanguage } from '@/i18n';
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 async function routeAfterAuth(router: ReturnType<typeof useRouter>) {
+  // Davet bağlantısıyla açıldıysa expo-router rotayı zaten kurdu; üzerine
+  // yazma. Oturum yoksa o ekran kendisi girişe yönlendirir.
+  if (await openedWithDeepLink()) return;
   const { data } = await supabase.auth.getSession();
   if (data.session) {
     router.replace('/(tabs)');

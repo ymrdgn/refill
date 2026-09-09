@@ -12,6 +12,7 @@ import * as local from './local';
 import type { OutboxEntry } from './local';
 import { removeRemoteImage, uploadImage } from '../images';
 import { migrateLegacyImages } from './repository';
+import type { Organization } from '../database.types';
 
 let syncing = false;
 
@@ -89,13 +90,20 @@ export async function pushImages(): Promise<number> {
 
 /** Kullanıcının tüm verisini Supabase'den çekip yereli günceller. */
 export async function pullAll(userId: string): Promise<number> {
-  // sheets + sessions doğrudan user_id ile
-  const { data: sheets, error: e1 } = await supabase
-    .from('sheets')
-    .select('*')
-    .eq('user_id', userId);
+  // Kurumlar ve üyelikler. plan_active sunucuda hesaplanır (aile için
+  // sahibinin entitlement'ına bakar); istemci plan sütununu okumaz.
+  const { data: orgs } = await supabase
+    .from('organizations')
+    .select('*, plan_active')
+    .returns<Organization[]>();
+  const { data: members } = await supabase.from('org_members').select('*');
+
+  // sheets: user_id filtresi YOK — RLS zaten görebildiklerimizi döndürür
+  // (kendi kağıtlarım + üyesi olduğum kurumun kağıtları + grant'lerim).
+  const { data: sheets, error: e1 } = await supabase.from('sheets').select('*');
   if (e1) throw e1;
 
+  // sessions her zaman bana ait (RLS de böyle kısıtlıyor).
   const { data: sessions, error: e2 } = await supabase
     .from('sessions')
     .select('*')
@@ -124,6 +132,8 @@ export async function pullAll(userId: string): Promise<number> {
     : [];
 
   // Yereli sunucu gerçeğiyle değiştir (push zaten önce çalıştı).
+  await local.setAll('organizations', orgs ?? []);
+  await local.setAll('org_members', members ?? []);
   await local.setAll('sheets', sheets ?? []);
   await local.setAll('sheet_rows', sheetRows as any);
   await local.setAll('sessions', sessions ?? []);

@@ -20,15 +20,15 @@ Her faz sonunda uygulama **çalışır** olmalı. Sırayla ilerle; tanımayı en
 - [ ] Repository katmanı: tüm okuma/yazma **önce yerelde**. Yazmalar bir `outbox` tablosuna iş kaydı bırakır.
 - [ ] Basit senkron servis: online olunca outbox → Supabase push; sonra pull (updated_at). İlk sürüm: son-yazan-kazanır.
 
-## Faz 3 — Kağıt ekleme & satır işaretleme
-- [ ] Home: kullanıcının sheet'leri (thumbnail + ad + satır/oyun sayısı), "Yeni kağıt ekle".
-- [ ] `expo-image-picker` ile kamera/galeriden foto; yerele kaydet, Storage'a yükle, `image_path` sakla.
-- [ ] Sheet setup: foto üzerinde dokunarak satır (y oranı) ekleme, satır etiketi (opsiyonel), sürükle/sil. Oran tabanlı sakla.
+## Faz 3 — Kağıt ekleme
+- [x] Home: kullanıcının sheet'leri (thumbnail + ad + oyun sayısı), "Yeni kağıt ekle".
+- [x] `expo-image-picker` ile kamera/galeriden foto; yerele kaydet, Storage'a yükle, `image_path` sakla.
+- [x] Sheet setup: foto önizleme + isim. ~~Satır işaretleme~~ **kaldırıldı (2026-09-09)**: kullanıcı kağıdın tamamına yazar; satırlar tanıma fazına ertelendi.
 
 ## Faz 4 — Kalemle yazma (çekirdek deneyim)
 - [ ] Çizim view'i: `react-native-gesture-handler` Pan + Skia/SVG ile canlı çizim.
-- [ ] Noktaları orana çevir (`0..1`), her noktaya zaman damgası ekle. Pen-up'ta stroke'u en yakın `row.y`'ye ata.
-- [ ] "Tanınan değerler" paneli: her satır için değer alanı (şimdilik elle girilir/onaylanır), inkli satır vurgulanır.
+- [x] Noktaları orana çevir (`0..1`), her noktaya zaman damgası ekle. ~~Pen-up'ta stroke'u en yakın `row.y`'ye ata~~ (satır yok; `row_id` boş).
+- [ ] ~~"Tanınan değerler" paneli~~ → Faz 5'e taşındı (satırlar olmadan anlamsız).
 - [ ] Undo (son stroke), oyun adı, kaydet. Kayıtta strokes + values yerele yazılır, senkron kuyruğa girer.
 - [ ] History + Session detay (salt-okunur: foto + ink + değerler).
 
@@ -39,6 +39,7 @@ Her faz sonunda uygulama **çalışır** olmalı. Sırayla ilerle; tanımayı en
 - [ ] Çalışmazsa **Expo Modules API** ile native modül yaz:
   - Android: `com.google.mlkit:digital-ink-recognition`, model indir (`en-US`), `Ink` (stroke + timestamped points) → `DigitalInkRecognizer.recognize()`.
   - iOS: pod `GoogleMLKit/DigitalInkRecognition`, gerçek cihaz (simülatör desteklemez).
+- [ ] Satırları **kullanıcıya işaretletmeden** elde et: görüntüden yatay çizgi tespiti ya da izlerin y-kümelenmesi; gerekirse "satırları düzenle" ekranı sonradan.
 - [ ] Her satırın strokeları → o satırın yazı-alanı boyutuyla, tek satır olarak recognize → sonucu o satırın `value`'suna **öneri** olarak koy. Kullanıcı onaylar/düzeltir (asla otomatik kabul etme).
 - [ ] Doğruluk ayarı: yazı alanını recognizer'a bildir; gerekiyorsa rakam ön-bağlamı ver.
 

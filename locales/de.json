@@ -36,20 +36,17 @@
     "newSheetPhoto": "Aus Foto",
     "newSheetBlank": "Leeres Blatt",
     "empty": "Noch keine Blätter. Füge dein erstes mit der Schaltfläche oben hinzu.",
-    "meta": "{{rows}} Zeilen · {{sessions}} Spiele",
+    "meta": "{{sessions}} Spiele",
     "newGame": "Neues Spiel",
     "history": "Verlauf",
     "untitled": "Unbenanntes Blatt",
     "deleteConfirm": "Dieses Blatt und alle zugehörigen Spiele löschen?"
   },
   "setup": {
-    "title": "Zeilen markieren",
-    "hint": "Tippe auf Höhe jeder Punktzeile — Geschriebenes wird dieser Zeile zugeordnet. Tippe erneut auf eine Linie, um sie zu entfernen.",
+    "title": "Blatt benennen",
+    "hint": "Gib dem Blatt bei Bedarf einen Namen. Während des Spiels schreibst du direkt darauf.",
     "namePlaceholder": "Gib dem Blatt einen Namen",
-    "rowPlaceholder": "Zeile {{n}} (optionaler Name)",
-    "save": "Speichern",
-    "needImage": "Wähle zuerst ein Foto.",
-    "pickImage": "Foto wählen"
+    "save": "Speichern"
   },
   "tools": {
     "title": "Werkzeuge",
@@ -84,17 +81,21 @@
     "cta": "Pro werden",
     "comingSoon": "Käufe sind bald verfügbar. Bleib dran!",
     "restore": "Kauf wiederherstellen",
-    "later": "Vielleicht später"
+    "later": "Vielleicht später",
+    "planIndividual": "Einzeln",
+    "planFamily": "Familie",
+    "familySeats": "Für {{seats}} Personen",
+    "feature4": "Unbegrenzt Foto-Blätter für bis zu {{seats}} Personen",
+    "ctaFamily": "Familie holen",
+    "priceSoon": "Preis folgt in Kürze",
+    "business": "Sind Sie ein Unternehmen? Schreiben Sie uns",
+    "perYear": "/ Jahr"
   },
   "play": {
     "namePlaceholder": "Spielname (z. B. Freitagabend)",
     "writeHint": "Schreibe mit Finger oder Stift auf das Blatt",
     "undo": "Rückgängig",
-    "recognized": "Erkannte Werte",
-    "recognizedHint": "manuell eingeben · automatisch in Phase 5",
-    "written": "✏ geschrieben",
-    "save": "Spiel speichern",
-    "rowFallback": "Zeile {{n}}"
+    "save": "Spiel speichern"
   },
   "history": {
     "title": "Verlauf",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Gespeicherte Daten"
+  },
+  "org": {
+    "title": "Familie",
+    "defaultName": "Meine Familie",
+    "pitchTitle": "Familien-Abo",
+    "pitchText": "Alle in deiner Familie bekommen unbegrenzt Foto-Blätter. Bis zu {{seats}} Personen.",
+    "setupFailed": "Deine Familie konnte nicht eingerichtet werden. Prüfe deine Verbindung und versuche es erneut.",
+    "retry": "Erneut versuchen",
+    "shared": "Geteilt",
+    "members": "Mitglieder",
+    "seats": "{{used}}/{{total}} Plätze",
+    "invite": "Jemanden einladen",
+    "inviteMessage": "Tritt meiner Familie bei Refill bei:",
+    "you": "Du",
+    "member": "Mitglied",
+    "remove": "Entfernen",
+    "role_owner": "Inhaber",
+    "role_admin": "Admin",
+    "role_member": "Mitglied",
+    "leave": "Familie verlassen",
+    "leaveConfirm": "Du verlierst die unbegrenzten Foto-Blätter der Familie.",
+    "planInactive": "Familien-Abo ist nicht aktiv",
+    "planInactiveHint": "Verlängere das Familien-Abo, damit bis zu {{seats}} Personen weiter unbegrenzt Foto-Blätter haben.",
+    "goFamily": "Pakete ansehen",
+    "joinTitle": "Familie beitreten",
+    "joining": "Beitritt läuft …",
+    "joinSuccess": "Du bist dabei!",
+    "joinSuccessHint": "Du hast jetzt unbegrenzt Foto-Blätter.",
+    "joinInvalid": "Dieser Einladungslink ist ungültig oder abgelaufen.",
+    "joinFull": "Die Familie ist voll",
+    "joinFullHint": "Alle Plätze sind belegt oder die Familie hat kein aktives Abo.",
+    "goToSheets": "Zu meinen Blättern"
   },
   "profile": {
     "title": "Profil",

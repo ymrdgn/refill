@@ -36,20 +36,17 @@
     "newSheetPhoto": "From photo",
     "newSheetBlank": "Blank sheet",
     "empty": "No sheets yet. Add your first with the button above.",
-    "meta": "{{rows}} rows · {{sessions}} games",
+    "meta": "{{sessions}} games",
     "newGame": "New game",
     "history": "History",
     "untitled": "Untitled sheet",
     "deleteConfirm": "Delete this sheet and all its games?"
   },
   "setup": {
-    "title": "Mark rows",
-    "hint": "Tap at each score row — writing binds to that row. Tap a line again to remove it.",
+    "title": "Name your sheet",
+    "hint": "Give the sheet a name if you like. During a game you write directly on it.",
     "namePlaceholder": "Give the sheet a name",
-    "rowPlaceholder": "Row {{n}} (optional name)",
-    "save": "Save",
-    "needImage": "Pick a photo first.",
-    "pickImage": "Pick photo"
+    "save": "Save"
   },
   "tools": {
     "title": "Tools",
@@ -84,17 +81,21 @@
     "cta": "Go Pro",
     "comingSoon": "Purchases will be available very soon. Stay tuned!",
     "restore": "Restore purchase",
-    "later": "Maybe later"
+    "later": "Maybe later",
+    "planIndividual": "Individual",
+    "planFamily": "Family",
+    "familySeats": "For {{seats}} people",
+    "feature4": "Unlimited photo sheets for up to {{seats}} people",
+    "ctaFamily": "Get Family",
+    "priceSoon": "Price coming soon",
+    "business": "Are you a business? Write to us",
+    "perYear": "/ year"
   },
   "play": {
     "namePlaceholder": "Game name (e.g. Friday night)",
     "writeHint": "Write on the sheet with your finger/pen",
     "undo": "Undo",
-    "recognized": "Recognized values",
-    "recognizedHint": "type manually · auto in Phase 5",
-    "written": "✏ written",
-    "save": "Save game",
-    "rowFallback": "Row {{n}}"
+    "save": "Save game"
   },
   "history": {
     "title": "History",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Saved data"
+  },
+  "org": {
+    "title": "Family",
+    "defaultName": "My family",
+    "pitchTitle": "Family plan",
+    "pitchText": "Everyone in your family gets unlimited photo sheets. Up to {{seats}} people.",
+    "setupFailed": "Your family couldn't be set up. Check your connection and try again.",
+    "retry": "Try again",
+    "shared": "Shared",
+    "members": "Members",
+    "seats": "{{used}}/{{total}} seats",
+    "invite": "Invite someone",
+    "inviteMessage": "Join my family on Refill:",
+    "you": "You",
+    "member": "Member",
+    "remove": "Remove",
+    "role_owner": "Owner",
+    "role_admin": "Admin",
+    "role_member": "Member",
+    "leave": "Leave family",
+    "leaveConfirm": "You will lose the family's unlimited photo sheets.",
+    "planInactive": "Family plan is not active",
+    "planInactiveHint": "Renew the Family plan so up to {{seats}} people keep unlimited photo sheets.",
+    "goFamily": "See plans",
+    "joinTitle": "Join family",
+    "joining": "Joining…",
+    "joinSuccess": "You're in!",
+    "joinSuccessHint": "You now have unlimited photo sheets.",
+    "joinInvalid": "This invite link is invalid or has expired.",
+    "joinFull": "The family is full",
+    "joinFullHint": "All seats are taken, or the family has no active plan.",
+    "goToSheets": "Go to my sheets"
   },
   "profile": {
     "title": "Profile",

@@ -36,20 +36,17 @@
     "newSheetPhoto": "Da foto",
     "newSheetBlank": "Foglio vuoto",
     "empty": "Ancora nessun foglio. Aggiungi il primo con il pulsante qui sopra.",
-    "meta": "{{rows}} righe · {{sessions}} partite",
+    "meta": "{{sessions}} partite",
     "newGame": "Nuova partita",
     "history": "Cronologia",
     "untitled": "Foglio senza titolo",
     "deleteConfirm": "Eliminare questo foglio e tutte le sue partite?"
   },
   "setup": {
-    "title": "Segna le righe",
-    "hint": "Tocca all'altezza di ogni riga di punteggio: ciò che scrivi verrà collegato a quella riga. Tocca di nuovo una linea per rimuoverla.",
+    "title": "Nome del foglio",
+    "hint": "Se vuoi, dai un nome al foglio. Durante la partita scrivi direttamente sopra.",
     "namePlaceholder": "Dai un nome al foglio",
-    "rowPlaceholder": "Riga {{n}} (nome facoltativo)",
-    "save": "Salva",
-    "needImage": "Scegli prima una foto.",
-    "pickImage": "Scegli foto"
+    "save": "Salva"
   },
   "tools": {
     "title": "Strumenti",
@@ -84,17 +81,21 @@
     "cta": "Passa a Pro",
     "comingSoon": "Gli acquisti saranno disponibili molto presto. Resta sintonizzato!",
     "restore": "Ripristina acquisto",
-    "later": "Forse più tardi"
+    "later": "Forse più tardi",
+    "planIndividual": "Individuale",
+    "planFamily": "Famiglia",
+    "familySeats": "Per {{seats}} persone",
+    "feature4": "Fogli da foto illimitati per un massimo di {{seats}} persone",
+    "ctaFamily": "Passa a Famiglia",
+    "priceSoon": "Prezzo in arrivo",
+    "business": "Sei un'azienda? Scrivici",
+    "perYear": "/ anno"
   },
   "play": {
     "namePlaceholder": "Nome della partita (es. Venerdì sera)",
     "writeHint": "Scrivi sul foglio con il dito o la penna",
     "undo": "Annulla",
-    "recognized": "Valori riconosciuti",
-    "recognizedHint": "inserimento manuale · automatico nella Fase 5",
-    "written": "✏ scritto",
-    "save": "Salva partita",
-    "rowFallback": "Riga {{n}}"
+    "save": "Salva partita"
   },
   "history": {
     "title": "Cronologia",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Dati salvati"
+  },
+  "org": {
+    "title": "Famiglia",
+    "defaultName": "La mia famiglia",
+    "pitchTitle": "Piano Famiglia",
+    "pitchText": "Tutti nella tua famiglia hanno fogli da foto illimitati. Fino a {{seats}} persone.",
+    "setupFailed": "Impossibile creare la tua famiglia. Controlla la connessione e riprova.",
+    "retry": "Riprova",
+    "shared": "Condiviso",
+    "members": "Membri",
+    "seats": "{{used}}/{{total}} posti",
+    "invite": "Invita qualcuno",
+    "inviteMessage": "Unisciti alla mia famiglia su Refill:",
+    "you": "Tu",
+    "member": "Membro",
+    "remove": "Rimuovi",
+    "role_owner": "Proprietario",
+    "role_admin": "Amministratore",
+    "role_member": "Membro",
+    "leave": "Esci dalla famiglia",
+    "leaveConfirm": "Perderai i fogli da foto illimitati della famiglia.",
+    "planInactive": "Il piano Famiglia non è attivo",
+    "planInactiveHint": "Rinnova il piano Famiglia perché fino a {{seats}} persone continuino ad avere fogli da foto illimitati.",
+    "goFamily": "Vedi i piani",
+    "joinTitle": "Entra nella famiglia",
+    "joining": "Ingresso in corso…",
+    "joinSuccess": "Sei dentro!",
+    "joinSuccessHint": "Ora hai fogli da foto illimitati.",
+    "joinInvalid": "Questo link di invito non è valido o è scaduto.",
+    "joinFull": "La famiglia è al completo",
+    "joinFullHint": "Tutti i posti sono occupati oppure la famiglia non ha un piano attivo.",
+    "goToSheets": "Vai ai miei fogli"
   },
   "profile": {
     "title": "Profilo",

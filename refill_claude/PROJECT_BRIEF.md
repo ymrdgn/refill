@@ -6,18 +6,20 @@ Masaüstü oyunlarının (örn. arazi yerleştirme / habitat puanlama tarzı oyu
 Bu yaklaşım aynı zamanda **hukuki açıdan en güvenli** olandır: uygulama hiçbir telifli içerik barındırmaz; kağıt görseli kullanıcının kişisel kopyasıdır ve özel kalır.
 
 ## 2. Temel kavramlar (veri modeli mantığı)
-- **Sheet (Kağıt / layout):** bir fotoğraf + o fotoğraf üzerinde tanımlı **satırlar**. Bir kez kurulur, defalarca kullanılır.
-- **Row (Satır):** kağıttaki bir puan satırı. Sadece bir `y` oranı (0..1) ve opsiyonel bir etiket (ör. "Ayı"). Etiketi kullanıcı ister verir; jeneriktir, markayla ilgisi yoktur.
-- **Session (Oyun):** bir kağıdın tek bir oynanışı. İçinde: oyun adı, tarih, **strokes** (kalem izleri) ve **values** (her satırın tanınan/onaylanan değeri).
-- **Stroke (Kalem izi):** oran tabanlı nokta dizisi `[{x,y}, ...]` + bağlandığı `rowId`. Görsel olarak el yazısını, veri olarak hangi satıra ait olduğunu taşır.
+> **Güncelleme (2026-09-09):** satır işaretleme adımı üründen kaldırıldı. Kağıt = foto (+ isim); kullanıcı kağıdın tamamına yazar. `Row` ve `values` kavramları şemada durur ama arayüzde yoktur; tanıma fazı gelirse satırlar otomatik tespit / sonradan tanımlama ile eklenir.
+
+- **Sheet (Kağıt / layout):** bir fotoğraf (ya da boş çizgili kağıt) + isim. Bir kez eklenir, defalarca kullanılır.
+- **Row (Satır) — ertelendi:** kağıttaki bir puan satırı. Sadece bir `y` oranı (0..1) ve opsiyonel bir etiket. Şu an oluşturulmuyor.
+- **Session (Oyun):** bir kağıdın tek bir oynanışı. İçinde: oyun adı, tarih, **strokes** (kalem izleri). `values` (satır başına değer) tanıma fazına kadar boş.
+- **Stroke (Kalem izi):** oran tabanlı nokta dizisi `[{x,y,t}, ...]`. `rowId` alanı şemada var ama boş yazılır.
 
 Önemli ilke: **uygulama tahtayı/fotoğrafı analiz etmez.** Kullanıcı yazar; uygulama yazıyı satıra göre gruplar, (Faz 2'de) tanır ve saklar. Toplam puanı kullanıcı kendi kağıdına yazar — uygulama otomatik toplam yapmaz (kapsam dışı, basit tut).
 
 ## 3. Ekranlar
 1. **Auth** — Supabase e-posta/parola (veya magic link). 
 2. **Kağıtlarım (Home)** — kullanıcının sheet'leri (thumbnail + ad + satır/oyun sayısı). "Yeni kağıt ekle" (kamera/galeri).
-3. **Satırları işaretle (Sheet setup)** — fotoğraf gösterilir; kullanıcı her puan satırının hizasına dokunarak satır (y oranı) ekler; opsiyonel isim verir; kaydeder. Satırlar sürüklenip silinebilir.
-4. **Oyun (Play / write)** — fotoğraf + üstüne **kalemle yazma**. Kalem izleri canlı çizilir, pen-up'ta en yakın satıra bağlanır. Altta "Tanınan değerler" paneli: her satırın değeri (Faz 2'de tanıma otomatik doldurur; her zaman elle düzeltilebilir). Üstte oyun adı, "geri al" (undo), "kaydet".
+3. **Kağıda isim ver (Sheet setup)** — fotoğraf önizlenir, opsiyonel isim verilir, kaydedilir. (Satır işaretleme kaldırıldı.)
+4. **Oyun (Play / write)** — fotoğraf + üstüne **kalemle yazma**. Kalem izleri canlı çizilir; kağıdın tamamı yazı alanıdır. Üstte oyun adı, "geri al" (undo), "kaydet". ("Tanınan değerler" paneli tanıma fazına ertelendi.)
 5. **Geçmiş (History)** — bir kağıdın oynanışları (ad + tarih). Tıklayınca:
 6. **Oyun detayı (Session, salt-okunur)** — fotoğraf + kalem izleri + kaydedilen değerler.
 
@@ -25,7 +27,7 @@ Bu yaklaşım aynı zamanda **hukuki açıdan en güvenli** olandır: uygulama h
 ### Yakalama (capture)
 - Çizim alanı, fotoğrafı saran bir view. `react-native-gesture-handler` Pan gesture ile dokunuş noktaları toplanır.
 - Her nokta **oran**a çevrilir: `x = (touchX - layoutX) / width`, `y = (touchY - layoutY) / height`, `0..1`'e clamp.
-- Pen-down → yeni stroke; pen-move → nokta ekle (canlı render `@shopify/react-native-skia` veya `react-native-svg` polyline); pen-up → stroke biter, **satıra atanır**: strokun ortalama `y`'sine en yakın `row.y`.
+- Pen-down → yeni stroke; pen-move → nokta ekle (canlı render `react-native-svg` polyline); pen-up → stroke biter ve kaydedilir (satıra atama yok; tanıma fazında gerekirse strokun ortalama `y`'sine en yakın satır bulunabilir).
 - Strokeları oran olarak sakla; render ederken ekran boyutuyla çarp. Skia tercih (akıcı, basınç/temiz çizgi); SVG basit alternatif.
 
 ### Tanıma (recognition) — Faz 2

@@ -36,20 +36,17 @@
     "newSheetPhoto": "Depuis une photo",
     "newSheetBlank": "Feuille vierge",
     "empty": "Aucune feuille pour l'instant. Ajoutez la première avec le bouton ci-dessus.",
-    "meta": "{{rows}} lignes · {{sessions}} parties",
+    "meta": "{{sessions}} parties",
     "newGame": "Nouvelle partie",
     "history": "Historique",
     "untitled": "Feuille sans titre",
     "deleteConfirm": "Supprimer cette feuille et toutes ses parties ?"
   },
   "setup": {
-    "title": "Marquer les lignes",
-    "hint": "Touchez à hauteur de chaque ligne de score — ce que vous écrivez y sera rattaché. Touchez une ligne à nouveau pour la retirer.",
+    "title": "Nommer la feuille",
+    "hint": "Donnez un nom à la feuille si vous le souhaitez. Pendant la partie, vous écrivez directement dessus.",
     "namePlaceholder": "Donnez un nom à la feuille",
-    "rowPlaceholder": "Ligne {{n}} (nom facultatif)",
-    "save": "Enregistrer",
-    "needImage": "Choisissez d'abord une photo.",
-    "pickImage": "Choisir une photo"
+    "save": "Enregistrer"
   },
   "tools": {
     "title": "Outils",
@@ -84,17 +81,21 @@
     "cta": "Passer à Pro",
     "comingSoon": "Les achats seront disponibles très bientôt. Restez connecté !",
     "restore": "Restaurer l'achat",
-    "later": "Peut-être plus tard"
+    "later": "Peut-être plus tard",
+    "planIndividual": "Individuel",
+    "planFamily": "Famille",
+    "familySeats": "Pour {{seats}} personnes",
+    "feature4": "Feuilles photo illimitées pour jusqu'à {{seats}} personnes",
+    "ctaFamily": "Choisir Famille",
+    "priceSoon": "Prix bientôt disponible",
+    "business": "Vous êtes une entreprise ? Écrivez-nous",
+    "perYear": "/ an"
   },
   "play": {
     "namePlaceholder": "Nom de la partie (ex. Vendredi soir)",
     "writeHint": "Écrivez sur la feuille avec le doigt ou un stylet",
     "undo": "Annuler",
-    "recognized": "Valeurs reconnues",
-    "recognizedHint": "saisie manuelle · automatique en phase 5",
-    "written": "✏ écrit",
-    "save": "Enregistrer la partie",
-    "rowFallback": "Ligne {{n}}"
+    "save": "Enregistrer la partie"
   },
   "history": {
     "title": "Historique",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Données enregistrées"
+  },
+  "org": {
+    "title": "Famille",
+    "defaultName": "Ma famille",
+    "pitchTitle": "Offre Famille",
+    "pitchText": "Tous les membres de votre famille ont des feuilles photo illimitées. Jusqu'à {{seats}} personnes.",
+    "setupFailed": "Votre famille n'a pas pu être créée. Vérifiez votre connexion et réessayez.",
+    "retry": "Réessayer",
+    "shared": "Partagé",
+    "members": "Membres",
+    "seats": "{{used}}/{{total}} places",
+    "invite": "Inviter quelqu'un",
+    "inviteMessage": "Rejoignez ma famille sur Refill :",
+    "you": "Vous",
+    "member": "Membre",
+    "remove": "Retirer",
+    "role_owner": "Propriétaire",
+    "role_admin": "Administrateur",
+    "role_member": "Membre",
+    "leave": "Quitter la famille",
+    "leaveConfirm": "Vous perdrez les feuilles photo illimitées de la famille.",
+    "planInactive": "L'offre Famille n'est pas active",
+    "planInactiveHint": "Renouvelez l'offre Famille pour que jusqu'à {{seats}} personnes gardent des feuilles photo illimitées.",
+    "goFamily": "Voir les offres",
+    "joinTitle": "Rejoindre la famille",
+    "joining": "Adhésion…",
+    "joinSuccess": "C'est fait !",
+    "joinSuccessHint": "Vous avez maintenant des feuilles photo illimitées.",
+    "joinInvalid": "Ce lien d'invitation est invalide ou a expiré.",
+    "joinFull": "La famille est complète",
+    "joinFullHint": "Toutes les places sont prises ou la famille n'a pas d'offre active.",
+    "goToSheets": "Voir mes feuilles"
   },
   "profile": {
     "title": "Profil",

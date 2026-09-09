@@ -12,6 +12,8 @@ import type {
   Session,
   SessionRow,
   Stroke,
+  Organization,
+  OrgMember,
 } from '../database.types';
 
 const PREFIX = 'refill:v1:';
@@ -21,7 +23,9 @@ export type TableName =
   | 'sheet_rows'
   | 'sessions'
   | 'session_rows'
-  | 'strokes';
+  | 'strokes'
+  | 'organizations'
+  | 'org_members';
 
 /** Outbox: senkronlanmayı bekleyen yerel değişiklikler. */
 export type OutboxOp = 'upsert' | 'delete';
@@ -41,6 +45,9 @@ export interface LocalTables {
   sessions: Session;
   session_rows: SessionRow;
   strokes: Stroke;
+  /** Salt-okunur yereller: yalnızca pull ile dolar, outbox'a girmez. */
+  organizations: Organization;
+  org_members: OrgMember;
 }
 
 const key = (name: string) => `${PREFIX}${name}`;

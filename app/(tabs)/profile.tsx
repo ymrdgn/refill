@@ -12,7 +12,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronDown, LogOut, X } from 'lucide-react-native';
+import {
+  Check,
+  ChevronDown,
+  ChevronRight,
+  LogOut,
+  Users,
+  X,
+} from 'lucide-react-native';
 import { LANGUAGES, findLanguage, isRTL } from '@/lib/languages';
 import { getCurrentUser, signOut } from '@/lib/supabase';
 import { clearAll } from '@/lib/db/local';
@@ -91,6 +98,18 @@ export default function ProfileScreen() {
             </Text>
           </View>
         </View>
+
+        {/* Aile */}
+        <Pressable
+          style={({ pressed }) => [styles.select, pressed && styles.pressed]}
+          onPress={() => router.push('/org')}
+        >
+          <View style={styles.rowLeft}>
+            <Users size={18} color={colors.accent} />
+            <Text style={styles.selectValue}>{t('org.title')}</Text>
+          </View>
+          <ChevronRight size={18} color={colors.inkSoft} />
+        </Pressable>
 
         {/* Dil seçimi */}
         <Text style={styles.sectionLabel}>{t('profile.language')}</Text>
@@ -240,6 +259,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.ink,
   },
+  rowLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   backdrop: {
     flex: 1,
     backgroundColor: 'rgba(30, 58, 51, 0.45)',

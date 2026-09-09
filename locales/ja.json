@@ -36,20 +36,17 @@
     "newSheetPhoto": "写真から",
     "newSheetBlank": "空白のシート",
     "empty": "シートがまだありません。上のボタンから最初の1枚を追加しましょう。",
-    "meta": "{{rows}} 行 · {{sessions}} ゲーム",
+    "meta": "{{sessions}} ゲーム",
     "newGame": "新しいゲーム",
     "history": "履歴",
     "untitled": "名称未設定のシート",
     "deleteConfirm": "このシートとすべてのゲームを削除しますか？"
   },
   "setup": {
-    "title": "行をマーク",
-    "hint": "各得点行の位置をタップします。書いた内容はその行に結び付きます。線をもう一度タップすると削除できます。",
+    "title": "シートの名前",
+    "hint": "必要ならシートに名前を付けてください。ゲーム中はその上に直接書き込めます。",
     "namePlaceholder": "シートに名前を付ける",
-    "rowPlaceholder": "行 {{n}}（任意の名前）",
-    "save": "保存",
-    "needImage": "先に写真を選んでください。",
-    "pickImage": "写真を選ぶ"
+    "save": "保存"
   },
   "tools": {
     "title": "ツール",
@@ -84,17 +81,21 @@
     "cta": "Pro にする",
     "comingSoon": "購入機能はまもなく利用可能になります。お楽しみに！",
     "restore": "購入を復元",
-    "later": "あとで"
+    "later": "あとで",
+    "planIndividual": "個人",
+    "planFamily": "ファミリー",
+    "familySeats": "{{seats}} 人まで",
+    "feature4": "最大 {{seats}} 人まで写真シート無制限",
+    "ctaFamily": "ファミリーにする",
+    "priceSoon": "価格は近日公開",
+    "business": "法人の方はご連絡ください",
+    "perYear": "/ 年"
   },
   "play": {
     "namePlaceholder": "ゲーム名（例：金曜の夜）",
     "writeHint": "指やペンでシートに書き込みます",
     "undo": "元に戻す",
-    "recognized": "認識された値",
-    "recognizedHint": "手入力 · フェーズ5で自動化",
-    "written": "✏ 記入済み",
-    "save": "ゲームを保存",
-    "rowFallback": "行 {{n}}"
+    "save": "ゲームを保存"
   },
   "history": {
     "title": "履歴",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "保存されたデータ"
+  },
+  "org": {
+    "title": "ファミリー",
+    "defaultName": "わたしのファミリー",
+    "pitchTitle": "ファミリープラン",
+    "pitchText": "ファミリー全員が写真シートを無制限に使えます。最大 {{seats}} 人。",
+    "setupFailed": "ファミリーを作成できませんでした。接続を確認してもう一度お試しください。",
+    "retry": "もう一度試す",
+    "shared": "共有",
+    "members": "メンバー",
+    "seats": "{{used}}/{{total}} 席",
+    "invite": "メンバーを招待",
+    "inviteMessage": "Refill のファミリーに参加してね:",
+    "you": "あなた",
+    "member": "メンバー",
+    "remove": "削除",
+    "role_owner": "オーナー",
+    "role_admin": "管理者",
+    "role_member": "メンバー",
+    "leave": "ファミリーを抜ける",
+    "leaveConfirm": "ファミリーの無制限の写真シートが使えなくなります。",
+    "planInactive": "ファミリープランが有効ではありません",
+    "planInactiveHint": "最大 {{seats}} 人が写真シートを無制限に使い続けるには、ファミリープランを更新してください。",
+    "goFamily": "プランを見る",
+    "joinTitle": "ファミリーに参加",
+    "joining": "参加しています…",
+    "joinSuccess": "参加しました！",
+    "joinSuccessHint": "写真シートが無制限になりました。",
+    "joinInvalid": "この招待リンクは無効か、有効期限が切れています。",
+    "joinFull": "ファミリーは満員です",
+    "joinFullHint": "席がすべて埋まっているか、ファミリーに有効なプランがありません。",
+    "goToSheets": "マイシートへ"
   },
   "profile": {
     "title": "プロフィール",

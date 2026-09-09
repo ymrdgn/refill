@@ -13,6 +13,7 @@ import type {
   SessionRow,
   Stroke,
   StrokePoint,
+  OrgMember,
 } from '../database.types';
 import * as local from './local';
 import {
@@ -55,29 +56,88 @@ function enqueueDelete(
 /*  SHEETS                                                            */
 /* ================================================================== */
 export interface SheetSummary extends Sheet {
-  rowCount: number;
   sessionCount: number;
+  /** Kağıdı düzenleyip silebilir miyim? (sahibiyim ya da kurumda yöneticiyim) */
+  canEdit: boolean;
+  /** own = kişisel · org = ailenin/işletmenin · shared = QR ile erişilen */
+  source: 'own' | 'org' | 'shared';
+  /** source === 'org' ise kurumun adı */
+  orgName?: string;
 }
 
+/** Kullanıcının kurum rollerini org_id → rol haritası olarak verir. */
+async function myOrgRoles(userId: string) {
+  const members = await local.getAll('org_members');
+  const map = new Map<string, OrgMember['role']>();
+  for (const m of members) {
+    if (m.user_id === userId) map.set(m.org_id, m.role);
+  }
+  return map;
+}
+
+/**
+ * Görünür tüm kağıtlar: kendi kağıtlarım + üyesi olduğum kurumunkiler
+ * (+ Faz C'de QR ile erişilenler). Filtreleme yapılmaz; yerel depo zaten
+ * sunucudaki RLS'in döndürdüğü kümeyi taşır.
+ */
 export async function listSheets(userId: string): Promise<SheetSummary[]> {
-  const [sheets, rows, sessions] = await Promise.all([
+  const [sheets, sessions, orgs, roles] = await Promise.all([
     local.getAll('sheets'),
-    local.getAll('sheet_rows'),
     local.getAll('sessions'),
+    local.getAll('organizations'),
+    myOrgRoles(userId),
   ]);
+  const orgName = new Map(orgs.map((o) => [o.id, o.name]));
+
   return sheets
-    .filter((s) => s.user_id === userId)
     .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
-    .map((s) => ({
-      ...s,
-      rowCount: rows.filter((r) => r.sheet_id === s.id).length,
-      sessionCount: sessions.filter((se) => se.sheet_id === s.id).length,
-    }));
+    .map((s) => {
+      const role = s.org_id ? roles.get(s.org_id) : undefined;
+      const source: SheetSummary['source'] = role
+        ? 'org'
+        : s.user_id === userId
+          ? 'own'
+          : 'shared';
+      return {
+        ...s,
+        sessionCount: sessions.filter((se) => se.sheet_id === s.id).length,
+        canEdit:
+          s.user_id === userId || role === 'owner' || role === 'admin',
+        source,
+        orgName: s.org_id ? orgName.get(s.org_id) : undefined,
+      };
+    });
 }
 
 export async function getSheet(id: string): Promise<Sheet | null> {
   const sheets = await local.getAll('sheets');
   return sheets.find((s) => s.id === id) ?? null;
+}
+
+/** Kağıdı düzenleme/silme yetkisi: sahibiyim ya da kurumunda yöneticiyim. */
+export async function canEditSheet(
+  sheet: Sheet,
+  userId: string
+): Promise<boolean> {
+  if (sheet.user_id === userId) return true;
+  if (!sheet.org_id) return false;
+  const role = (await myOrgRoles(userId)).get(sheet.org_id);
+  return role === 'owner' || role === 'admin';
+}
+
+/** Kişisel bir kağıdı aileye taşır (ya da geri alır). */
+export async function setSheetOrg(
+  sheetId: string,
+  userId: string,
+  orgId: string | null
+): Promise<void> {
+  const sheet = await getSheet(sheetId);
+  if (!sheet) return;
+  if (!(await canEditSheet(sheet, userId))) throw new Error('sheet_not_editable');
+
+  const next: Sheet = { ...sheet, org_id: orgId, updated_at: nowIso() };
+  await local.upsertRow('sheets', next, ['id']);
+  await enqueueUpsert('sheets', next);
 }
 
 export async function getSheetRows(sheetId: string): Promise<SheetRow[]> {
@@ -101,11 +161,19 @@ export async function saveSheet(input: {
   userId: string;
   name: string;
   imagePath: string | null;
+  /** Kağıt bir kuruma aitse id'si; verilmezse mevcut değer korunur. */
+  orgId?: string | null;
   rows: { id?: string; y: number; label: string }[];
 }): Promise<Sheet> {
   const now = nowIso();
   const id = input.id ?? uuid();
   const existing = input.id ? await getSheet(input.id) : null;
+
+  // Yetkisiz yazmayı istemcide durdur: sunucu zaten reddeder, ama outbox'a
+  // düşerse kuyruk kalıcı olarak tıkanır (bkz. SHARING_PLAN.md §10).
+  if (existing && !(await canEditSheet(existing, input.userId))) {
+    throw new Error('sheet_not_editable');
+  }
 
   let imagePath: string | null = null;
   if (input.imagePath) {
@@ -128,7 +196,8 @@ export async function saveSheet(input: {
 
   const sheet: Sheet = {
     id,
-    user_id: input.userId,
+    user_id: existing?.user_id ?? input.userId,
+    org_id: input.orgId !== undefined ? input.orgId : (existing?.org_id ?? null),
     name: input.name || 'İsimsiz kağıt',
     image_path: imagePath,
     created_at: existing?.created_at ?? now,
@@ -163,9 +232,12 @@ export async function saveSheet(input: {
   return sheet;
 }
 
-export async function deleteSheet(id: string): Promise<void> {
+export async function deleteSheet(id: string, userId?: string): Promise<void> {
   // Görsel: yereli hemen sil, Storage'dakini kuyruğa al.
   const sheet = await getSheet(id);
+  if (sheet && userId && !(await canEditSheet(sheet, userId))) {
+    throw new Error('sheet_not_editable');
+  }
   if (sheet?.image_path && isStoragePath(sheet.image_path)) {
     await local.enqueueImage({
       sheetId: id,

@@ -4,11 +4,12 @@
  * Piksel eşlemeli (width/height verilir): preserveAspectRatio bozulması yok,
  * çizgi kalınlığı sabit. Hem play (canlı) hem session (salt-okunur) kullanır.
  */
-import Svg, { Polyline, Rect } from 'react-native-svg';
+import Svg, { Polyline } from 'react-native-svg';
 import type { StrokePoint } from '@/lib/database.types';
 import { colors } from '@/lib/theme';
 
 export interface InkStroke {
+  /** Şemada duruyor ama artık hep boş: kağıdın tamamı yazı alanıdır. */
   rowId: string | null;
   points: StrokePoint[];
 }
@@ -18,8 +19,6 @@ interface Props {
   current?: StrokePoint[] | null;
   width: number;
   height: number;
-  /** Vurgulanacak satırın y oranı (0..1) — canlı yazımda aktif satır bandı */
-  highlightY?: number | null;
 }
 
 function toPoints(pts: StrokePoint[], w: number, h: number): string {
@@ -31,10 +30,8 @@ export default function InkLayer({
   current,
   width,
   height,
-  highlightY,
 }: Props) {
   if (!width || !height) return null;
-  const bandH = height * 0.09;
   return (
     <Svg
       width={width}
@@ -42,16 +39,6 @@ export default function InkLayer({
       style={{ position: 'absolute', left: 0, top: 0 }}
       pointerEvents="none"
     >
-      {highlightY != null && (
-        <Rect
-          x={0}
-          y={(highlightY - 0.045) * height}
-          width={width}
-          height={bandH}
-          fill={colors.accent}
-          opacity={0.12}
-        />
-      )}
       {strokes.map((s, i) =>
         s.points.length > 1 ? (
           <Polyline

@@ -36,20 +36,17 @@
     "newSheetPhoto": "Fotoğraftan",
     "newSheetBlank": "Boş kağıt",
     "empty": "Henüz kağıt yok. Üstteki düğmeyle ilk kağıdını ekle.",
-    "meta": "{{rows}} satır · {{sessions}} oyun",
+    "meta": "{{sessions}} oyun",
     "newGame": "Yeni oyun",
     "history": "Geçmiş",
     "untitled": "İsimsiz kağıt",
     "deleteConfirm": "Bu kağıt ve tüm oyunları silinsin mi?"
   },
   "setup": {
-    "title": "Satırları işaretle",
-    "hint": "Her puan satırının hizasına dokun — yazılanlar o satıra bağlanır. Bir çizgiyi kaldırmak için üzerine tekrar dokun.",
+    "title": "Kağıda isim ver",
+    "hint": "İstersen kağıda bir isim ver. Oyun sırasında üzerine doğrudan yazacaksın.",
     "namePlaceholder": "Kağıda bir isim ver",
-    "rowPlaceholder": "Satır {{n}} (opsiyonel isim)",
-    "save": "Kaydet",
-    "needImage": "Önce bir foto seç.",
-    "pickImage": "Foto seç"
+    "save": "Kaydet"
   },
   "tools": {
     "title": "Araçlar",
@@ -84,17 +81,21 @@
     "cta": "Pro'ya geç",
     "comingSoon": "Satın alma çok yakında aktif olacak. Takipte kal!",
     "restore": "Satın alımı geri yükle",
-    "later": "Belki daha sonra"
+    "later": "Belki daha sonra",
+    "planIndividual": "Bireysel",
+    "planFamily": "Aile",
+    "familySeats": "{{seats}} kişi için",
+    "feature4": "En fazla {{seats}} kişiye sınırsız fotoğraf kağıdı",
+    "ctaFamily": "Aile'ye geç",
+    "priceSoon": "Fiyat yakında",
+    "business": "İşletme misiniz? Bize yazın",
+    "perYear": "/ yıl"
   },
   "play": {
     "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",
     "writeHint": "Kağıdın üzerine parmağınla/kalemle yaz",
     "undo": "Geri al",
-    "recognized": "Tanınan değerler",
-    "recognizedHint": "elle gir · Faz 5'te otomatik",
-    "written": "✏ yazıldı",
-    "save": "Oyunu kaydet",
-    "rowFallback": "Satır {{n}}"
+    "save": "Oyunu kaydet"
   },
   "history": {
     "title": "Geçmiş",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Kaydedilen veri"
+  },
+  "org": {
+    "title": "Aile",
+    "defaultName": "Ailem",
+    "pitchTitle": "Aile planı",
+    "pitchText": "Ailendeki herkes sınırsız fotoğraf kağıdı kullanır. En fazla {{seats}} kişi.",
+    "setupFailed": "Ailen kurulamadı. Bağlantını kontrol edip tekrar dene.",
+    "retry": "Tekrar dene",
+    "shared": "Paylaşılan",
+    "members": "Üyeler",
+    "seats": "{{used}}/{{total}} koltuk",
+    "invite": "Birini davet et",
+    "inviteMessage": "Refill'de aileme katıl:",
+    "you": "Sen",
+    "member": "Üye",
+    "remove": "Çıkar",
+    "role_owner": "Kurucu",
+    "role_admin": "Yönetici",
+    "role_member": "Üye",
+    "leave": "Aileden ayrıl",
+    "leaveConfirm": "Ailenin sınırsız fotoğraf kağıdı hakkını kaybedersin.",
+    "planInactive": "Aile planı aktif değil",
+    "planInactiveHint": "En fazla {{seats}} kişinin sınırsız fotoğraf kağıdı kullanmaya devam etmesi için Aile planını yenile.",
+    "goFamily": "Paketleri gör",
+    "joinTitle": "Aileye katıl",
+    "joining": "Katılıyor…",
+    "joinSuccess": "Katıldın!",
+    "joinSuccessHint": "Artık sınırsız fotoğraf kağıdın var.",
+    "joinInvalid": "Bu davet bağlantısı geçersiz ya da süresi dolmuş.",
+    "joinFull": "Aile dolu",
+    "joinFullHint": "Tüm koltuklar dolu ya da ailenin aktif planı yok.",
+    "goToSheets": "Kağıtlarıma git"
   },
   "profile": {
     "title": "Profil",

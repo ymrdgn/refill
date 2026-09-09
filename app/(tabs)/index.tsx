@@ -19,6 +19,7 @@ import {
   Pencil,
   Sparkles,
   Trash2,
+  Users,
 } from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 import { useAuth } from '@/hooks/useAuth';
@@ -31,7 +32,7 @@ import { sync } from '@/lib/db/sync';
 import { setSheetDraft } from '@/lib/draft';
 import {
   FREE_PHOTO_SHEETS,
-  getIsPro,
+  hasUnlimitedSheets,
   remainingPhotoSheets,
 } from '@/lib/entitlements';
 import { Skeleton } from '@/components/ui';
@@ -43,7 +44,8 @@ export default function HomeScreen() {
   const { userId } = useAuth();
   const [sheets, setSheets] = useState<SheetSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isPro, setIsPro] = useState(false);
+  /** Kişisel Pro ya da aktif planlı bir kurumun üyesi miyim? */
+  const [unlimited, setUnlimited] = useState(false);
   /** sheetId -> gösterilecek görsel URI (yerel dosya ya da imzalı URL) */
   const [thumbs, setThumbs] = useState<Record<string, string>>({});
 
@@ -59,7 +61,7 @@ export default function HomeScreen() {
 
   const load = useCallback(async () => {
     if (!userId) return;
-    getIsPro().then(setIsPro);
+    hasUnlimitedSheets(userId).then(setUnlimited);
     // 1) Yerelde veri varsa anında göster (offline-first).
     const localRows = await listSheets(userId);
     if (localRows.length > 0) {
@@ -86,7 +88,7 @@ export default function HomeScreen() {
 
   const pickAndCreate = async () => {
     // Ücretsiz eşzamanlı fotoğraf kağıdı limiti doluysa paywall'a yönlendir.
-    if (remainingPhotoSheets(sheets, isPro) <= 0) {
+    if (remainingPhotoSheets(sheets, unlimited) <= 0) {
       router.push('/paywall');
       return;
     }
@@ -106,7 +108,8 @@ export default function HomeScreen() {
   };
 
   const onDelete = async (id: string) => {
-    await deleteSheet(id);
+    if (!userId) return;
+    await deleteSheet(id, userId);
     if (userId) {
       sync(userId).catch(() => {});
       setSheets(await listSheets(userId));
@@ -204,11 +207,16 @@ export default function HomeScreen() {
                       {s.name || t('sheets.untitled')}
                     </Text>
                     <Text style={styles.cardMeta}>
-                      {t('sheets.meta', {
-                        rows: s.rowCount,
-                        sessions: s.sessionCount,
-                      })}
+                      {t('sheets.meta', { sessions: s.sessionCount })}
                     </Text>
+                    {s.source !== 'own' && (
+                      <View style={styles.sourceBadge}>
+                        <Users size={11} color={colors.accent} />
+                        <Text style={styles.sourceBadgeText} numberOfLines={1}>
+                          {s.orgName ?? t('org.shared')}
+                        </Text>
+                      </View>
+                    )}
                   </View>
 
                   <View style={styles.cardActions}>
@@ -239,13 +247,18 @@ export default function HomeScreen() {
                   </View>
                 </View>
 
-                <Pressable
-                  style={({ pressed }) => [styles.deleteBtn, pressed && { opacity: 0.6 }]}
-                  onPress={() => onDelete(s.id)}
-                  hitSlop={8}
-                >
-                  <Trash2 size={16} color={colors.inkSoft} />
-                </Pressable>
+                {s.canEdit && (
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.deleteBtn,
+                      pressed && { opacity: 0.6 },
+                    ]}
+                    onPress={() => onDelete(s.id)}
+                    hitSlop={8}
+                  >
+                    <Trash2 size={16} color={colors.inkSoft} />
+                  </Pressable>
+                )}
               </Pressable>
             ))}
 
@@ -258,10 +271,10 @@ export default function HomeScreen() {
                   <Camera size={18} color={colors.ink} />
                 </View>
                 <Text style={styles.addBtnText}>{t('sheets.newSheetPhoto')}</Text>
-                {!isPro && (
+                {!unlimited && (
                   <View style={styles.quotaBadge}>
                     <Text style={styles.quotaBadgeText}>
-                      {remainingPhotoSheets(sheets, isPro)}/{FREE_PHOTO_SHEETS}
+                      {remainingPhotoSheets(sheets, unlimited)}/{FREE_PHOTO_SHEETS}
                     </Text>
                   </View>
                 )}
@@ -393,6 +406,23 @@ const styles = StyleSheet.create({
     fontSize: fontSize.xs,
     color: colors.inkSoft,
     marginTop: 2,
+  },
+  sourceBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+    marginTop: 5,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accentSoft,
+  },
+  sourceBadgeText: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.xs,
+    color: colors.accent,
+    maxWidth: 120,
   },
   cardActions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
   primaryChip: {

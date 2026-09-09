@@ -36,20 +36,17 @@
     "newSheetPhoto": "从照片添加",
     "newSheetBlank": "空白计分表",
     "empty": "还没有计分表。用上面的按钮添加第一张吧。",
-    "meta": "{{rows}} 行 · {{sessions}} 局",
+    "meta": "{{sessions}} 局",
     "newGame": "新的一局",
     "history": "历史",
     "untitled": "未命名计分表",
     "deleteConfirm": "删除这张计分表及其所有对局？"
   },
   "setup": {
-    "title": "标记行",
-    "hint": "在每一计分行的位置轻点——书写内容会绑定到该行。再次轻点某条线可将其删除。",
+    "title": "计分表名称",
+    "hint": "可以为计分表起个名字。游戏时直接在上面书写即可。",
     "namePlaceholder": "给计分表起个名字",
-    "rowPlaceholder": "第 {{n}} 行（名称可选）",
-    "save": "保存",
-    "needImage": "请先选择一张照片。",
-    "pickImage": "选择照片"
+    "save": "保存"
   },
   "tools": {
     "title": "工具",
@@ -84,17 +81,21 @@
     "cta": "升级 Pro",
     "comingSoon": "购买功能即将上线，敬请期待！",
     "restore": "恢复购买",
-    "later": "以后再说"
+    "later": "以后再说",
+    "planIndividual": "个人",
+    "planFamily": "家庭",
+    "familySeats": "供 {{seats}} 人使用",
+    "feature4": "最多 {{seats}} 人无限使用照片计分表",
+    "ctaFamily": "开通家庭套餐",
+    "priceSoon": "价格即将公布",
+    "business": "您是企业用户？联系我们",
+    "perYear": "/ 年"
   },
   "play": {
     "namePlaceholder": "对局名称（例如：周五之夜）",
     "writeHint": "用手指或触控笔在计分表上书写",
     "undo": "撤销",
-    "recognized": "识别到的数值",
-    "recognizedHint": "手动输入 · 第 5 阶段自动识别",
-    "written": "✏ 已填写",
-    "save": "保存对局",
-    "rowFallback": "第 {{n}} 行"
+    "save": "保存对局"
   },
   "history": {
     "title": "历史",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "已保存的数据"
+  },
+  "org": {
+    "title": "家庭",
+    "defaultName": "我的家庭",
+    "pitchTitle": "家庭套餐",
+    "pitchText": "家庭中的每个人都可无限创建照片计分表。最多 {{seats}} 人。",
+    "setupFailed": "无法创建你的家庭。请检查网络连接后重试。",
+    "retry": "重试",
+    "shared": "共享",
+    "members": "成员",
+    "seats": "{{used}}/{{total}} 个席位",
+    "invite": "邀请成员",
+    "inviteMessage": "加入我在 Refill 的家庭：",
+    "you": "你",
+    "member": "成员",
+    "remove": "移除",
+    "role_owner": "所有者",
+    "role_admin": "管理员",
+    "role_member": "成员",
+    "leave": "退出家庭",
+    "leaveConfirm": "你将失去家庭的无限照片计分表。",
+    "planInactive": "家庭套餐未激活",
+    "planInactiveHint": "续订家庭套餐，让最多 {{seats}} 人继续无限使用照片计分表。",
+    "goFamily": "查看套餐",
+    "joinTitle": "加入家庭",
+    "joining": "正在加入…",
+    "joinSuccess": "加入成功！",
+    "joinSuccessHint": "你现在可以无限创建照片计分表。",
+    "joinInvalid": "此邀请链接无效或已过期。",
+    "joinFull": "家庭席位已满",
+    "joinFullHint": "所有席位已被占用，或该家庭没有有效套餐。",
+    "goToSheets": "前往我的计分表"
   },
   "profile": {
     "title": "我的",

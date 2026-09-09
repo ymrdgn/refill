@@ -36,20 +36,17 @@
     "newSheetPhoto": "Ji wêneyê",
     "newSheetBlank": "Kaxeza vala",
     "empty": "Hê kaxez tune ne. Bi bişkoka jorîn ya yekem lê zêde bike.",
-    "meta": "{{rows}} rêz · {{sessions}} lîstik",
+    "meta": "{{sessions}} lîstik",
     "newGame": "Lîstika nû",
     "history": "Dîrok",
     "untitled": "Kaxeza bênav",
     "deleteConfirm": "Ev kaxez û hemû lîstikên wê werin jêbirin?"
   },
   "setup": {
-    "title": "Rêzan nîşan bike",
-    "hint": "Li bilindahiya her rêza puanan bitikîne — tiştê ku tê nivîsandin bi wê rêzê ve tê girêdan. Ji bo rakirina xetekê dîsa lê bitikîne.",
+    "title": "Navê kaxezê",
+    "hint": "Heke tu bixwazî navekî bide kaxezê. Di dema lîstikê de tu rasterast li ser dinivîsî.",
     "namePlaceholder": "Navekî li kaxezê bike",
-    "rowPlaceholder": "Rêz {{n}} (nav bijarte ye)",
-    "save": "Tomar bike",
-    "needImage": "Pêşî wêneyekî hilbijêre.",
-    "pickImage": "Wêne hilbijêre"
+    "save": "Tomar bike"
   },
   "tools": {
     "title": "Amûr",
@@ -84,17 +81,21 @@
     "cta": "Bibe Pro",
     "comingSoon": "Kirîn pir zû dê çalak bibe. Li benda me be!",
     "restore": "Kirînê vegerîne",
-    "later": "Belkî paşê"
+    "later": "Belkî paşê",
+    "planIndividual": "Kesane",
+    "planFamily": "Malbat",
+    "familySeats": "Ji bo {{seats}} kesan",
+    "feature4": "Kaxezên wêneyî yên bêsînor ji bo herî zêde {{seats}} kesan",
+    "ctaFamily": "Malbatê bistîne",
+    "priceSoon": "Biha di demek nêz de",
+    "business": "Hûn kargeh in? Ji me re binivîsin",
+    "perYear": "/ sal"
   },
   "play": {
     "namePlaceholder": "Navê lîstikê (mînak: Êvara înê)",
     "writeHint": "Bi tilî an pênûsê li ser kaxezê binivîse",
     "undo": "Vegerîne",
-    "recognized": "Nirxên naskirî",
-    "recognizedHint": "bi destan binivîse · di Qonaxa 5an de bixweber",
-    "written": "✏ hatiye nivîsandin",
-    "save": "Lîstikê tomar bike",
-    "rowFallback": "Rêz {{n}}"
+    "save": "Lîstikê tomar bike"
   },
   "history": {
     "title": "Dîrok",
@@ -104,6 +105,38 @@
   },
   "session": {
     "savedData": "Daneyên tomarkirî"
+  },
+  "org": {
+    "title": "Malbat",
+    "defaultName": "Malbata min",
+    "pitchTitle": "Plana Malbatê",
+    "pitchText": "Her kesê malbata te kaxezên wêneyî yên bêsînor bi kar tîne. Herî zêde {{seats}} kes.",
+    "setupFailed": "Malbata te nehat çêkirin. Girêdana xwe kontrol bike û dîsa biceribîne.",
+    "retry": "Dîsa biceribîne",
+    "shared": "Parvekirî",
+    "members": "Endam",
+    "seats": "{{used}}/{{total}} cih",
+    "invite": "Kesekî vexwîne",
+    "inviteMessage": "Li Refillê tevlî malbata min bibe:",
+    "you": "Tu",
+    "member": "Endam",
+    "remove": "Derxîne",
+    "role_owner": "Xwedî",
+    "role_admin": "Rêvebir",
+    "role_member": "Endam",
+    "leave": "Ji malbatê derkeve",
+    "leaveConfirm": "Tu yê kaxezên wêneyî yên bêsînor ên malbatê winda bikî.",
+    "planInactive": "Plana Malbatê ne çalak e",
+    "planInactiveHint": "Plana Malbatê nû bike da ku herî zêde {{seats}} kes kaxezên wêneyî yên bêsînor bidomînin.",
+    "goFamily": "Planan bibîne",
+    "joinTitle": "Tevlî malbatê bibe",
+    "joining": "Tê tevlîkirin…",
+    "joinSuccess": "Tu tevlî bûyî!",
+    "joinSuccessHint": "Niha kaxezên wêneyî yên te bêsînor in.",
+    "joinInvalid": "Ev girêdana vexwendinê nederbasdar e an dema wê qediyaye.",
+    "joinFull": "Malbat tije ye",
+    "joinFullHint": "Hemû cih tije ne an jî plana malbatê çalak nîne.",
+    "goToSheets": "Biçe kaxezên min"
   },
   "profile": {
     "title": "Profîl",

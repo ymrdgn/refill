@@ -21,6 +21,7 @@ import {
   signUp,
 } from '@/lib/supabase';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
+import { takePendingInvite } from '@/lib/links';
 
 type Mode = 'login' | 'signup';
 
@@ -43,6 +44,16 @@ export default function LoginScreen() {
     setError(null);
   };
 
+  /** Girişten sonra: bekleyen aile daveti varsa katılma ekranına, yoksa ana ekrana. */
+  const finish = async () => {
+    const token = await takePendingInvite();
+    if (token) {
+      router.replace({ pathname: '/org/join/[token]', params: { token } });
+    } else {
+      router.replace('/(tabs)');
+    }
+  };
+
   const handleSubmit = async () => {
     setError(null);
     setLoading(true);
@@ -55,7 +66,7 @@ export default function LoginScreen() {
         setError(error.message);
         return;
       }
-      router.replace('/(tabs)');
+      await finish();
     } catch (e: any) {
       setError(e?.message ?? t('common.error'));
     } finally {
@@ -73,7 +84,7 @@ export default function LoginScreen() {
         setError(error.message);
         return;
       }
-      router.replace('/(tabs)');
+      await finish();
     } catch (e: any) {
       setError(e?.message ?? t('common.error'));
     } finally {

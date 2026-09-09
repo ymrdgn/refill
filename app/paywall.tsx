@@ -1,31 +1,107 @@
 /**
- * Paywall — Refill Pro (yıllık abonelik).
+ * Paywall — Bireysel ve Aile yıllık abonelikleri.
  *
- * Ücretsiz fotoğraf kağıdı kotası dolunca buraya yönlendirilir.
- * Satın alma akışı henüz bağlı değil (RevenueCat entegrasyonu sonra);
- * CTA şimdilik "yakında" uyarısı gösterir.
+ * Buraya iki farklı ihtiyaçla gelinir; bu yüzden plan GELDİĞİ YERE göre
+ * ön-seçili açılır (`/paywall?plan=family`):
+ *   - ana ekran, kota dolunca      → Bireysel (kullanıcı kağıt istiyor)
+ *   - aile ekranı, paylaşım kilidi → Aile (Bireysel bu ihtiyacı çözmez)
+ *
+ * Business paketi bilerek YOK: uygulama içinden satılmıyor (mağaza komisyonu
+ * + B2B fatura akışı). En altta yalnızca iletişim satırı var.
+ *
+ * Fiyatlar RevenueCat teklifinden (offerings) gelecek; henüz bağlı olmadığı
+ * için fiyat yerine "yakında" gösterilir ve CTA uyarı verir (lib/purchases.ts).
+ * Aile satın alındığında aile ekranına gidilir; aile kaydı orada kendiliğinden
+ * açılır ve kullanıcı doğrudan davet adımına düşer.
  */
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Camera, Check, Cloud, Sparkles, X } from 'lucide-react-native';
+import { Camera, Check, Cloud, Sparkles, Users, X } from 'lucide-react-native';
 import { colors, fonts, fontSize, radius, shadow, spacing } from '@/lib/theme';
 import { Button } from '@/components/ui';
 import { FREE_PHOTO_SHEETS } from '@/lib/entitlements';
+import { FAMILY_SEATS } from '@/lib/orgs';
+import { buyPlan, restorePurchases, type PlanId } from '@/lib/purchases';
+
+const BUSINESS_EMAIL = process.env.EXPO_PUBLIC_BUSINESS_EMAIL;
 
 export default function PaywallScreen() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { plan } = useLocalSearchParams<{ plan?: PlanId }>();
+
+  const fromRoute: PlanId = plan === 'family' ? 'family' : 'individual';
+  const [selected, setSelected] = useState<PlanId>(fromRoute);
+
+  // useState'in başlangıç değeri yalnızca mount'ta okunur; ekran zaten açıkken
+  // farklı bir plan parametresiyle gelinirse seçim burada güncellenir.
+  useEffect(() => {
+    setSelected(fromRoute);
+  }, [fromRoute]);
 
   const comingSoon = () => {
-    Alert.alert('Refill Pro', t('paywall.comingSoon'));
+    Alert.alert(t('paywall.title'), t('paywall.comingSoon'));
   };
 
+  /** Satın alma sonrası: aile → aile ekranı (davet adımı), bireysel → geri. */
+  const afterPurchase = (plan: PlanId) => {
+    if (plan === 'family') router.replace('/org');
+    else router.back();
+  };
+
+  const purchase = async () => {
+    const ok = await buyPlan(selected);
+    if (!ok) return comingSoon();
+    afterPurchase(selected);
+  };
+
+  const restore = async () => {
+    const ok = await restorePurchases();
+    if (!ok) return comingSoon();
+    afterPurchase(selected);
+  };
+
+  // Aile, Bireysel'in üstüne paylaşımı ekler; liste seçime göre uzar.
   const features = [
     { icon: Camera, text: t('paywall.feature1') },
     { icon: Cloud, text: t('paywall.feature2') },
+    ...(selected === 'family'
+      ? [
+          {
+            icon: Users,
+            text: t('paywall.feature4', { seats: FAMILY_SEATS }),
+          },
+        ]
+      : []),
     { icon: Sparkles, text: t('paywall.feature3') },
+  ];
+
+  // Her kart hangi dönem için ödendiğini AÇIKÇA söylemeli: "Yıllık abonelik · …"
+  const plans: { id: PlanId; name: string; note: string; best?: boolean }[] = [
+    {
+      id: 'individual',
+      name: t('paywall.planIndividual'),
+      note: `${t('paywall.yearly')} · ${t('paywall.yearlyNote')}`,
+    },
+    {
+      id: 'family',
+      name: t('paywall.planFamily'),
+      note: `${t('paywall.yearly')} · ${t('paywall.familySeats', {
+        seats: FAMILY_SEATS,
+      })}`,
+      best: true,
+    },
   ];
 
   return (
@@ -57,25 +133,59 @@ export default function PaywallScreen() {
           ))}
         </View>
 
-        <View style={styles.planCard}>
-          <View>
-            <Text style={styles.planName}>{t('paywall.yearly')}</Text>
-            <Text style={styles.planNote}>{t('paywall.yearlyNote')}</Text>
-          </View>
-          <View style={styles.planBadge}>
-            <Text style={styles.planBadgeText}>{t('paywall.bestValue')}</Text>
-          </View>
-        </View>
+        {plans.map((p) => {
+          const active = selected === p.id;
+          return (
+            <Pressable
+              key={p.id}
+              style={[styles.planCard, active && styles.planCardActive]}
+              onPress={() => setSelected(p.id)}
+            >
+              <View style={[styles.radio, active && styles.radioActive]}>
+                {active && <View style={styles.radioDot} />}
+              </View>
 
-        <Button label={t('paywall.cta')} onPress={comingSoon} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.planName}>{p.name}</Text>
+                <Text style={styles.planNote}>{p.note}</Text>
+                {/* Fiyat RevenueCat bağlanınca buraya gelecek. */}
+                <Text style={styles.planPrice}>{t('paywall.priceSoon')}</Text>
+              </View>
 
-        <Pressable onPress={comingSoon} style={styles.restoreLink}>
+              {p.best && (
+                <View style={styles.planBadge}>
+                  <Text style={styles.planBadgeText}>
+                    {t('paywall.bestValue')}
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+          );
+        })}
+
+        <Button
+          label={
+            selected === 'family' ? t('paywall.ctaFamily') : t('paywall.cta')
+          }
+          onPress={purchase}
+        />
+
+        <Pressable onPress={restore} style={styles.restoreLink}>
           <Text style={styles.restoreText}>{t('paywall.restore')}</Text>
         </Pressable>
 
         <Pressable onPress={() => router.back()} style={styles.laterLink}>
           <Text style={styles.laterText}>{t('paywall.later')}</Text>
         </Pressable>
+
+        {!!BUSINESS_EMAIL && (
+          <Pressable
+            onPress={() => Linking.openURL(`mailto:${BUSINESS_EMAIL}`)}
+            style={styles.businessLink}
+          >
+            <Text style={styles.businessText}>{t('paywall.business')}</Text>
+          </Pressable>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -158,14 +268,47 @@ const styles = StyleSheet.create({
   planCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.accentSoft,
+    gap: spacing.md,
+    backgroundColor: colors.surface,
     borderWidth: 2,
-    borderColor: colors.accent,
+    borderColor: colors.line,
     borderRadius: radius.xl,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  planCardActive: {
+    backgroundColor: colors.accentSoft,
+    borderColor: colors.accent,
+  },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    borderColor: colors.line,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioActive: { borderColor: colors.accent },
+  radioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: radius.pill,
+    backgroundColor: colors.accent,
+  },
+  planPrice: {
+    fontFamily: fonts.semibold,
+    fontSize: fontSize.sm,
+    color: colors.ink,
+    marginTop: 4,
+  },
+  businessLink: { alignItems: 'center', marginTop: spacing.xl },
+  businessText: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.inkSoft,
+    textDecorationLine: 'underline',
   },
   planName: {
     fontFamily: fonts.display,
