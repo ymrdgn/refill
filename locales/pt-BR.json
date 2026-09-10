@@ -89,7 +89,10 @@
     "ctaFamily": "Assinar Família",
     "priceSoon": "Preço em breve",
     "business": "É uma empresa? Fale com a gente",
-    "perYear": "/ ano"
+    "perYear": "/ ano",
+    "legalNote": "Assinatura anual, renovada automaticamente até o cancelamento. Gerencie ou cancele a qualquer momento nas configurações da sua conta da loja.",
+    "privacy": "Política de Privacidade",
+    "terms": "Termos de Uso"
   },
   "play": {
     "namePlaceholder": "Nome da partida (ex.: Sexta à noite)",
@@ -148,6 +151,10 @@
     "language": "Idioma",
     "signOut": "Sair",
     "restartTitle": "Reinício necessário",
-    "restartBody": "Feche e abra o app novamente para aplicar o layout da direita para a esquerda."
+    "restartBody": "Feche e abra o app novamente para aplicar o layout da direita para a esquerda.",
+    "deleteAccount": "Excluir conta",
+    "deleteAccountBody": "Sua conta, todas as folhas e fotos, jogos e escrita, e qualquer participação em família serão excluídos permanentemente. Isso não pode ser desfeito. Uma assinatura ativa deve ser cancelada separadamente nas configurações da loja.",
+    "deleteAccountConfirm": "Excluir",
+    "deleteAccountFailed": "Não foi possível excluir sua conta. Verifique sua conexão e tente novamente."
   }
 }

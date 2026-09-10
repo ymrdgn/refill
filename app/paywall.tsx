@@ -33,6 +33,7 @@ import { Button } from '@/components/ui';
 import { FREE_PHOTO_SHEETS } from '@/lib/entitlements';
 import { FAMILY_SEATS } from '@/lib/orgs';
 import { buyPlan, restorePurchases, type PlanId } from '@/lib/purchases';
+import { legalUrl } from '@/lib/links';
 
 const BUSINESS_EMAIL = process.env.EXPO_PUBLIC_BUSINESS_EMAIL;
 
@@ -177,6 +178,18 @@ export default function PaywallScreen() {
         <Pressable onPress={() => router.back()} style={styles.laterLink}>
           <Text style={styles.laterText}>{t('paywall.later')}</Text>
         </Pressable>
+
+        {/* Apple/Google abonelik kuralı: yenileme koşulu + gizlilik ve şartlar bağlantıları */}
+        <Text style={styles.legalNote}>{t('paywall.legalNote')}</Text>
+        <View style={styles.legalLinks}>
+          <Pressable onPress={() => Linking.openURL(legalUrl('privacy'))} hitSlop={8}>
+            <Text style={styles.legalLink}>{t('paywall.privacy')}</Text>
+          </Pressable>
+          <Text style={styles.legalDot}>·</Text>
+          <Pressable onPress={() => Linking.openURL(legalUrl('terms'))} hitSlop={8}>
+            <Text style={styles.legalLink}>{t('paywall.terms')}</Text>
+          </Pressable>
+        </View>
 
         {!!BUSINESS_EMAIL && (
           <Pressable
@@ -340,6 +353,28 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   laterLink: { alignItems: 'center', marginTop: spacing.md },
+  legalNote: {
+    marginTop: spacing.xl,
+    textAlign: 'center',
+    fontFamily: fonts.regular,
+    fontSize: fontSize.xs,
+    color: colors.inkSoft,
+    lineHeight: 18,
+  },
+  legalLinks: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  legalLink: {
+    fontFamily: fonts.medium,
+    fontSize: fontSize.xs,
+    color: colors.inkSoft,
+    textDecorationLine: 'underline',
+  },
+  legalDot: { color: colors.inkSoft, fontSize: fontSize.xs },
   laterText: {
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,

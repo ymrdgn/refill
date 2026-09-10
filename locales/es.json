@@ -89,7 +89,10 @@
     "ctaFamily": "Obtener Familia",
     "priceSoon": "Precio muy pronto",
     "business": "¿Eres una empresa? Escríbenos",
-    "perYear": "/ año"
+    "perYear": "/ año",
+    "legalNote": "Suscripción anual, se renueva automáticamente hasta que la canceles. Gestiónala o cancélala cuando quieras en los ajustes de tu cuenta de la tienda.",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de uso"
   },
   "play": {
     "namePlaceholder": "Nombre de la partida (p. ej. Viernes por la noche)",
@@ -148,6 +151,10 @@
     "language": "Idioma",
     "signOut": "Cerrar sesión",
     "restartTitle": "Reinicio necesario",
-    "restartBody": "Cierra y vuelve a abrir la app para aplicar el diseño de derecha a izquierda."
+    "restartBody": "Cierra y vuelve a abrir la app para aplicar el diseño de derecha a izquierda.",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteAccountBody": "Se eliminarán de forma permanente tu cuenta, todas las hojas y fotos, las partidas y tu escritura, y cualquier pertenencia a una familia. Esto no se puede deshacer. Una suscripción activa debe cancelarse por separado en los ajustes de la tienda.",
+    "deleteAccountConfirm": "Eliminar",
+    "deleteAccountFailed": "No se pudo eliminar tu cuenta. Comprueba tu conexión e inténtalo de nuevo."
   }
 }

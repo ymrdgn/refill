@@ -89,7 +89,10 @@
     "ctaFamily": "Aile'ye geç",
     "priceSoon": "Fiyat yakında",
     "business": "İşletme misiniz? Bize yazın",
-    "perYear": "/ yıl"
+    "perYear": "/ yıl",
+    "legalNote": "Yıllık abonelik, iptal edilene kadar otomatik yenilenir. Mağaza hesap ayarlarından istediğin zaman yönetebilir ya da iptal edebilirsin.",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Şartları"
   },
   "play": {
     "namePlaceholder": "Oyun adı (ör. Cuma akşamı)",
@@ -148,6 +151,10 @@
     "language": "Dil",
     "signOut": "Çıkış Yap",
     "restartTitle": "Yeniden başlatma gerekli",
-    "restartBody": "Sağdan sola yerleşimin uygulanması için uygulamayı kapatıp yeniden açın."
+    "restartBody": "Sağdan sola yerleşimin uygulanması için uygulamayı kapatıp yeniden açın.",
+    "deleteAccount": "Hesabı sil",
+    "deleteAccountBody": "Hesabın, tüm kağıtların ve fotoğrafların, oyunların ve el yazıların, aile üyeliğin kalıcı olarak silinir. Bu işlem geri alınamaz. Aktif aboneliğin varsa onu mağaza ayarlarından ayrıca iptal etmelisin.",
+    "deleteAccountConfirm": "Sil",
+    "deleteAccountFailed": "Hesabın silinemedi. Bağlantını kontrol edip tekrar dene."
   }
 }

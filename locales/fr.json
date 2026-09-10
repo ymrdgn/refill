@@ -89,7 +89,10 @@
     "ctaFamily": "Choisir Famille",
     "priceSoon": "Prix bientôt disponible",
     "business": "Vous êtes une entreprise ? Écrivez-nous",
-    "perYear": "/ an"
+    "perYear": "/ an",
+    "legalNote": "Abonnement annuel, renouvelé automatiquement jusqu'à résiliation. Gérez-le ou résiliez-le à tout moment dans les réglages de votre compte de la boutique.",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation"
   },
   "play": {
     "namePlaceholder": "Nom de la partie (ex. Vendredi soir)",
@@ -148,6 +151,10 @@
     "language": "Langue",
     "signOut": "Se déconnecter",
     "restartTitle": "Redémarrage nécessaire",
-    "restartBody": "Fermez puis rouvrez l'application pour appliquer la mise en page de droite à gauche."
+    "restartBody": "Fermez puis rouvrez l'application pour appliquer la mise en page de droite à gauche.",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountBody": "Votre compte, toutes vos feuilles et photos, vos parties et votre écriture, ainsi que toute appartenance à une famille seront supprimés définitivement. Cette action est irréversible. Un abonnement actif doit être résilié séparément dans les réglages de la boutique.",
+    "deleteAccountConfirm": "Supprimer",
+    "deleteAccountFailed": "Votre compte n'a pas pu être supprimé. Vérifiez votre connexion et réessayez."
   }
 }

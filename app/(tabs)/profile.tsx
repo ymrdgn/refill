@@ -23,6 +23,7 @@ import {
 import { useFocusEffect } from 'expo-router';
 import { LANGUAGES, findLanguage, isRTL } from '@/lib/languages';
 import { getCurrentUser, signOut } from '@/lib/supabase';
+import { deleteAccount } from '@/lib/account';
 import { FREE_PHOTO_SHEETS, getEntitlement } from '@/lib/entitlements';
 import { isPlanActive, listMyOrgs } from '@/lib/orgs';
 import { clearAll } from '@/lib/db/local';
@@ -37,6 +38,7 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState<string | null>(null);
   const [uid, setUid] = useState<string | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   /** Görünen plan: kendi aboneliğim ya da aktif planlı bir ailenin üyeliği. */
   const [plan, setPlan] = useState<'free' | 'individual' | 'family'>('free');
@@ -98,6 +100,29 @@ export default function ProfileScreen() {
     await clearAll(); // yerel veriyi temizle (başka kullanıcıya sızmasın)
     removeAllLocalImages(); // kağıt fotoğrafları da cihazda kalmasın
     router.replace('/(auth)/login');
+  };
+
+  /** Mağaza zorunluluğu: hesap uygulama içinden silinebilmeli. Tek onay, geri dönüşü yok. */
+  const confirmDelete = () => {
+    if (!uid || deleting) return;
+    Alert.alert(t('profile.deleteAccount'), t('profile.deleteAccountBody'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('profile.deleteAccountConfirm'),
+        style: 'destructive',
+        onPress: async () => {
+          setDeleting(true);
+          try {
+            await deleteAccount(uid);
+            router.replace('/(auth)/login');
+          } catch {
+            Alert.alert(t('common.error'), t('profile.deleteAccountFailed'));
+          } finally {
+            setDeleting(false);
+          }
+        },
+      },
+    ]);
   };
 
   const initial = (email?.[0] ?? '?').toUpperCase();
@@ -174,6 +199,18 @@ export default function ProfileScreen() {
         >
           <LogOut size={17} color={colors.danger} />
           <Text style={styles.signOutText}>{t('profile.signOut')}</Text>
+        </Pressable>
+
+        {/* Hesap silme: bilerek sessiz bir metin bağlantısı, düğme değil. */}
+        <Pressable
+          style={styles.deleteLink}
+          onPress={confirmDelete}
+          disabled={deleting}
+          hitSlop={8}
+        >
+          <Text style={[styles.deleteText, deleting && { opacity: 0.5 }]}>
+            {t('profile.deleteAccount')}
+          </Text>
         </Pressable>
       </View>
 
@@ -400,5 +437,12 @@ const styles = StyleSheet.create({
     color: colors.danger,
     fontFamily: fonts.semibold,
     fontSize: fontSize.md,
+  },
+  deleteLink: { alignItems: 'center', marginTop: spacing.lg },
+  deleteText: {
+    color: colors.inkSoft,
+    fontFamily: fonts.medium,
+    fontSize: fontSize.sm,
+    textDecorationLine: 'underline',
   },
 });

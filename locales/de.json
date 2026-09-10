@@ -89,7 +89,10 @@
     "ctaFamily": "Familie holen",
     "priceSoon": "Preis folgt in Kürze",
     "business": "Sind Sie ein Unternehmen? Schreiben Sie uns",
-    "perYear": "/ Jahr"
+    "perYear": "/ Jahr",
+    "legalNote": "Jahresabo, verlängert sich automatisch bis zur Kündigung. Jederzeit in den Kontoeinstellungen des Stores verwalten oder kündigen.",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen"
   },
   "play": {
     "namePlaceholder": "Spielname (z. B. Freitagabend)",
@@ -148,6 +151,10 @@
     "language": "Sprache",
     "signOut": "Abmelden",
     "restartTitle": "Neustart erforderlich",
-    "restartBody": "Schließe die App und öffne sie erneut, damit das Rechts-nach-links-Layout wirksam wird."
+    "restartBody": "Schließe die App und öffne sie erneut, damit das Rechts-nach-links-Layout wirksam wird.",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountBody": "Dein Konto, alle Blätter und Fotos, Spiele und Handschrift sowie jede Familienmitgliedschaft werden dauerhaft gelöscht. Das kann nicht rückgängig gemacht werden. Ein aktives Abo musst du separat in den Store-Einstellungen kündigen.",
+    "deleteAccountConfirm": "Löschen",
+    "deleteAccountFailed": "Dein Konto konnte nicht gelöscht werden. Prüfe deine Verbindung und versuche es erneut."
   }
 }

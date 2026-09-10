@@ -89,7 +89,10 @@
     "ctaFamily": "开通家庭套餐",
     "priceSoon": "价格即将公布",
     "business": "您是企业用户？联系我们",
-    "perYear": "/ 年"
+    "perYear": "/ 年",
+    "legalNote": "年度订阅，取消前自动续订。可随时在商店账户设置中管理或取消。",
+    "privacy": "隐私政策",
+    "terms": "使用条款"
   },
   "play": {
     "namePlaceholder": "对局名称（例如：周五之夜）",
@@ -148,6 +151,10 @@
     "language": "语言",
     "signOut": "退出登录",
     "restartTitle": "需要重启",
-    "restartBody": "请关闭并重新打开应用，以应用从右到左的布局。"
+    "restartBody": "请关闭并重新打开应用，以应用从右到左的布局。",
+    "deleteAccount": "删除账户",
+    "deleteAccountBody": "你的账户、所有计分表和照片、游戏和手写内容以及家庭成员身份将被永久删除。此操作无法撤销。有效的订阅需在商店设置中另行取消。",
+    "deleteAccountConfirm": "删除",
+    "deleteAccountFailed": "无法删除你的账户。请检查网络连接后重试。"
   }
 }

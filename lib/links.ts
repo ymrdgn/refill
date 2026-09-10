@@ -17,6 +17,14 @@ import * as Linking from 'expo-linking';
 
 const LINK_BASE = (process.env.EXPO_PUBLIC_LINK_BASE ?? '').replace(/\/+$/, '');
 
+/** Yasal sayfalar her koşulda açılmalı (mağaza incelemesi); env yoksa yayın adresi. */
+const DEFAULT_LEGAL_BASE = 'https://ymrdgn.github.io/refill-legal';
+
+/** Gizlilik politikası / kullanım şartları / hesap silme sayfası adresi. */
+export function legalUrl(page: 'privacy' | 'terms' | 'account-deletion'): string {
+  return `${LINK_BASE || DEFAULT_LEGAL_BASE}/${page}.html`;
+}
+
 /** Uygulamanın derin bağlantı olarak tanıdığı yollar (başlangıç öneki). */
 const DEEP_LINK_PATHS = ['org/join/'];
 

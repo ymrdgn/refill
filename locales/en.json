@@ -89,7 +89,10 @@
     "ctaFamily": "Get Family",
     "priceSoon": "Price coming soon",
     "business": "Are you a business? Write to us",
-    "perYear": "/ year"
+    "perYear": "/ year",
+    "legalNote": "Yearly subscription, renews automatically until cancelled. Manage or cancel anytime in your store account settings.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use"
   },
   "play": {
     "namePlaceholder": "Game name (e.g. Friday night)",
@@ -148,6 +151,10 @@
     "language": "Language",
     "signOut": "Sign Out",
     "restartTitle": "Restart required",
-    "restartBody": "Close and reopen the app for the right-to-left layout to apply."
+    "restartBody": "Close and reopen the app for the right-to-left layout to apply.",
+    "deleteAccount": "Delete account",
+    "deleteAccountBody": "This permanently deletes your account, all sheets and photos, games and handwriting, and any family membership. This cannot be undone. An active subscription must be cancelled separately in your store settings.",
+    "deleteAccountConfirm": "Delete",
+    "deleteAccountFailed": "Your account could not be deleted. Check your connection and try again."
   }
 }

@@ -89,7 +89,10 @@
     "ctaFamily": "Subscrever Família",
     "priceSoon": "Preço em breve",
     "business": "É uma empresa? Escreva-nos",
-    "perYear": "/ ano"
+    "perYear": "/ ano",
+    "legalNote": "Subscrição anual, renovada automaticamente até ao cancelamento. Gira ou cancele a qualquer momento nas definições da sua conta da loja.",
+    "privacy": "Política de Privacidade",
+    "terms": "Termos de Utilização"
   },
   "play": {
     "namePlaceholder": "Nome do jogo (ex.: Sexta à noite)",
@@ -148,6 +151,10 @@
     "language": "Idioma",
     "signOut": "Terminar sessão",
     "restartTitle": "É necessário reiniciar",
-    "restartBody": "Feche e volte a abrir a aplicação para aplicar o esquema da direita para a esquerda."
+    "restartBody": "Feche e volte a abrir a aplicação para aplicar o esquema da direita para a esquerda.",
+    "deleteAccount": "Eliminar conta",
+    "deleteAccountBody": "A sua conta, todas as folhas e fotos, jogos e escrita, e qualquer participação numa família serão eliminados permanentemente. Isto não pode ser anulado. Uma subscrição ativa deve ser cancelada à parte nas definições da loja.",
+    "deleteAccountConfirm": "Eliminar",
+    "deleteAccountFailed": "Não foi possível eliminar a sua conta. Verifique a ligação e tente novamente."
   }
 }

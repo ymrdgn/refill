@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import type { Database } from './database.types';
 
@@ -129,6 +131,63 @@ export const signInWithGoogle = async () => {
     return {
       data: null,
       error: { message: e?.message ?? 'Google ile giriş başarısız.' },
+      cancelled: false,
+    };
+  }
+};
+
+/* ------------------------------------------------------------------ */
+/*  Apple native sign-in (yalnızca iOS)                                */
+/* ------------------------------------------------------------------ */
+/**
+ * expo-apple-authentication Expo SDK'nın parçasıdır ve Expo Go'da da vardır;
+ * tembel yüklemeye gerek yok. Apple, Google gibi üçüncü taraf girişi sunan
+ * iOS uygulamalarında kendi girişini zorunlu tutar (App Store 4.8).
+ * Supabase tarafında Apple sağlayıcısı açık ve client id = bundle id olmalı.
+ */
+export const isAppleSignInAvailable = async (): Promise<boolean> => {
+  if (Platform.OS !== 'ios') return false;
+  try {
+    return await AppleAuthentication.isAvailableAsync();
+  } catch {
+    return false;
+  }
+};
+
+export const signInWithApple = async () => {
+  try {
+    const credential = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+    if (!credential.identityToken) {
+      return {
+        data: null,
+        error: { message: 'Apple kimlik belirteci alınamadı.' },
+        cancelled: false,
+      };
+    }
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'apple',
+      token: credential.identityToken,
+    });
+    // Apple adı yalnızca İLK girişte verir; varsa kullanıcı adı olarak sakla.
+    const given = credential.fullName?.givenName;
+    if (!error && given) {
+      await supabase.auth
+        .updateUser({ data: { username: given } })
+        .catch(() => {});
+    }
+    return { data, error, cancelled: false };
+  } catch (e: any) {
+    if (e?.code === 'ERR_REQUEST_CANCELED') {
+      return { data: null, error: null, cancelled: true };
+    }
+    return {
+      data: null,
+      error: { message: e?.message ?? 'Apple ile giriş başarısız.' },
       cancelled: false,
     };
   }

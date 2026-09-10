@@ -89,7 +89,10 @@
     "ctaFamily": "Malbatê bistîne",
     "priceSoon": "Biha di demek nêz de",
     "business": "Hûn kargeh in? Ji me re binivîsin",
-    "perYear": "/ sal"
+    "perYear": "/ sal",
+    "legalNote": "Abonetiya salane, heta betalkirinê bixweber nû dibe. Her dem ji mîhengên hesabê dikanê dikarî birêve bibî an betal bikî.",
+    "privacy": "Polîtîkaya Nepeniyê",
+    "terms": "Mercên Bikaranînê"
   },
   "play": {
     "namePlaceholder": "Navê lîstikê (mînak: Êvara înê)",
@@ -148,6 +151,10 @@
     "language": "Ziman",
     "signOut": "Derkeve",
     "restartTitle": "Ji nû ve destpêkirin pêwîst e",
-    "restartBody": "Ji bo ku dîzayna rastê-ber-çepê bixebite, sepanê bigire û dîsa veke."
+    "restartBody": "Ji bo ku dîzayna rastê-ber-çepê bixebite, sepanê bigire û dîsa veke.",
+    "deleteAccount": "Hesabê jê bibe",
+    "deleteAccountBody": "Hesabê te, hemû kaxez û wêne, lîstik û destnivîs û her endamtiya malbatê bi awayekî mayînde tên jêbirin. Ev nayê vegerandin. Abonetiyeke çalak divê cuda ji mîhengên dikanê were betalkirin.",
+    "deleteAccountConfirm": "Jê bibe",
+    "deleteAccountFailed": "Hesabê te nehat jêbirin. Girêdana xwe kontrol bike û dîsa biceribîne."
   }
 }

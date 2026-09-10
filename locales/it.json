@@ -89,7 +89,10 @@
     "ctaFamily": "Passa a Famiglia",
     "priceSoon": "Prezzo in arrivo",
     "business": "Sei un'azienda? Scrivici",
-    "perYear": "/ anno"
+    "perYear": "/ anno",
+    "legalNote": "Abbonamento annuale, si rinnova automaticamente fino alla disdetta. Gestiscilo o annullalo in qualsiasi momento nelle impostazioni dell'account dello store.",
+    "privacy": "Informativa sulla privacy",
+    "terms": "Termini di utilizzo"
   },
   "play": {
     "namePlaceholder": "Nome della partita (es. Venerdì sera)",
@@ -148,6 +151,10 @@
     "language": "Lingua",
     "signOut": "Esci",
     "restartTitle": "Riavvio necessario",
-    "restartBody": "Chiudi e riapri l'app per applicare il layout da destra a sinistra."
+    "restartBody": "Chiudi e riapri l'app per applicare il layout da destra a sinistra.",
+    "deleteAccount": "Elimina account",
+    "deleteAccountBody": "Il tuo account, tutti i fogli e le foto, le partite e la scrittura, e qualsiasi appartenenza a una famiglia verranno eliminati definitivamente. Questa operazione non può essere annullata. Un abbonamento attivo va annullato a parte nelle impostazioni dello store.",
+    "deleteAccountConfirm": "Elimina",
+    "deleteAccountFailed": "Impossibile eliminare il tuo account. Controlla la connessione e riprova."
   }
 }

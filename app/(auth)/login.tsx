@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -14,9 +14,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import {
+  isAppleSignInAvailable,
   isGoogleSignInAvailable,
   signIn,
+  signInWithApple,
   signInWithGoogle,
   signUp,
 } from '@/lib/supabase';
@@ -35,7 +38,12 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    isAppleSignInAvailable().then(setAppleAvailable);
+  }, []);
 
   const isSignUp = mode === 'signup';
 
@@ -71,6 +79,21 @@ export default function LoginScreen() {
       setError(e?.message ?? t('common.error'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleApple = async () => {
+    setError(null);
+    try {
+      const { error, cancelled } = await signInWithApple();
+      if (cancelled) return;
+      if (error) {
+        setError(error.message);
+        return;
+      }
+      await finish();
+    } catch (e: any) {
+      setError(e?.message ?? t('common.error'));
     }
   };
 
@@ -191,8 +214,8 @@ export default function LoginScreen() {
               )}
             </Pressable>
 
-            {/* Google ile devam et — native modül Expo Go'da yok, orada gizlenir. */}
-            {isGoogleSignInAvailable && (
+            {/* Sosyal girişler: Apple (yalnızca iOS) + Google (Expo Go'da gizli). */}
+            {(appleAvailable || isGoogleSignInAvailable) && (
               <>
                 {/* Ayraç */}
                 <View style={styles.divider}>
@@ -201,6 +224,18 @@ export default function LoginScreen() {
                   <View style={styles.dividerLine} />
                 </View>
 
+                {/* Apple'ın resmi düğmesi: metni ve görünümü sistem verir (HIG şartı). */}
+                {appleAvailable && (
+                  <AppleAuthentication.AppleAuthenticationButton
+                    buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+                    buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                    cornerRadius={radius.md}
+                    style={styles.appleButton}
+                    onPress={handleApple}
+                  />
+                )}
+
+                {isGoogleSignInAvailable && (
                 <Pressable
                   style={({ pressed }) => [
                     styles.googleButton,
@@ -225,6 +260,7 @@ export default function LoginScreen() {
                     </>
                   )}
                 </Pressable>
+                )}
               </>
             )}
           </View>
@@ -333,6 +369,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.medium,
     fontSize: fontSize.sm,
   },
+  appleButton: { width: '100%', height: 52 },
   googleButton: {
     flexDirection: 'row',
     justifyContent: 'center',
